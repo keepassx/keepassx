@@ -25,6 +25,7 @@ set(keepassx_SOURCES
     autotype/ShortcutWidget.cpp
     autotype/WildcardMatcher.cpp
     autotype/WindowSelectComboBox.cpp
+    core/ArgumentParser.cpp
     core/AutoTypeAssociations.cpp
     core/Config.cpp
     core/Database.cpp
