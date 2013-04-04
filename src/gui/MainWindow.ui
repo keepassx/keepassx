@@ -114,16 +114,11 @@
      <property name="title">
       <string>Copy attribute to clipboard</string>
      </property>
-    </widget>
-    <addaction name="actionEntryNew"/>
-    <addaction name="actionEntryClone"/>
+ </widget>
+    <addaction name="actionEntryCopyPassword"/>
+    <addaction name="actionEntryCopyUsername"/>
     <addaction name="actionEntryEdit"/>
     <addaction name="actionEntryDelete"/>
-    <addaction name="actionEntryCopyUsername"/>
-    <addaction name="actionEntryCopyPassword"/>
-    <addaction name="menuEntryCopyAttribute"/>
-    <addaction name="actionEntryAutoType"/>
-    <addaction name="actionEntryOpenUrl"/>
    </widget>
    <widget class="QMenu" name="menuGroups">
     <property name="title">
