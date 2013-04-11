@@ -58,6 +58,10 @@ private Q_SLOTS:
     void showGroupContextMenu(const QPoint& globalPos);
     void saveToolbarState(bool value);
     void rememberOpenDatabases(const QString& filePath);
+    void setToolbarIconSize(int size);
+    void setToolbarIconSize16();
+    void setToolbarIconSize22();
+    void setToolbarIconSize28();
 
 private:
     static void setShortcut(QAction* action, QKeySequence::StandardKey standard, int fallback = 0);
