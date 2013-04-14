@@ -22,6 +22,8 @@
 
 #include "core/Global.h"
 
+#include "gui/entry/EntryModel.h"
+
 class Entry;
 class EntryModel;
 class Group;
@@ -45,7 +47,7 @@ public Q_SLOTS:
     void setGroup(Group* group);
 
 Q_SIGNALS:
-    void entryActivated(Entry* entry);
+    void entryActivated(Entry* entry, EntryModel::ModelColumn column);
     void entrySelectionChanged();
 
 private Q_SLOTS:

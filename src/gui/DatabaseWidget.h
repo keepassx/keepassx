@@ -23,6 +23,8 @@
 
 #include "core/Global.h"
 
+#include "gui/entry/EntryModel.h"
+
 class ChangeMasterKeyWidget;
 class DatabaseOpenWidget;
 class DatabaseSettingsWidget;
@@ -89,6 +91,7 @@ public Q_SLOTS:
     void copyAttribute(QAction* action);
     void performAutoType();
     void openUrl();
+    void openUrlForEntry(Entry* entry);
     void createGroup();
     void deleteGroup();
     void switchToEntryEdit();
@@ -103,6 +106,7 @@ public Q_SLOTS:
     void emitEntryContextMenuRequested(const QPoint& pos);
 
 private Q_SLOTS:
+    void entryActivationSignalReceived(Entry* entry, EntryModel::ModelColumn column);
     void switchBackToEntryEdit();
     void switchToView(bool accepted);
     void switchToHistoryView(Entry* entry);

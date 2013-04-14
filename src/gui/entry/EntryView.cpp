@@ -18,7 +18,6 @@
 #include "EntryView.h"
 
 #include "gui/SortFilterHideProxyModel.h"
-#include "gui/entry/EntryModel.h"
 
 EntryView::EntryView(QWidget* parent)
     : QTreeView(parent)
@@ -68,7 +67,9 @@ bool EntryView::inEntryListMode()
 
 void EntryView::emitEntryActivated(const QModelIndex& index)
 {
-    Q_EMIT entryActivated(entryFromIndex(index));
+    Entry* entry = entryFromIndex(index);
+
+    Q_EMIT entryActivated(entry, static_cast<EntryModel::ModelColumn>(m_sortModel->mapToSource(index).column()));
 }
 
 void EntryView::setModel(QAbstractItemModel* model)
