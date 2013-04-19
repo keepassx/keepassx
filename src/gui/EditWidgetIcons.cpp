@@ -19,6 +19,9 @@
 #include "ui_EditWidgetIcons.h"
 
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QBuffer>
+#include <QXmlStreamReader>
 
 #include "core/Group.h"
 #include "core/Metadata.h"
@@ -38,6 +41,7 @@ EditWidgetIcons::EditWidgetIcons(QWidget* parent)
     , m_database(Q_NULLPTR)
     , m_defaultIconModel(new DefaultIconModel(this))
     , m_customIconModel(new CustomIconModel(this))
+    , m_networkAccessMngr(new QNetworkAccessManager(this))
 {
     m_ui->setupUi(this);
 
@@ -54,6 +58,11 @@ EditWidgetIcons::EditWidgetIcons(QWidget* parent)
             this, SLOT(updateWidgetsCustomIcons(bool)));
     connect(m_ui->addButton, SIGNAL(clicked()), SLOT(addCustomIcon()));
     connect(m_ui->deleteButton, SIGNAL(clicked()), SLOT(removeCustomIcon()));
+    connect(m_ui->faviconButton, SIGNAL(clicked()), SLOT(downloadFavicon()));
+    connect(m_networkAccessMngr, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(onRequestFinished(QNetworkReply*)) );
+
+    m_ui->faviconButton->setVisible(false);
 }
 
 EditWidgetIcons::~EditWidgetIcons()
@@ -90,13 +99,14 @@ IconStruct EditWidgetIcons::save()
     return iconStruct;
 }
 
-void EditWidgetIcons::load(Uuid currentUuid, Database* database, IconStruct iconStruct)
+void EditWidgetIcons::load(Uuid currentUuid, Database* database, IconStruct iconStruct, const QString &url)
 {
     Q_ASSERT(database);
     Q_ASSERT(!currentUuid.isNull());
 
     m_database = database;
     m_currentUuid = currentUuid;
+    setUrl(url);
 
     m_customIconModel->setIcons(database->metadata()->customIcons(),
                                 database->metadata()->customIconsOrder());
@@ -116,6 +126,136 @@ void EditWidgetIcons::load(Uuid currentUuid, Database* database, IconStruct icon
         else {
             m_ui->defaultIconsView->setCurrentIndex(m_defaultIconModel->index(0, 0));
             m_ui->defaultIconsRadio->setChecked(true);
+        }
+    }
+}
+
+void EditWidgetIcons::setUrl(const QString &url)
+{
+    m_url = QUrl(url);
+    // We do not want to send any user information to google
+    m_ui->faviconButton->setVisible(m_url.userInfo().isEmpty() && (m_url.scheme() == "http" || m_url.scheme() == "https"));
+    abortFaviconDownload();
+}
+
+void EditWidgetIcons::downloadFavicon()
+{
+    // We do not want to send any user information to google
+    Q_ASSERT(m_url.userInfo().isEmpty());
+    m_progress = new QProgressDialog(this);
+    connect(m_progress, SIGNAL(canceled()), this, SLOT(abortFaviconDownload()));
+    m_progress->setWindowModality(Qt::WindowModal);
+    m_progress->setAutoClose(true);
+    m_progress->setLabelText("Downloading Favicons...");
+    m_progress->setMaximum(10);
+    m_progress->setValue(0);
+    m_progress->show();
+
+    const QStringList schemes = QStringList() << "http" << "https";
+    const QStringList extensions = QStringList() << "ico" << "png" << "gif" << "jpg";
+
+    // This might be requested again in the loop below, but is is not an issue
+    m_networkOperations << m_networkAccessMngr->get(QNetworkRequest(m_url));
+
+    QString domain = m_url.host();
+    int firstDot;
+    int lastDot;
+    do {
+        m_networkOperations << m_networkAccessMngr->get(QNetworkRequest("http://www.google.com/s2/favicons?domain=" + domain));
+        Q_FOREACH (QString scheme, schemes) {
+            m_networkOperations << m_networkAccessMngr->get(QNetworkRequest(scheme + "://" + domain + "/"));
+            Q_FOREACH (QString extension, extensions) {
+                m_networkOperations << m_networkAccessMngr->get(QNetworkRequest(scheme + "://" + domain + "/favicon." + extension));
+                if (m_url.port() >= 0)
+                    m_networkOperations << m_networkAccessMngr->get(QNetworkRequest(scheme + "://" + domain + ":" + m_url.port() + "/favicon." + extension));
+            }
+        }
+        firstDot = domain.indexOf( '.' );
+        lastDot = domain.lastIndexOf( '.' );
+        domain.remove( 0, firstDot + 1 );
+    } while (( firstDot != -1 ) && ( lastDot != -1 ) && ( firstDot != lastDot ));
+    m_progress->setMaximum(m_networkOperations.count());
+    m_progress->setValue(m_progress->maximum() - m_networkOperations.count());
+}
+
+void EditWidgetIcons::abortFaviconDownload()
+{
+    Q_FOREACH (QNetworkReply *r, m_networkOperations)
+        r->abort();
+}
+
+void EditWidgetIcons::onRequestFinished(QNetworkReply *reply)
+{
+    Q_ASSERT(m_networkOperations.contains(reply));
+
+    const QByteArray data = reply->readAll();
+    const QUrl originalUrl = reply->url();
+    m_networkOperations.remove(reply);
+    reply->deleteLater();
+     m_progress->setValue(m_progress->maximum() - m_networkOperations.count());
+    if (reply->error()) return;
+
+    QImage image;
+    if (image.loadFromData(data) && !image.isNull()) {
+        // Checking for Duplicates
+        // Convert to 16x16 PNG, so that we can compare with existing ones
+        QByteArray ba1;
+        QBuffer buffer1(&ba1);
+        buffer1.open(QIODevice::WriteOnly);
+        image.scaled(16, 16).save(&buffer1, "PNG");
+        buffer1.close();
+        image.loadFromData(ba1);
+
+        QHash<Uuid, QImage>::const_iterator i;
+        for (i = m_database->metadata()->customIcons().constBegin(); i != m_database->metadata()->customIcons().constEnd(); ++i) {
+            if (i.value() == image) return;
+            QByteArray ba2;
+            QBuffer buffer2(&ba2);
+            buffer2.open(QIODevice::WriteOnly);
+            i.value().save(&buffer1, "PNG");
+            buffer2.close();
+            if (ba1 == ba2) return;
+        }
+        Uuid uuid = Uuid::random();
+        m_database->metadata()->addCustomIcon(uuid, image);
+        m_customIconModel->setIcons(m_database->metadata()->customIcons(),
+                                    m_database->metadata()->customIconsOrder());
+        QModelIndex index = m_customIconModel->indexFromUuid(uuid);
+        m_ui->customIconsView->setCurrentIndex(index);
+        m_ui->customIconsRadio->setChecked(true);
+    } else { // It might be a WebPage
+        // XML approach does not even work on https://github.com/
+        // I got "Expected '=', but got '>'." while parsing the <head>
+        /*
+        QXmlStreamReader page(data);
+        if(page.error() || !page.readNextStartElement() || page.name() != "html" || !page.readNextStartElement() || page.name() != "head")
+            return;
+        while (!page.atEnd()) {
+            page.readNextStartElement();
+            if (page.name() == "link") {
+                const QXmlStreamAttributes attrs = page.attributes();
+                const QString rel = attrs.value("rel").toString();
+                if (rel == "icon" || rel == "shortcut icon" || rel == "apple-touch-icon") {
+                    m_networkOperations << m_networkAccessMngr->get(QNetworkRequest(attrs.value("href").toString()));
+                }
+            }
+
+        }
+        */
+        QString page(data);
+        int pos = page.indexOf("<head");
+        const int headEnd = qMin(page.indexOf("</head>"), page.indexOf("<body"));
+        // It does not work with rel and href in reverse order
+        QRegExp link("<link[^>]+rel=\"(icon|shortcut icon|apple-touch-icon)\"[^>]+href=\"([^\"]+)\"");
+        while ( (pos = link.indexIn(page, pos)) != -1 ) {
+            if (pos >= headEnd) return;
+            pos += link.matchedLength();
+            QUrl iconUrl(link.cap(2));
+            if (iconUrl.isRelative()) {
+                m_networkOperations << m_networkAccessMngr->get(QNetworkRequest(originalUrl.resolved(iconUrl)));
+            } else {
+                m_networkOperations << m_networkAccessMngr->get(QNetworkRequest(iconUrl));
+            }
         }
     }
 }
