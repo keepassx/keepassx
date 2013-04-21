@@ -42,7 +42,7 @@ EntryView::EntryView(QWidget* parent)
     // QAbstractItemView::startDrag() uses this property as the default drag action
     setDefaultDropAction(Qt::MoveAction);
 
-    connect(this, SIGNAL(activated(QModelIndex)), SLOT(emitEntryActivated(QModelIndex)));
+    connect(this, SIGNAL(doubleClicked(QModelIndex)), SLOT(emitEntryActivated(QModelIndex)));
     connect(selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SIGNAL(entrySelectionChanged()));
     connect(m_model, SIGNAL(switchedToEntryListMode()), SLOT(switchToEntryListMode()));
     connect(m_model, SIGNAL(switchedToGroupMode()), SLOT(switchToGroupMode()));
