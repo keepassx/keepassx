@@ -397,11 +397,23 @@ void MainWindow::databaseTabChanged(int tabIndex)
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
+    m_openDatabases.clear();
+    bool openPreviousDatabasesOnStartup = config()->get("OpenPreviousDatabasesOnStartup").toBool();
+
+    if (openPreviousDatabasesOnStartup) {
+        connect(m_ui->tabWidget, SIGNAL(databaseWithFileClosed(QString)), this, SLOT(rememberOpenDatabases(QString)));
+    }
+
     if (!m_ui->tabWidget->closeAllDatabases()) {
         event->ignore();
     }
     else {
         event->accept();
+    }
+
+    if (openPreviousDatabasesOnStartup) {
+        disconnect(m_ui->tabWidget, SIGNAL(databaseWithFileClosed(QString)), this, SLOT(rememberOpenDatabases(QString)));
+        config()->set("LastOpenedDatabases", m_openDatabases);
     }
 }
 
@@ -428,4 +440,9 @@ void MainWindow::setShortcut(QAction* action, QKeySequence::StandardKey standard
     else if (fallback != 0) {
         action->setShortcut(QKeySequence(fallback));
     }
+}
+
+void MainWindow::rememberOpenDatabases(const QString& filePath)
+{
+    m_openDatabases.append(filePath);
 }

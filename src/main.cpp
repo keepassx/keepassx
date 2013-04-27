@@ -58,5 +58,14 @@ int main(int argc, char** argv)
         mainWindow.openDatabase(filename, argumentMap.value("password"), QString());
     }
 
+    if (config()->get("OpenPreviousDatabasesOnStartup").toBool()) {
+        QStringList filenames = config()->get("LastOpenedDatabases").toStringList();
+        Q_FOREACH (const QString& filename, filenames) {
+            if (!filename.isEmpty() && QFile::exists(filename)) {
+                mainWindow.openDatabase(filename, QString(), QString());
+            }
+        }
+    }
+
     return app.exec();
 }
