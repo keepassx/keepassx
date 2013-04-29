@@ -60,6 +60,7 @@ private Q_SLOTS:
     void rememberOpenDatabases(const QString& filePath);
 
 private:
+    void updateSearchField(DatabaseWidget* dbWidget = NULL);
     static void setShortcut(QAction* action, QKeySequence::StandardKey standard, int fallback = 0);
 
     static const QString BaseWindowTitle;

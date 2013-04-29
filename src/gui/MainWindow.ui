@@ -56,6 +56,34 @@
       <widget class="QWidget" name="pageWelcome">
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
+         <widget class="QWidget" name="searchPanel" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSearchField" name="searchField" native="true"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
          <widget class="WelcomeWidget" name="welcomeWidget" native="true"/>
         </item>
        </layout>
@@ -164,7 +192,6 @@
    <addaction name="actionEntryNew"/>
    <addaction name="actionEntryEdit"/>
    <addaction name="actionEntryDelete"/>
-   <addaction name="actionSearch"/>
   </widget>
   <action name="actionQuit">
    <property name="text">
@@ -290,17 +317,6 @@
     <string>Clone entry</string>
    </property>
   </action>
-  <action name="actionSearch">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Find</string>
-   </property>
-  </action>
   <action name="actionEntryCopyUsername">
    <property name="enabled">
     <bool>false</bool>
@@ -346,6 +362,30 @@
     <string>Lock databases</string>
    </property>
   </action>
+  <action name="actionFindCaseSensitive">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Case Sensitive</string>
+   </property>
+  </action>
+  <action name="actionFindCurrentGroup">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Current Group</string>
+   </property>
+  </action>
+  <action name="actionFindRootGroup">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Root Group</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -364,6 +404,12 @@
    <class>WelcomeWidget</class>
    <extends>QWidget</extends>
    <header>gui/WelcomeWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QSearchField</class>
+   <extends>QWidget</extends>
+   <header>gui/qocoa/qsearchfield.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
