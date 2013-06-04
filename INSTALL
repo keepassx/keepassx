@@ -28,3 +28,16 @@ Run: sudo port install qt4-mac libgcrypt zlib
      If you want to build a universal binary append " +universal" to the above command.
 Pass -DCMAKE_OSX_ARCHITECTURES="<ARCH1>;<ARCH2>" to cmake
 Run: make package
+
+
+Building on Ubuntu Linux 13.04:
+===============================
+
+apt-get install qt4-default build-essential libgcrypt-dev
+git clone git://github.com/keepassx/keepassx.git keepassx.git
+cd keepassx.git
+mkdir build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=~/.local/
+make
+
