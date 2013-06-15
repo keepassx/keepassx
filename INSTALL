@@ -33,7 +33,7 @@ Run: make package
 Building on Ubuntu Linux 13.04:
 ===============================
 
-apt-get install qt4-default build-essential libgcrypt-dev
+sudo apt-get install qt4-default build-essential libgcrypt-dev
 git clone git://github.com/keepassx/keepassx.git keepassx.git
 cd keepassx.git
 mkdir build
@@ -41,3 +41,7 @@ cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=~/.local/
 make
 
+# now if you want a deb from this: 
+https://help.ubuntu.com/community/CheckInstall#Usage
+sudo apt-get install checkinstall
+sudo checkinstall 
