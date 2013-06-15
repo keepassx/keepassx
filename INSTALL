@@ -33,7 +33,7 @@ Run: make package
 Building on Ubuntu Linux 13.04:
 ===============================
 
-sudo apt-get install qt4-default build-essential libgcrypt-dev
+sudo apt-get install cmake qt4-default build-essential libgcrypt-dev
 git clone git://github.com/keepassx/keepassx.git keepassx.git
 cd keepassx.git
 mkdir build
