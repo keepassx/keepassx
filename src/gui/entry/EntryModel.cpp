@@ -29,7 +29,9 @@ EntryModel::EntryModel(QObject* parent)
     : QAbstractTableModel(parent)
     , m_group(Q_NULLPTR)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     setSupportedDragActions(Qt::MoveAction | Qt::CopyAction);
+#endif
 }
 
 Entry* EntryModel::entryFromIndex(const QModelIndex& index) const
@@ -98,6 +100,13 @@ void EntryModel::setEntryList(const QList<Entry*>& entries)
     endResetModel();
     Q_EMIT switchedToEntryListMode();
 }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+Qt::DropActions EntryModel::supportedDragActions() const
+{
+    return (Qt::MoveAction | Qt::CopyAction);
+}
+#endif
 
 int EntryModel::rowCount(const QModelIndex& parent) const
 {
