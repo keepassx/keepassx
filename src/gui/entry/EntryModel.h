@@ -53,6 +53,10 @@ public:
 
     void setEntryList(const QList<Entry*>& entries);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    virtual Qt::DropActions supportedDragActions() const;
+#endif
+
 Q_SIGNALS:
     void switchedToEntryListMode();
     void switchedToGroupMode();
