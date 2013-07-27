@@ -23,3 +23,5 @@ target_link_libraries(kdbx-extract
                       ${QT_QTWIDGETS_LIBRARY}
                       ${GCRYPT_LIBRARIES}
                       ${ZLIB_LIBRARIES})
+set_target_properties(kdbx-extract PROPERTIES
+  POSITION_INDEPENDENT_CODE ON)
