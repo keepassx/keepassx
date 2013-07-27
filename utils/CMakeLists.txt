@@ -20,5 +20,6 @@ target_link_libraries(kdbx-extract
                       keepassx_core
                       ${QT_QTCORE_LIBRARY}
                       ${QT_QTGUI_LIBRARY}
+                      ${QT_QTWIDGETS_LIBRARY}
                       ${GCRYPT_LIBRARIES}
                       ${ZLIB_LIBRARIES})
