@@ -94,69 +94,44 @@ QVector<PasswordGroup> PasswordGenerator::passwordGroups(const PasswordGenerator
 {
     QVector<PasswordGroup> passwordGroups;
 
-    if (classes & LowerLetters) {
-        PasswordGroup group;
+    typedef struct {
+        char first;
+        char last;
+        int cls;
+    } ClassRange;
 
-        for (int i = 97; i < (97 + 26); i++) {
-            if ((flags & ExcludeLookAlike) && (i == 108)) { // "l"
-                continue;
+    static const ClassRange asciiClasses[] = {
+        { '\0', ' ', 0 },
+        { 'a',  'z', LowerLetters },
+        { 'A',  'Z', UpperLetters },
+        { '0',  '9', Numbers },
+        { '!',  '/', SpecialCharacters },
+        { ':',  '@', SpecialCharacters },
+        { '[',  '`', SpecialCharacters },
+        { '{',  '~', SpecialCharacters },
+        { 0, 0, 0 }}; // Sentinel
+    static const char* lookalikes = "lI1| O0 G6"; // Space is ignored anyways, so we can use it here to group lookalikes
+
+    const ClassRange* range = &asciiClasses[0];
+
+    while (range->last) {
+        if (classes & range->cls) {
+            PasswordGroup group;
+
+            for (int i = range->first; i <= range->last; i++) {
+                if ((flags & ExcludeLookAlike) && strchr(lookalikes, i)) {
+                    continue;
+                }
+
+                group.append(i);
             }
 
-            group.append(i);
-        }
-
-        passwordGroups.append(group);
-    }
-    if (classes & UpperLetters) {
-        PasswordGroup group;
-
-        for (int i = 65; i < (65 + 26); i++) {
-            if ((flags & ExcludeLookAlike) && (i == 73 || i == 79)) { // "I" and "O"
-                continue;
+            if (!group.isEmpty()) {
+                passwordGroups.append(group);
             }
-
-            group.append(i);
         }
 
-        passwordGroups.append(group);
-    }
-    if (classes & Numbers) {
-        PasswordGroup group;
-
-        for (int i = 48; i < (48 + 10); i++) {
-            if ((flags & ExcludeLookAlike) && (i == 48 || i == 49)) { // "0" and "1"
-                continue;
-            }
-
-            group.append(i);
-        }
-
-        passwordGroups.append(group);
-    }
-    if (classes & SpecialCharacters) {
-        PasswordGroup group;
-
-        for (int i = 33; i <= 47; i++) {
-            group.append(i);
-        }
-
-        for (int i = 58; i <= 64; i++) {
-            group.append(i);
-        }
-
-        for (int i = 91; i <= 96; i++) {
-            group.append(i);
-        }
-
-        for (int i = 123; i <= 126; i++) {
-            if ((flags & ExcludeLookAlike) && (i == 124)) { // "|"
-                continue;
-            }
-
-            group.append(i);
-        }
-
-        passwordGroups.append(group);
+        ++range;
     }
 
     return passwordGroups;
