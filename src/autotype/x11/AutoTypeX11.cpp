@@ -721,4 +721,6 @@ int AutoTypePlatformX11::initialTimeout()
     return 500;
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 Q_EXPORT_PLUGIN2(keepassx-autotype-x11, AutoTypePlatformX11)
+#endif
