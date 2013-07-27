@@ -43,8 +43,6 @@ set(keepassx_SOURCES
     core/ListDeleter.h
     core/Metadata.cpp
     core/PasswordGenerator.cpp
-    core/qsavefile.cpp
-    core/qsavefile_p.h
     core/SignalMultiplexer.cpp
     core/TimeDelta.cpp
     core/TimeInfo.cpp
@@ -149,7 +147,6 @@ set(keepassx_MOC
     core/Group.h
     core/InactivityTimer.h
     core/Metadata.h
-    core/qsavefile.h
     gui/AboutDialog.h
     gui/Application.h
     gui/ChangeMasterKeyWidget.h
@@ -192,6 +189,18 @@ set(keepassx_MOC
     streams/StoreDataStream.h
     streams/SymmetricCipherStream.h
 )
+
+if (NOT WITH_QT5)
+  set(keepassx_SOURCES
+      ${keepassx_SOURCES}
+      core/qsavefile.cpp
+      core/qsavefile_p.h
+  )
+  set(keepassx_MOC
+      ${keepassx_MOC}
+      core/qsavefile.h
+  )
+endif ()
 
 set(keepassx_FORMS
     gui/AboutDialog.ui
