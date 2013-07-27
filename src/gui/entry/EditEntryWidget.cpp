@@ -21,7 +21,11 @@
 #include "ui_EditEntryWidgetHistory.h"
 #include "ui_EditEntryWidgetMain.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtCore/QStandardPaths>
+#else
 #include <QtGui/QDesktopServices>
+#endif
 #include <QtGui/QStackedLayout>
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
@@ -607,7 +611,12 @@ void EditEntryWidget::insertAttachment()
 
     // TODO: save last used dir
     QString filename = fileDialog()->getOpenFileName(this, tr("Select file"),
-                QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+                (QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation) << "").first()
+#else
+                QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation)
+#endif
+            );
     if (filename.isEmpty() || !QFile::exists(filename)) {
         return;
     }
@@ -638,7 +647,11 @@ void EditEntryWidget::saveCurrentAttachment()
 
     QString filename = m_attachmentsModel->keyByIndex(index);
     // TODO: save last used dir
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    QDir dir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+#else
     QDir dir(QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation));
+#endif
     QString savePath = fileDialog()->getSaveFileName(this, tr("Save attachment"),
                                                        dir.filePath(filename));
     if (!savePath.isEmpty()) {
