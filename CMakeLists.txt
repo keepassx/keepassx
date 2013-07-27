@@ -33,6 +33,7 @@ option(WITH_TESTS "Enable building of unit tests" ON)
 option(WITH_GUI_TESTS "Enable building of GUI tests" OFF)
 option(WITH_LTO "Enable Link Time Optimization (LTO)" OFF)
 option(WITH_CXX11 "Build with the C++ 11 standard" ON)
+option(WITH_QT5 "Build with Qt5" OFF)
 
 set(KEEPASSX_VERSION "2.0 alpha 6")
 set(KEEPASSX_VERSION_NUM "1.9.85")
@@ -158,16 +159,65 @@ if(WITH_TESTS)
   enable_testing()
 endif(WITH_TESTS)
 
-set(QT_REQUIRED_MODULES QtCore QtGui QtTest)
+set(QT_REQUIRED_MODULES Core Gui Test)
 if(UNIX AND NOT APPLE)
-  set(QT_REQUIRED_MODULES ${QT_REQUIRED_MODULES} QtDBus)
+  set(QT_REQUIRED_MODULES ${QT_REQUIRED_MODULES} DBus)
 endif()
 
-find_package(Qt4 4.6.0 REQUIRED ${QT_REQUIRED_MODULES})
-include(${QT_USE_FILE})
-# Debian sets the the build type to None for package builds.
-# Make sure we don't enable asserts there.
-set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_NONE QT_NO_DEBUG)
+if (WITH_QT5)
+  set(QT_REQUIRED_MODULES ${QT_REQUIRED_MODULES} Concurrent Widgets LinguistTools)
+
+  foreach(QT_REQUIRED_MODULE ${QT_REQUIRED_MODULES})
+    find_package(Qt5${QT_REQUIRED_MODULE} REQUIRED)
+
+    string(TOUPPER ${QT_REQUIRED_MODULE} UPPER_MODULE)
+    set(QT_QT${UPPER_MODULE}_LIBRARY Qt5${QT_REQUIRED_MODULE})
+
+    include_directories(SYSTEM ${Qt5${QT_REQUIRED_MODULE}_INCLUDE_DIRS})
+  endforeach()
+else()
+  set(OLD_QT_REQUIRED_MODULES ${QT_REQUIRED_MODULES})
+  set(QT_REQUIRED_MODULES)
+
+  foreach(QT_REQUIRED_MODULE ${OLD_QT_REQUIRED_MODULES})
+    set(QT_REQUIRED_MODULES ${QT_REQUIRED_MODULES} Qt${QT_REQUIRED_MODULE})
+  endforeach()
+
+  find_package(Qt4 4.6.0 REQUIRED ${QT_REQUIRED_MODULES})
+  include(${QT_USE_FILE})
+  # Debian sets the the build type to None for package builds.
+  # Make sure we don't enable asserts there.
+  set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_NONE QT_NO_DEBUG)
+
+  foreach (QT_REQUIRED_MODULE ${QT_REQUIRED_MODULES})
+    string(TOUPPER ${QT_REQUIRED_MODULE} UPPER_MODULE)
+    include_directories(SYSTEM ${QT_${UPPER_MODULE}_INCLUDE_DIR})
+  endforeach ()
+endif()
+
+macro(qt_wrap_cpp var)
+  if (WITH_QT5)
+    qt5_wrap_cpp(${var} ${ARGN})
+  else()
+    qt4_wrap_cpp(${var} ${ARGN})
+  endif()
+endmacro()
+
+macro(qt_wrap_ui var)
+  if (WITH_QT5)
+    qt5_wrap_ui(${var} ${ARGN})
+  else()
+    qt4_wrap_ui(${var} ${ARGN})
+  endif()
+endmacro()
+
+macro(qt_add_translation var)
+  if (WITH_QT5)
+    qt5_add_translation(${var} ${ARGN})
+  else()
+    qt4_add_translation(${var} ${ARGN})
+  endif()
+endmacro()
 
 find_package(Gcrypt REQUIRED)
 if(NOT (${GCRYPT_VERSION_STRING} VERSION_LESS "1.6.0"))

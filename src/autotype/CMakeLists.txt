@@ -5,7 +5,9 @@ if(Q_WS_X11)
   endif()
 
   if(X11_FOUND AND X11_XTest_FOUND)
-    add_subdirectory(x11)
+    if (WITH_QT5 AND NOT Qt5Core_VERSION_STRING VERSION_LESS 5.1.0)
+      add_subdirectory(x11)
+    endif ()
   endif()
 endif()
 
