@@ -19,7 +19,11 @@
 #define KEEPASSX_SORTFILTERHIDEPROXYMODEL_H
 
 #include <QtCore/QBitArray>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtCore/QSortFilterProxyModel>
+#else
 #include <QtGui/QSortFilterProxyModel>
+#endif
 
 #include "core/Global.h"
 

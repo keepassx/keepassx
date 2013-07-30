@@ -19,7 +19,11 @@
 #define KEEPASSX_DATABASETABWIDGET_H
 
 #include <QtCore/QHash>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QTabWidget>
+#else
 #include <QtGui/QTabWidget>
+#endif
 
 #include "format/KeePass2Writer.h"
 #include "gui/DatabaseWidget.h"

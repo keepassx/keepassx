@@ -19,8 +19,13 @@
 
 #include "LineEdit.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QToolButton>
+#else
 #include <QtGui/QStyle>
 #include <QtGui/QToolButton>
+#endif
 
 #include "core/FilePath.h"
 

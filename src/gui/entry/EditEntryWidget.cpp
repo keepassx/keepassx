@@ -23,13 +23,17 @@
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QtCore/QStandardPaths>
+#include <QtWidgets/QStackedLayout>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#include <QtCore/QSortFilterProxyModel>
 #else
 #include <QtGui/QDesktopServices>
-#endif
 #include <QtGui/QStackedLayout>
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
 #include <QtGui/QSortFilterProxyModel>
+#endif
 
 #include "core/Database.h"
 #include "core/Entry.h"

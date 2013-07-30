@@ -18,7 +18,13 @@
 #ifndef KEEPASSX_SHORTCUTWIDGET_H
 #define KEEPASSX_SHORTCUTWIDGET_H
 
+#include <QtCore/QtGlobal>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QLineEdit>
+#else
 #include <QtGui/QLineEdit>
+#endif
 
 #include "core/Global.h"
 

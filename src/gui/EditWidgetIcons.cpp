@@ -18,8 +18,13 @@
 #include "EditWidgetIcons.h"
 #include "ui_EditWidgetIcons.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#else
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
+#endif
 
 #include "core/Group.h"
 #include "core/Metadata.h"

@@ -20,7 +20,11 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QWidget>
+#else
 #include <QtGui/QWidget>
+#endif
 
 #include "core/Global.h"
 

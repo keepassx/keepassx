@@ -19,7 +19,11 @@
 #define KEEPASSX_EDITGROUPWIDGET_H
 
 #include <QtCore/QScopedPointer>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QComboBox>
+#else
 #include <QtGui/QComboBox>
+#endif
 
 #include "core/Group.h"
 #include "gui/EditWidget.h"

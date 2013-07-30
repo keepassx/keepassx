@@ -17,7 +17,11 @@
 
 #include "UnlockDatabaseWidget.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QMessageBox>
+#else
 #include <QtGui/QMessageBox>
+#endif
 
 #include "ui_DatabaseOpenWidget.h"
 #include "core/Database.h"

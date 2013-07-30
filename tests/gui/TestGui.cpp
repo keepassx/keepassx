@@ -21,12 +21,21 @@
 #include <QtTest/QTest>
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QToolButton>
+#else
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
 #include <QtGui/QSpinBox>
 #include <QtGui/QToolBar>
 #include <QtGui/QToolButton>
+#endif
 
 #include "config-keepassx-tests.h"
 #include "tests.h"

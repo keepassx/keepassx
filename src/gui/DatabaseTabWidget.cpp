@@ -18,8 +18,13 @@
 #include "DatabaseTabWidget.h"
 
 #include <QtCore/QFileInfo>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QMessageBox>
+#else
 #include <QtGui/QTabWidget>
 #include <QtGui/QMessageBox>
+#endif
 
 #include "autotype/AutoType.h"
 #include "core/Config.h"

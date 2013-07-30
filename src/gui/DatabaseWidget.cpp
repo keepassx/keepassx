@@ -19,13 +19,22 @@
 #include "ui_SearchWidget.h"
 
 #include <QtCore/QTimer>
-#include <QtGui/QAction>
 #include <QtGui/QDesktopServices>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QAction>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QSplitter>
+#else
+#include <QtGui/QAction>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
 #include <QtGui/QMessageBox>
 #include <QtGui/QSplitter>
+#endif
 
 #include "autotype/AutoType.h"
 #include "core/FilePath.h"
