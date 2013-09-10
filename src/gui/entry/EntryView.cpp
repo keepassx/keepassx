@@ -18,6 +18,7 @@
 #include "EntryView.h"
 
 #include "gui/SortFilterHideProxyModel.h"
+#include <QtGui/qevent.h>
 
 EntryView::EntryView(QWidget* parent)
     : QTreeView(parent)
@@ -38,14 +39,22 @@ EntryView::EntryView(QWidget* parent)
     setDragEnabled(true);
     setSortingEnabled(true);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
-
+    
     // QAbstractItemView::startDrag() uses this property as the default drag action
     setDefaultDropAction(Qt::MoveAction);
 
-    connect(this, SIGNAL(activated(QModelIndex)), SLOT(emitEntryActivated(QModelIndex)));
+    connect(this, SIGNAL(doubleClicked(QModelIndex)), SLOT(emitEntryActivated(QModelIndex)));
     connect(selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SIGNAL(entrySelectionChanged()));
     connect(m_model, SIGNAL(switchedToEntryListMode()), SLOT(switchToEntryListMode()));
     connect(m_model, SIGNAL(switchedToGroupMode()), SLOT(switchToGroupMode()));
+}
+
+void EntryView::keyPressEvent(QKeyEvent* event)
+{
+    if( event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return )
+        Q_EMIT doubleClicked(currentIndex());
+    else
+      QTreeView::keyPressEvent(event);
 }
 
 void EntryView::setGroup(Group* group)

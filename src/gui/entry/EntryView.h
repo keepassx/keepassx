@@ -45,6 +45,9 @@ public:
 
 public Q_SLOTS:
     void setGroup(Group* group);
+    
+protected:
+    void keyPressEvent(QKeyEvent *event);
 
 Q_SIGNALS:
     void entryActivated(Entry* entry, EntryModel::ModelColumn column);
