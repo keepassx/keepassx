@@ -35,6 +35,8 @@ class EntryView : public QTreeView
 
 public:
     explicit EntryView(QWidget* parent = Q_NULLPTR);
+    ~EntryView();
+    
     void setModel(QAbstractItemModel* model) Q_DECL_OVERRIDE;
     Entry* currentEntry();
     bool isSingleEntrySelected();
@@ -54,6 +56,7 @@ private Q_SLOTS:
     void emitEntryActivated(const QModelIndex& index);
     void switchToEntryListMode();
     void switchToGroupMode();
+    void restoreSettings();
 
 private:
     EntryModel* const m_model;

@@ -20,6 +20,8 @@
 
 #include <QtGui/QCloseEvent>
 #include <QtGui/QShortcut>
+#include <QtWidgets/QLineEdit>
+#include <QTimer>
 
 #include "autotype/AutoType.h"
 #include "core/Config.h"
@@ -185,11 +187,22 @@ MainWindow::MainWindow()
 
     m_actionMultiplexer.connect(m_ui->actionSearch, SIGNAL(triggered()),
                                 SLOT(toggleSearch()));
+
+    QTimer::singleShot(0, this, SLOT(restoreSettings()));
 }
 
 MainWindow::~MainWindow()
 {
+    config()->set("mainWindowState", saveState());
+    config()->set("mainWindowGeometry", saveGeometry());
 }
+
+void MainWindow::restoreSettings()
+{
+    restoreState(config()->get("mainWindowState").toByteArray());
+    restoreGeometry(config()->get("mainWindowGeometry").toByteArray());
+}
+
 
 void MainWindow::updateLastDatabasesMenu()
 {

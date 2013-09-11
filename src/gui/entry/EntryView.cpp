@@ -17,7 +17,12 @@
 
 #include "EntryView.h"
 
+#include <QTimer>
+#include <QtGui/qevent.h>
+#include <QtWidgets/QHeaderView>
+
 #include "gui/SortFilterHideProxyModel.h"
+#include "core/Config.h"
 
 EntryView::EntryView(QWidget* parent)
     : QTreeView(parent)
@@ -46,6 +51,15 @@ EntryView::EntryView(QWidget* parent)
     connect(selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SIGNAL(entrySelectionChanged()));
     connect(m_model, SIGNAL(switchedToEntryListMode()), SLOT(switchToEntryListMode()));
     connect(m_model, SIGNAL(switchedToGroupMode()), SLOT(switchToGroupMode()));
+    
+    // Schedule the restoration of the view state
+    // Because QHeaderView is not fully constructed
+    QTimer::singleShot(0, this, SLOT(restoreSettings()));
+}
+
+EntryView::~EntryView()
+{
+    config()->set("entryViewColumnWidth", header()->saveState());
 }
 
 void EntryView::setGroup(Group* group)
@@ -124,4 +138,9 @@ void EntryView::switchToGroupMode()
     sortByColumn(-1, Qt::AscendingOrder);
     sortByColumn(0, Qt::AscendingOrder);
     m_inEntryListMode = false;
+}
+
+void EntryView::restoreSettings()
+{
+    header()->restoreState(config()->get("entryViewColumnWidth").toByteArray());
 }
