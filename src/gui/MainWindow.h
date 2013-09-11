@@ -44,6 +44,7 @@ protected:
      void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
+    void restoreSettings();
     void setMenuActionState(DatabaseWidget::Mode mode = DatabaseWidget::None);
     void updateWindowTitle();
     void showAboutDialog();
