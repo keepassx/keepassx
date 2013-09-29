@@ -18,7 +18,13 @@
 #ifndef KEEPASSX_FILEDIALOG_H
 #define KEEPASSX_FILEDIALOG_H
 
+#include <QtCore/QtGlobal>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QFileDialog>
+#else
 #include <QtGui/QFileDialog>
+#endif
 
 #include "core/Global.h"
 

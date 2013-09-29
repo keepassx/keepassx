@@ -42,7 +42,9 @@
 #include "qsavefile.h"
 #include "qsavefile_p.h"
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QtCore/QAbstractFileEngine>
+#endif
 #include <QtCore/QFileInfo>
 #include <QtCore/QTemporaryFile>
 
@@ -297,11 +299,17 @@ bool QSaveFile::commit()
     QFile::remove(bakname);
     QFile::rename(d->fileName, bakname);
 #endif
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    if (!d->tempFile->rename(d->fileName)) {
+        d->error = d->tempFile->error();
+        setErrorString(d->tempFile->errorString());
+#else
     QAbstractFileEngine* fileEngine = d->tempFile->fileEngine();
     Q_ASSERT(fileEngine);
     if (!fileEngine->rename(d->fileName)) {
         d->error = fileEngine->error();
         setErrorString(fileEngine->errorString());
+#endif
         d->tempFile->remove();
         delete d->tempFile;
         d->tempFile = 0;

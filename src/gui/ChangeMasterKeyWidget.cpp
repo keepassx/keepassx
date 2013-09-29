@@ -18,7 +18,11 @@
 #include "ChangeMasterKeyWidget.h"
 #include "ui_ChangeMasterKeyWidget.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QMessageBox>
+#else
 #include <QtGui/QMessageBox>
+#endif
 
 #include "keys/FileKey.h"
 #include "keys/PasswordKey.h"

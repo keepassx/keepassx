@@ -18,7 +18,13 @@
 #ifndef KEEPASSX_ENTRYVIEW_H
 #define KEEPASSX_ENTRYVIEW_H
 
+#include <QtCore/QtGlobal>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QTreeView>
+#else
 #include <QtGui/QTreeView>
+#endif
 
 #include "core/Global.h"
 

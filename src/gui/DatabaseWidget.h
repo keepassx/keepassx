@@ -19,7 +19,11 @@
 #define KEEPASSX_DATABASEWIDGET_H
 
 #include <QtCore/QScopedPointer>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QStackedWidget>
+#else
 #include <QtGui/QStackedWidget>
+#endif
 
 #include "core/Global.h"
 

@@ -31,7 +31,11 @@ EntryView::EntryView(QWidget* parent)
     m_sortModel->setDynamicSortFilter(true);
     m_sortModel->setSortLocaleAware(true);
     m_sortModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    // TODO: How is this supposed to be done?
+#else
     m_sortModel->setSupportedDragActions(m_model->supportedDragActions());
+#endif
     QTreeView::setModel(m_sortModel);
 
     setUniformRowHeights(true);

@@ -111,13 +111,23 @@ void TestQSaveFile::transactionalWriteNoPermissions()
 {
 #ifdef Q_OS_UNIX
     if (::geteuid() == 0) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+        QSKIP("not valid running this test as root");
+        return;
+#else
         QSKIP("not valid running this test as root", SkipAll);
+#endif
     }
 
     // You can write into /dev/zero, but you can't create a /dev/zero.XXXXXX temp file.
     QSaveFile file("/dev/zero");
     if (!QDir("/dev").exists()) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+        QSKIP("/dev doesn't exist on this system");
+        return;
+#else
         QSKIP("/dev doesn't exist on this system", SkipAll);
+#endif
     }
 
     QVERIFY(!file.open(QIODevice::WriteOnly));

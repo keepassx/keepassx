@@ -17,8 +17,13 @@
 
 #include "DialogyWidget.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QPushButton>
+#else
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QPushButton>
+#endif
 #include <QtGui/QKeyEvent>
 
 DialogyWidget::DialogyWidget(QWidget* parent)

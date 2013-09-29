@@ -18,8 +18,15 @@
 #ifndef KEEPASSX_MAINWINDOW_H
 #define KEEPASSX_MAINWINDOW_H
 
+#include <QtCore/QtGlobal>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QActionGroup>
+#include <QtWidgets/QMainWindow>
+#else
 #include <QtGui/QActionGroup>
 #include <QtGui/QMainWindow>
+#endif
 
 #include "core/SignalMultiplexer.h"
 #include "gui/DatabaseWidget.h"

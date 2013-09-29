@@ -198,19 +198,24 @@ if(MINGW)
       ${CMAKE_SOURCE_DIR}/share/windows/icon.rc)
 endif()
 
-qt4_wrap_ui(keepassx_SOURCES ${keepassx_FORMS})
-qt4_wrap_cpp(keepassx_SOURCES ${keepassx_MOC})
+qt_wrap_ui(keepassx_SOURCES ${keepassx_FORMS})
+qt_wrap_cpp(keepassx_SOURCES ${keepassx_MOC})
 
 add_library(keepassx_core STATIC ${keepassx_SOURCES})
-set_target_properties(keepassx_core PROPERTIES COMPILE_DEFINITIONS KEEPASSX_BUILDING_CORE)
+set_target_properties(keepassx_core PROPERTIES
+  COMPILE_DEFINITIONS KEEPASSX_BUILDING_CORE
+  POSITION_INDEPENDENT_CODE ON)
 
 add_executable(${PROGNAME} WIN32 MACOSX_BUNDLE ${keepassx_SOURCES_MAINEXE})
 target_link_libraries(${PROGNAME}
                       keepassx_core
                       ${QT_QTCORE_LIBRARY}
                       ${QT_QTGUI_LIBRARY}
+                      ${QT_QTWIDGETS_LIBRARY}
                       ${GCRYPT_LIBRARIES}
                       ${ZLIB_LIBRARIES})
+set_target_properties(${PROGNAME} PROPERTIES
+  POSITION_INDEPENDENT_CODE ON)
 
 if(UNIX AND NOT APPLE)
   target_link_libraries(${PROGNAME} ${QT_QTDBUS_LIBRARY})

@@ -18,7 +18,13 @@
 #ifndef KEEPASSX_DRAGTABBAR_H
 #define KEEPASSX_DRAGTABBAR_H
 
+#include <QtCore/QtGlobal>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QTabBar>
+#else
 #include <QtGui/QTabBar>
+#endif
 
 #include "core/Global.h"
 

@@ -56,9 +56,11 @@ macro(add_unit_test)
   parse_arguments(TEST "NAME;SOURCES;MOCS;LIBS" "" ${ARGN})
   set(_test_NAME ${TEST_NAME})
   set(_srcList ${TEST_SOURCES})
-  qt4_wrap_cpp(_srcList ${TEST_MOCS})
+  qt_wrap_cpp(_srcList ${TEST_MOCS})
   add_executable(${_test_NAME} ${_srcList})
   target_link_libraries(${_test_NAME} ${TEST_LIBS})
+  set_target_properties(${_test_NAME} PROPERTIES
+    POSITION_INDEPENDENT_CODE ON)
 
   if(NOT TEST_OUTPUT)
     set(TEST_OUTPUT plaintext)
@@ -91,6 +93,7 @@ set(TEST_LIBRARIES
     keepassx_core
     ${QT_QTCORE_LIBRARY}
     ${QT_QTGUI_LIBRARY}
+    ${QT_QTWIDGETS_LIBRARY}
     ${QT_QTTEST_LIBRARY}
     ${GCRYPT_LIBRARIES}
     ${ZLIB_LIBRARIES}
@@ -101,8 +104,10 @@ if(UNIX AND NOT APPLE)
 endif()
 
 set(modeltest_SOURCRS modeltest.cpp)
-qt4_wrap_cpp(modeltest_SOURCRS modeltest.h)
+qt_wrap_cpp(modeltest_SOURCRS modeltest.h)
 add_library(modeltest STATIC ${modeltest_SOURCRS})
+set_target_properties(modeltest PROPERTIES
+  POSITION_INDEPENDENT_CODE ON)
 
 add_unit_test(NAME testgroup SOURCES TestGroup.cpp MOCS TestGroup.h
               LIBS ${TEST_LIBRARIES})

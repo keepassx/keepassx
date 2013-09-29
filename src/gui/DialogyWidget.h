@@ -18,8 +18,15 @@
 #ifndef KEEPASSX_DIALOGYWIDGET_H
 #define KEEPASSX_DIALOGYWIDGET_H
 
+#include <QtCore/QtGlobal>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QWidget>
+#else
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QWidget>
+#endif
 
 #include "core/Global.h"
 

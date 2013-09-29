@@ -18,7 +18,13 @@
 #ifndef KEEPASSX_WINDOWSELECTCOMBOBOX_H
 #define KEEPASSX_WINDOWSELECTCOMBOBOX_H
 
+#include <QtCore/QtGlobal>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QComboBox>
+#else
 #include <QtGui/QComboBox>
+#endif
 
 #include "core/Global.h"
 

@@ -20,7 +20,11 @@
 
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QHash>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QDialog>
+#else
 #include <QtGui/QDialog>
+#endif
 
 #include "core/Global.h"
 

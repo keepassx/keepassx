@@ -18,7 +18,11 @@
 #ifndef KEEPASSX_AUTOTYPEPLATFORMPLUGIN_H
 #define KEEPASSX_AUTOTYPEPLATFORMPLUGIN_H
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QWidget>
+#else
 #include <QtGui/QWidget>
+#endif
 
 #include "autotype/AutoTypeAction.h"
 

@@ -17,7 +17,11 @@
 
 #include "WindowSelectComboBox.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QLineEdit>
+#else
 #include <QtGui/QLineEdit>
+#endif
 
 #include "autotype/AutoType.h"
 

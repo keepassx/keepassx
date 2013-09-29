@@ -20,7 +20,11 @@
 #include <QtCore/QDir>
 #include <QtCore/QSettings>
 #include <QtCore/QTemporaryFile>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets/QApplication>
+#else
 #include <QtGui/QApplication>
+#endif
 #include <QtGui/QDesktopServices>
 
 Config* Config::m_instance(Q_NULLPTR);
