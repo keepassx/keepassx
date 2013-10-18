@@ -22,7 +22,6 @@
 #include <QShortcut>
 
 #include "autotype/AutoType.h"
-#include "core/Config.h"
 #include "core/Database.h"
 #include "core/Entry.h"
 #include "core/FilePath.h"
@@ -34,16 +33,39 @@
 
 const QString MainWindow::BaseWindowTitle = "KeePassX";
 
+bool MainWindow::eventFilter(QObject *obj, QEvent *ev)
+{
+    if (m_config->get("security/lockdatabase").toBool()) {
+        if(ev->type() == QEvent::KeyPress ||
+           ev->type() == QEvent::MouseMove ||
+           ev->type() == QEvent::MouseButtonPress ||
+           ev->type() == QEvent::MouseButtonRelease ||
+           ev->type() == QEvent::Wheel ||
+           ev->type() == QEvent::KeyPress ||
+           ev->type() == QEvent::KeyRelease){
+            timeout = m_config->get("security/lockdatabasetimeout").toInt();
+            myTimer->start(timeout * 1000);
+        }
+    }    
+    return QObject::eventFilter(obj, ev);
+}
+
+
 MainWindow::MainWindow()
     : m_ui(new Ui::MainWindow())
 {
     m_ui->setupUi(this);
+    
+    myTimer = new QTimer(this);
+    myTimer->setSingleShot(true);
+    connect(myTimer, SIGNAL(timeout()), this, SLOT(triggerDatabaseLock()));
+    qApp->installEventFilter(this);
 
     setWindowIcon(filePath()->applicationIcon());
     QAction* toggleViewAction = m_ui->toolBar->toggleViewAction();
     toggleViewAction->setText(tr("Show toolbar"));
     m_ui->menuView->addAction(toggleViewAction);
-    bool showToolbar = config()->get("ShowToolbar").toBool();
+    bool showToolbar = m_config->get("ShowToolbar").toBool();
     m_ui->toolBar->setVisible(showToolbar);
     connect(m_ui->toolBar, SIGNAL(visibilityChanged(bool)), this, SLOT(saveToolbarState(bool)));
 
@@ -59,9 +81,9 @@ MainWindow::MainWindow()
     connect(m_ui->menuEntryCopyAttribute, SIGNAL(aboutToShow()),
             this, SLOT(updateCopyAttributesMenu()));
 
-    Qt::Key globalAutoTypeKey = static_cast<Qt::Key>(config()->get("GlobalAutoTypeKey").toInt());
+    Qt::Key globalAutoTypeKey = static_cast<Qt::Key>(m_config->get("GlobalAutoTypeKey").toInt());
     Qt::KeyboardModifiers globalAutoTypeModifiers = static_cast<Qt::KeyboardModifiers>(
-                config()->get("GlobalAutoTypeModifiers").toInt());
+                m_config->get("GlobalAutoTypeModifiers").toInt());
     if (globalAutoTypeKey > 0 && globalAutoTypeModifiers > 0) {
         autoType()->registerGlobalShortcut(globalAutoTypeKey, globalAutoTypeModifiers);
     }
@@ -195,7 +217,7 @@ void MainWindow::updateLastDatabasesMenu()
 {
     m_ui->menuRecentDatabases->clear();
 
-    QStringList lastDatabases = config()->get("LastDatabases", QVariant()).toStringList();
+    QStringList lastDatabases = m_config->get("LastDatabases", QVariant()).toStringList();
     Q_FOREACH (const QString& database, lastDatabases) {
         QAction* action = m_ui->menuRecentDatabases->addAction(database);
         m_lastDatabasesActions->addAction(action);
@@ -237,7 +259,12 @@ void MainWindow::openRecentDatabase(QAction* action)
 
 void MainWindow::clearLastDatabases()
 {
-    config()->set("LastDatabases", QVariant());
+    m_config->set("LastDatabases", QVariant());
+}
+
+void MainWindow::triggerDatabaseLock()
+{
+    m_ui->tabWidget->lockDatabases();
 }
 
 void MainWindow::openDatabase(const QString& fileName, const QString& pw, const QString& keyFile)
@@ -399,7 +426,7 @@ void MainWindow::databaseTabChanged(int tabIndex)
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     m_openDatabases.clear();
-    bool openPreviousDatabasesOnStartup = config()->get("OpenPreviousDatabasesOnStartup").toBool();
+    bool openPreviousDatabasesOnStartup = m_config->get("OpenPreviousDatabasesOnStartup").toBool();
 
     if (openPreviousDatabasesOnStartup) {
         connect(m_ui->tabWidget, SIGNAL(databaseWithFileClosed(QString)),
@@ -416,7 +443,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
     if (openPreviousDatabasesOnStartup) {
         disconnect(m_ui->tabWidget, SIGNAL(databaseWithFileClosed(QString)),
                    this, SLOT(rememberOpenDatabases(QString)));
-        config()->set("LastOpenedDatabases", m_openDatabases);
+        m_config->set("LastOpenedDatabases", m_openDatabases);
     }
 }
 
@@ -432,7 +459,7 @@ void MainWindow::showGroupContextMenu(const QPoint& globalPos)
 
 void MainWindow::saveToolbarState(bool value)
 {
-    config()->set("ShowToolbar", value);
+    m_config->set("ShowToolbar", value);
 }
 
 void MainWindow::setShortcut(QAction* action, QKeySequence::StandardKey standard, int fallback)

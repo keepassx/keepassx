@@ -95,6 +95,8 @@ void Config::init(const QString& fileName)
     m_defaults.insert("ShowToolbar", true);
     m_defaults.insert("security/clearclipboard", true);
     m_defaults.insert("security/clearclipboardtimeout", 10);
+    m_defaults.insert("security/lockdatabase", true);
+    m_defaults.insert("security/lockdatabasetimeout", 30);
 }
 
 Config* Config::instance()

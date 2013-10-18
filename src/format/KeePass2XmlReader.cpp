@@ -28,6 +28,9 @@
 #include "format/KeePass2RandomStream.h"
 #include "streams/QtIOCompressor"
 
+#include <syslog.h>
+#include <stdarg.h>
+
 typedef QPair<QString, QString> StringPair;
 
 KeePass2XmlReader::KeePass2XmlReader()
@@ -665,7 +668,11 @@ Entry* KeePass2XmlReader::parseEntry(bool history)
         if (m_xml.name() == "UUID") {
             Uuid uuid = readUuid();
             if (uuid.isNull()) {
-                raiseError("Null entry uuid");
+                //raiseError("Null entry uuid");
+                uuid = Uuid::random();
+                openlog("KeePassX", (LOG_CONS), LOG_USER);
+                syslog((LOG_WARNING), "%s", "null UUID");
+                closelog();
             }
             else {
                 entry->setUuid(uuid);
@@ -983,10 +990,16 @@ bool KeePass2XmlReader::readBool()
 QDateTime KeePass2XmlReader::readDateTime()
 {
     QString str = readString();
+    if (str.isEmpty()) {
+        openlog("KeePassX", (LOG_CONS), LOG_USER);
+        syslog((LOG_WARNING), "%s", "The XML string read for DateTime is empty");
+        closelog();
+    }
     QDateTime dt = QDateTime::fromString(str, Qt::ISODate);
 
     if (!dt.isValid()) {
-        raiseError("Invalid date time value");
+        dt = Tools::currentDateTimeUtc();
+        //raiseError("Invalid date time value");
     }
 
     return dt;
@@ -1043,8 +1056,11 @@ Uuid KeePass2XmlReader::readUuid()
 {
     QByteArray uuidBin = readBinary();
     if (uuidBin.length() != Uuid::Length) {
-        raiseError("Invalid uuid value");
-        return Uuid();
+        //raiseError("Invalid uuid value");
+        openlog("KeePassX", (LOG_CONS), LOG_USER);
+        syslog((LOG_WARNING), "%s", "empty UUID");
+        closelog();
+        return Uuid(Uuid::random());
     }
     else {
         return Uuid(uuidBin);
