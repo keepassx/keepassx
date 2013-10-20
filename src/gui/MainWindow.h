@@ -77,7 +77,6 @@ private:
     bool eventFilter(QObject *obj, QEvent *ev);
     QTimer* myTimer;
     int timeout;
-    Config* m_config = config();
 
     Q_DISABLE_COPY(MainWindow)
 };
