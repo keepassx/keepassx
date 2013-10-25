@@ -23,6 +23,7 @@
 
 #include "core/SignalMultiplexer.h"
 #include "gui/DatabaseWidget.h"
+#include <QtGui/QSystemTrayIcon>
 
 namespace Ui {
     class MainWindow;
@@ -42,6 +43,7 @@ public Q_SLOTS:
 
 protected:
      void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE;
+     virtual void changeEvent(QEvent* event);
 
 private Q_SLOTS:
     void setMenuActionState(DatabaseWidget::Mode mode = DatabaseWidget::None);
@@ -58,7 +60,9 @@ private Q_SLOTS:
     void showGroupContextMenu(const QPoint& globalPos);
     void saveToolbarState(bool value);
     void rememberOpenDatabases(const QString& filePath);
-
+    void createTrayIcon();
+    void trayActivated(QSystemTrayIcon::ActivationReason reason = QSystemTrayIcon::Trigger);
+    void isShowTrayIcon();
 private:
     static void setShortcut(QAction* action, QKeySequence::StandardKey standard, int fallback = 0);
 
@@ -70,6 +74,8 @@ private:
     QActionGroup* m_lastDatabasesActions;
     QActionGroup* m_copyAdditionalAttributeActions;
     QStringList m_openDatabases;
+    QSystemTrayIcon* trayIcon;
+    QMenu* trayIconMenu;
 
     Q_DISABLE_COPY(MainWindow)
 };

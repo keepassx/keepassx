@@ -41,6 +41,8 @@ SettingsWidget::SettingsWidget(QWidget* parent)
 
     connect(m_generalUi->autoSaveAfterEveryChangeCheckBox, SIGNAL(toggled(bool)),
             this, SLOT(enableAutoSaveOnExit(bool)));
+    connect(m_generalUi->showTrayIconCheckBox, SIGNAL(toggled(bool)),
+            this, SLOT(enableTrayIconOptions(bool)));
 
     connect(m_secUi->clearClipboardCheckBox, SIGNAL(toggled(bool)),
             m_secUi->clearClipboardSpinBox, SLOT(setEnabled(bool)));
@@ -58,6 +60,9 @@ void SettingsWidget::loadSettings()
     m_generalUi->modifiedExpandedChangedCheckBox->setChecked(config()->get("ModifiedOnExpandedStateChanges").toBool());
     m_generalUi->autoSaveAfterEveryChangeCheckBox->setChecked(config()->get("AutoSaveAfterEveryChange").toBool());
     m_generalUi->autoSaveOnExitCheckBox->setChecked(config()->get("AutoSaveOnExit").toBool());
+    m_generalUi->showTrayIconCheckBox->setChecked(config()->get("ShowTrayIcon").toBool());
+    m_generalUi->hideToTrayWhenMinimizingCheckBox->setChecked(config()->get("HideToTrayWhenMinimizing").toBool());
+    m_generalUi->hideToTrayWhenClosingCheckBox->setChecked(config()->get("HideToTrayWhenClosing").toBool());
 
     m_globalAutoTypeKey = static_cast<Qt::Key>(config()->get("GlobalAutoTypeKey").toInt());
     m_globalAutoTypeModifiers = static_cast<Qt::KeyboardModifiers>(config()->get("GlobalAutoTypeModifiers").toInt());
@@ -69,6 +74,7 @@ void SettingsWidget::loadSettings()
     m_secUi->clearClipboardSpinBox->setValue(config()->get("security/clearclipboardtimeout").toInt());
 
     setCurrentRow(0);
+    checkTrayAvailable();
 }
 
 void SettingsWidget::saveSettings()
@@ -80,6 +86,9 @@ void SettingsWidget::saveSettings()
     config()->set("AutoSaveOnExit", m_generalUi->autoSaveOnExitCheckBox->isChecked());
     config()->set("GlobalAutoTypeKey", m_generalUi->autoTypeShortcutWidget->key());
     config()->set("GlobalAutoTypeModifiers", static_cast<int>(m_generalUi->autoTypeShortcutWidget->modifiers()));
+    config()->set("ShowTrayIcon", m_generalUi->showTrayIconCheckBox->isChecked());
+    config()->set("HideToTrayWhenMinimizing", m_generalUi->hideToTrayWhenMinimizingCheckBox->isChecked());
+    config()->set("HideToTrayWhenClosing", m_generalUi->hideToTrayWhenClosingCheckBox->isChecked());
     config()->set("security/clearclipboard", m_secUi->clearClipboardCheckBox->isChecked());
     config()->set("security/clearclipboardtimeout", m_secUi->clearClipboardSpinBox->value());
 
@@ -99,4 +108,20 @@ void SettingsWidget::reject()
 void SettingsWidget::enableAutoSaveOnExit(bool checked)
 {
     m_generalUi->autoSaveOnExitCheckBox->setEnabled(!checked);
+}
+
+void SettingsWidget::enableTrayIconOptions(bool checked)
+{
+    m_generalUi->hideToTrayWhenMinimizingCheckBox->setEnabled(checked);
+    m_generalUi->hideToTrayWhenClosingCheckBox->setEnabled(checked);
+}
+
+void SettingsWidget::checkTrayAvailable()
+{
+    if(!QSystemTrayIcon::isSystemTrayAvailable()){
+        m_generalUi->showTrayIconCheckBox->setChecked(false);
+        m_generalUi->showTrayIconCheckBox->setEnabled(false);
+        m_generalUi->hideToTrayWhenClosingCheckBox->setChecked(false);
+        m_generalUi->hideToTrayWhenMinimizingCheckBox->setChecked(false);
+    }
 }

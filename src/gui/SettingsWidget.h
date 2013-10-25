@@ -19,6 +19,7 @@
 #define KEEPASSX_SETTINGSWIDGET_H
 
 #include "gui/EditWidget.h"
+#include <QtGui/QSystemTrayIcon>
 
 namespace Ui {
     class SettingsWidgetGeneral;
@@ -41,6 +42,8 @@ private Q_SLOTS:
     void saveSettings();
     void reject();
     void enableAutoSaveOnExit(bool checked);
+    void enableTrayIconOptions(bool checked);
+    void checkTrayAvailable();
 
 private:
     QWidget* const m_secWidget;
