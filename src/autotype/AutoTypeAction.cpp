@@ -32,7 +32,7 @@ AutoTypeAction* AutoTypeChar::clone()
 void AutoTypeChar::accept(AutoTypeExecutor* executor)
 {
     executor->execChar(this);
-	Tools::wait(10);
+    Tools::wait(10);
 }
 
 
@@ -49,7 +49,7 @@ AutoTypeAction* AutoTypeKey::clone()
 void AutoTypeKey::accept(AutoTypeExecutor* executor)
 {
     executor->execKey(this);
-	Tools::wait(10);
+    Tools::wait(10);
 }
 
 
