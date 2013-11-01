@@ -55,6 +55,14 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLineEdit" name="passwordEdit">
+       <property name="font">
+        <font>
+         <family>Courier New</family>
+        </font>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
        <property name="echoMode">
         <enum>QLineEdit::Password</enum>
        </property>
@@ -86,6 +94,11 @@
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QLineEdit" name="passwordRepeatEdit">
+       <property name="font">
+        <font>
+         <family>Courier New</family>
+        </font>
+       </property>
        <property name="echoMode">
         <enum>QLineEdit::Password</enum>
        </property>
