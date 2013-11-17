@@ -38,8 +38,14 @@ MainWindow::MainWindow()
     : m_ui(new Ui::MainWindow())
 {
     m_ui->setupUi(this);
-
-    setWindowIcon(filePath()->applicationIcon());
+    
+    createTrayIcon();
+    
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+             this, SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
+    
+    setIcon();
+    
     QAction* toggleViewAction = m_ui->toolBar->toggleViewAction();
     toggleViewAction->setText(tr("Show toolbar"));
     m_ui->menuView->addAction(toggleViewAction);
@@ -448,4 +454,46 @@ void MainWindow::setShortcut(QAction* action, QKeySequence::StandardKey standard
 void MainWindow::rememberOpenDatabases(const QString& filePath)
 {
     m_openDatabases.append(filePath);
+}
+
+void MainWindow::createTrayIcon()
+{
+    quitAction = new QAction(tr("&Quit"), this);
+    quitAction->setIcon(filePath()->icon("actions", "application-exit", true));
+    quitAction->setShortcut(QKeySequence("Ctrl+Q"));
+    connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+  
+    trayIconMenu = new QMenu(this);
+    trayIconMenu->addAction(quitAction);
+  
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setContextMenu(trayIconMenu);
+    
+    trayIcon->show();
+}
+
+void MainWindow::setIcon()
+{
+     QIcon icon = filePath()->applicationIcon();
+     
+     setWindowIcon(icon);
+     trayIcon->setIcon(icon);
+}
+ 
+void MainWindow::trayActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    switch (reason) {
+    case QSystemTrayIcon::Trigger:
+    case QSystemTrayIcon::DoubleClick:
+        if ( isHidden() ) {
+            show();
+        } else {
+            hide();
+        }
+        break;
+    case QSystemTrayIcon::MiddleClick:
+        break;
+    default:
+        ;
+    }
 }
