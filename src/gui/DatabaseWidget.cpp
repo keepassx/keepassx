@@ -597,6 +597,13 @@ void DatabaseWidget::switchToOpenDatabase(const QString& fileName, const QString
     m_databaseOpenWidget->enterKey(password, keyFile);
 }
 
+void DatabaseWidget::switchToOpenDatabase(const QString &fileName, const CompositeKey& masterKey)
+{
+    updateFilename(fileName);
+    switchToOpenDatabase(fileName);
+    m_databaseOpenWidget->enterKey(masterKey);
+}
+
 void DatabaseWidget::switchToImportKeepass1(const QString& fileName)
 {
     updateFilename(fileName);
@@ -620,16 +627,16 @@ void DatabaseWidget::closeSearch()
     m_groupView->setCurrentGroup(m_lastGroup);
 }
 
-void DatabaseWidget::showSearch()
+void DatabaseWidget::showSearch(const QString & searchString, bool caseSensitive, bool allGroups)
 {
     m_searchUi->searchEdit->blockSignals(true);
-    m_searchUi->searchEdit->clear();
+    m_searchUi->searchEdit->setText(searchString);
     m_searchUi->searchEdit->blockSignals(false);
 
     m_searchUi->searchCurrentRadioButton->blockSignals(true);
     m_searchUi->searchRootRadioButton->blockSignals(true);
-    m_searchUi->searchRootRadioButton->setChecked(true);
-    m_searchUi->searchCurrentRadioButton->blockSignals(false);
+    m_searchUi->searchRootRadioButton->setChecked(allGroups);
+    m_searchUi->searchCurrentRadioButton->blockSignals(caseSensitive);
     m_searchUi->searchRootRadioButton->blockSignals(false);
 
     m_lastGroup = m_groupView->currentGroup();
@@ -724,9 +731,31 @@ bool DatabaseWidget::canDeleteCurrentGoup()
     return !isRootGroup && !isRecycleBin;
 }
 
-bool DatabaseWidget::isInSearchMode()
+bool DatabaseWidget::isInSearchMode() const
 {
     return m_entryView->inEntryListMode();
+}
+
+Group* DatabaseWidget::currentGroup() const
+{
+    return isInSearchMode() ? m_lastGroup
+                            : m_groupView->currentGroup();
+}
+
+QString DatabaseWidget::searchText() const
+{
+    return isInSearchMode() ? m_searchUi->searchEdit->text()
+                            : QString();
+}
+
+bool DatabaseWidget::caseSensitiveSearch() const
+{
+    return m_searchUi->caseSensitiveCheckBox->isChecked();
+}
+
+bool DatabaseWidget::isAllGroupsSearch() const
+{
+    return m_searchUi->searchRootRadioButton->isChecked();
 }
 
 void DatabaseWidget::clearLastGroup(Group* group)

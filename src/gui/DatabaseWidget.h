@@ -39,6 +39,7 @@ class KeePass1OpenWidget;
 class QFile;
 class QMenu;
 class UnlockDatabaseWidget;
+class CompositeKey;
 
 namespace Ui {
     class SearchWidget;
@@ -64,7 +65,11 @@ public:
     Database* database();
     bool dbHasKey();
     bool canDeleteCurrentGoup();
-    bool isInSearchMode();
+    bool isInSearchMode() const;
+    Group* currentGroup() const;
+    QString searchText() const;
+    bool caseSensitiveSearch() const;
+    bool isAllGroupsSearch() const;
     int addWidget(QWidget* w);
     void setCurrentIndex(int index);
     void setCurrentWidget(QWidget* widget);
@@ -100,15 +105,17 @@ public Q_SLOTS:
     void switchToDatabaseSettings();
     void switchToOpenDatabase(const QString& fileName);
     void switchToOpenDatabase(const QString& fileName, const QString& password, const QString& keyFile);
+    void switchToOpenDatabase(const QString &fileName, const CompositeKey &masterKey);
     void switchToImportKeepass1(const QString& fileName);
+    void switchToView(bool accepted);
     void toggleSearch();
+    void showSearch(const QString & searchString = QString(), bool caseSensitive = false, bool allGroups = true);
     void emitGroupContextMenuRequested(const QPoint& pos);
     void emitEntryContextMenuRequested(const QPoint& pos);
 
 private Q_SLOTS:
     void entryActivationSignalReceived(Entry* entry, EntryModel::ModelColumn column);
     void switchBackToEntryEdit();
-    void switchToView(bool accepted);
     void switchToHistoryView(Entry* entry);
     void switchToEntryEdit(Entry* entry);
     void switchToEntryEdit(Entry* entry, bool create);
@@ -121,7 +128,6 @@ private Q_SLOTS:
     void search();
     void startSearch();
     void startSearchTimer();
-    void showSearch();
     void closeSearch();
 
 private:
