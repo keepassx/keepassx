@@ -17,6 +17,7 @@
  */
 
 #include "AutoTypeX11.h"
+#include "KeySymMap.h"
 
 bool AutoTypePlatformX11::m_catchXErrors = false;
 bool AutoTypePlatformX11::m_xErrorOccured = false;
@@ -326,12 +327,21 @@ KeySym AutoTypePlatformX11::charToKeySym(const QChar& ch)
             || (unicode >= 0x00a0 && unicode <= 0x00ff)) {
         return unicode;
     }
-    else if (unicode >= 0x0100) {
+
+    /* mapping table generated from keysymdef.h */
+    const uint* match = qBinaryFind(m_unicodeToKeysymKeys,
+                                    m_unicodeToKeysymKeys + m_unicodeToKeysymLen,
+                                    unicode);
+    int index = match - m_unicodeToKeysymKeys;
+    if (index != m_unicodeToKeysymLen) {
+        return m_unicodeToKeysymValues[index];
+    }
+
+    if (unicode >= 0x0100) {
         return unicode | 0x01000000;
     }
-    else {
-        return NoSymbol;
-    }
+
+    return NoSymbol;
 }
 
 KeySym AutoTypePlatformX11::keyToKeySym(Qt::Key key)
