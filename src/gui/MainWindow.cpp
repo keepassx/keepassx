@@ -32,6 +32,11 @@
 #include "gui/entry/EntryView.h"
 #include "gui/group/GroupView.h"
 
+#if defined(Q_WS_X11)
+#include <QtDBus>
+#include "gui/MainWindowAdaptor.h"
+#endif
+
 const QString MainWindow::BaseWindowTitle = "KeePassX";
 
 MainWindow::MainWindow()
@@ -44,6 +49,13 @@ MainWindow::MainWindow()
     m_systrayHide = 0;
     m_forceExit = false;
     setupSystemTrayIcon();
+    
+#if defined(Q_WS_X11)
+    new MainWindowAdaptor(this);
+    QDBusConnection dbus = QDBusConnection::sessionBus();
+    dbus.registerObject("/keepassx", this);
+    dbus.registerService("org.keepassx.MainWindow");
+#endif
 
     setWindowIcon(filePath()->applicationIcon());
     QAction* toggleViewAction = m_ui->toolBar->toggleViewAction();
@@ -101,7 +113,7 @@ MainWindow::MainWindow()
     m_ui->actionChangeDatabaseSettings->setIcon(filePath()->icon("actions", "document-edit"));
     m_ui->actionChangeMasterKey->setIcon(filePath()->icon("actions", "database-change-key", false));
     m_ui->actionLockDatabases->setIcon(filePath()->icon("actions", "document-encrypt", false));
-    m_ui->actionClose->setIcon(filePath()->icon("actions", "application-exit"));
+    m_ui->actionClose->setIcon(filePath()->icon("actions", "dialog-close"));
     m_ui->actionQuit->setIcon(filePath()->icon("actions", "application-exit"));
 
     m_ui->actionEntryNew->setIcon(filePath()->icon("actions", "entry-new", false));
@@ -470,6 +482,11 @@ void MainWindow::forceExit()
 {
     m_forceExit = true;
     close();
+}
+
+void MainWindow::closeAllDatabases()
+{
+    m_ui->tabWidget->closeAllDatabases();
 }
 
 void MainWindow::toggleDisplay()

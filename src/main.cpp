@@ -15,14 +15,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QFile>
-
 #include "core/ArgumentParser.h"
 #include "core/Config.h"
 #include "core/Tools.h"
 #include "crypto/Crypto.h"
 #include "gui/Application.h"
 #include "gui/MainWindow.h"
+
+#include <QFile>
 
 int main(int argc, char** argv)
 {
@@ -66,6 +66,5 @@ int main(int argc, char** argv)
             }
         }
     }
-
     return app.exec();
 }

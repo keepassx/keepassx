@@ -32,7 +32,7 @@ namespace Ui {
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+    Q_CLASSINFO("D-Bus Interface", "org.keepassx.MainWindow")
 public:
     MainWindow();
     ~MainWindow();
@@ -40,6 +40,8 @@ public:
 public Q_SLOTS:
     void openDatabase(const QString& fileName, const QString& pw = QString(),
                       const QString& keyFile = QString());
+    void forceExit();
+    void closeAllDatabases();
 
 protected:
      void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE;
@@ -60,7 +62,6 @@ private Q_SLOTS:
     void saveToolbarState(bool value);
     void rememberOpenDatabases(const QString& filePath);
     void setupSystemTrayIcon(bool execute = true);
-    void forceExit();
     void toggleDisplay();
     void toggleDisplay(QSystemTrayIcon::ActivationReason);
 

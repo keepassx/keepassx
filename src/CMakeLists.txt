@@ -196,6 +196,17 @@ set(keepassx_FORMS
     gui/group/EditGroupWidgetMain.ui
 )
 
+if(UNIX AND NOT APPLE)
+    set(keepassx_SOURCES
+        ${keepassx_SOURCES}
+        gui/MainWindowAdaptor.cpp
+    )
+    set(keepassx_MOC
+        ${keepassx_MOC}
+        gui/MainWindowAdaptor.h
+    )
+endif()
+
 if(MINGW)
   set(keepassx_SOURCES_MAINEXE
       ${keepassx_SOURCES_MAINEXE}
@@ -204,6 +215,7 @@ endif()
 
 qt4_wrap_ui(keepassx_SOURCES ${keepassx_FORMS})
 qt4_wrap_cpp(keepassx_SOURCES ${keepassx_MOC})
+
 
 add_library(keepassx_core STATIC ${keepassx_SOURCES})
 set_target_properties(keepassx_core PROPERTIES COMPILE_DEFINITIONS KEEPASSX_BUILDING_CORE)
@@ -231,7 +243,8 @@ endif()
 install(TARGETS ${PROGNAME}
         BUNDLE DESTINATION . COMPONENT Runtime
         RUNTIME DESTINATION ${BIN_INSTALL_DIR} COMPONENT Runtime)
-
+  
+#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.keepassx.MainWindow.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 add_subdirectory(autotype)
 
 if(APPLE AND NOT (${CMAKE_VERSION} VERSION_LESS 2.8.8))
