@@ -38,6 +38,12 @@ MainWindow::MainWindow()
     : m_ui(new Ui::MainWindow())
 {
     m_ui->setupUi(this);
+    
+    m_systrayicon = 0;
+    m_systrayShow = 0;
+    m_systrayHide = 0;
+    m_forceExit = false;
+    setupSystemTrayIcon();
 
     setWindowIcon(filePath()->applicationIcon());
     QAction* toggleViewAction = m_ui->toolBar->toggleViewAction();
@@ -71,6 +77,7 @@ MainWindow::MainWindow()
     setShortcut(m_ui->actionDatabaseSaveAs, QKeySequence::SaveAs);
     setShortcut(m_ui->actionDatabaseClose, QKeySequence::Close, Qt::CTRL + Qt::Key_W);
     m_ui->actionLockDatabases->setShortcut(Qt::CTRL + Qt::Key_L);
+    setShortcut(m_ui->actionClose, QKeySequence::Close, Qt::CTRL + Qt::Key_H);
     setShortcut(m_ui->actionQuit, QKeySequence::Quit, Qt::CTRL + Qt::Key_Q);
     setShortcut(m_ui->actionSearch, QKeySequence::Find, Qt::CTRL + Qt::Key_F);
     m_ui->actionEntryNew->setShortcut(Qt::CTRL + Qt::Key_N);
@@ -94,6 +101,7 @@ MainWindow::MainWindow()
     m_ui->actionChangeDatabaseSettings->setIcon(filePath()->icon("actions", "document-edit"));
     m_ui->actionChangeMasterKey->setIcon(filePath()->icon("actions", "database-change-key", false));
     m_ui->actionLockDatabases->setIcon(filePath()->icon("actions", "document-encrypt", false));
+    m_ui->actionClose->setIcon(filePath()->icon("actions", "application-exit"));
     m_ui->actionQuit->setIcon(filePath()->icon("actions", "application-exit"));
 
     m_ui->actionEntryNew->setIcon(filePath()->icon("actions", "entry-new", false));
@@ -153,7 +161,7 @@ MainWindow::MainWindow()
             SLOT(importKeePass1Database()));
     connect(m_ui->actionLockDatabases, SIGNAL(triggered()), m_ui->tabWidget,
             SLOT(lockDatabases()));
-    connect(m_ui->actionQuit, SIGNAL(triggered()), SLOT(close()));
+    connect(m_ui->actionQuit, SIGNAL(triggered()), SLOT(forceExit()));
 
     m_actionMultiplexer.connect(m_ui->actionEntryNew, SIGNAL(triggered()),
             SLOT(createEntry()));
@@ -382,6 +390,7 @@ void MainWindow::switchToSettings()
 {
     m_ui->settingsWidget->loadSettings();
     m_ui->stackedWidget->setCurrentIndex(1);
+    connect(m_ui->settingsWidget, SIGNAL(editFinished(bool)), SLOT(setupSystemTrayIcon(bool)));
 }
 
 void MainWindow::databaseTabChanged(int tabIndex)
@@ -406,11 +415,18 @@ void MainWindow::closeEvent(QCloseEvent* event)
                 this, SLOT(rememberOpenDatabases(QString)));
     }
 
-    if (!m_ui->tabWidget->closeAllDatabases()) {
+    if ( m_systrayicon && ! m_forceExit ) {
         event->ignore();
+        hide();
     }
     else {
-        event->accept();
+        if (!m_ui->tabWidget->closeAllDatabases()) {
+            m_forceExit = false;
+            event->ignore();
+        }
+        else {
+            event->accept();
+        }
     }
 
     if (openPreviousDatabasesOnStartup) {
@@ -448,4 +464,94 @@ void MainWindow::setShortcut(QAction* action, QKeySequence::StandardKey standard
 void MainWindow::rememberOpenDatabases(const QString& filePath)
 {
     m_openDatabases.append(filePath);
+}
+
+void MainWindow::forceExit()
+{
+    m_forceExit = true;
+    close();
+}
+
+void MainWindow::toggleDisplay()
+{
+    if(isVisible()) {
+        if (m_systrayHide) m_systrayHide->setEnabled(false);
+        if (m_systrayShow) m_systrayShow->setEnabled(true);
+        hide();
+    }
+    else {
+        if (m_systrayHide) m_systrayHide->setEnabled(true);
+        if (m_systrayShow) m_systrayShow->setEnabled(false);
+        show();
+    }
+}
+
+void MainWindow::toggleDisplay(QSystemTrayIcon::ActivationReason r)
+{
+    if ( r == QSystemTrayIcon::Context ) {
+        m_systrayicon->contextMenu()->show();
+        return;
+    }
+    toggleDisplay();
+}
+
+void MainWindow::setupSystemTrayIcon(bool execute)
+{
+    if ( ! execute ) return;
+    if ( ! config()->get("SystemTrayIcon").toBool())
+    {
+        if ( m_systrayicon )
+        {
+            delete m_systrayicon;
+            m_systrayicon = 0;
+        }
+        return;
+    }
+    m_systrayicon = new QSystemTrayIcon(this);
+
+    // Creation Systray context menu
+    QMenu* stmenu = new QMenu(this);
+
+    // Restore action (show main window)
+    m_systrayShow = new QAction("Restore",this);
+    m_systrayShow->setEnabled(false);
+    // Hide action (hide main window)
+    m_systrayHide = new QAction("Hide",this);
+    // Quit application with icon
+    QAction* quitAction = new QAction("Quit",this);
+    quitAction->setIcon(filePath()->icon("actions", "application-exit"));
+    // Lock Database with icon
+    QAction* lockDbAction = new QAction("Lock Database",this);
+    lockDbAction->setIcon(filePath()->icon("actions", "document-encrypt"));
+    // Close Database with icon
+    QAction* closeDbAction = new QAction("Close Database",this);
+    closeDbAction->setIcon(filePath()->icon("actions", "document-close"));
+
+    stmenu->setTitle("KeePassX");
+    stmenu->setIcon(filePath()->applicationIcon());
+    stmenu->addAction(lockDbAction);
+    stmenu->addAction(closeDbAction);
+    stmenu->addSeparator();
+    stmenu->addAction(m_systrayShow);
+    stmenu->addAction(m_systrayHide);
+    stmenu->addSeparator();
+    stmenu->addAction(quitAction);
+
+    // Set context menu to systray icon
+    m_systrayicon->setContextMenu(stmenu);
+
+    // Set application icon to systray icon
+    m_systrayicon->setIcon(filePath()->applicationIcon());
+    connect(m_systrayicon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), 
+            SLOT(toggleDisplay(QSystemTrayIcon::ActivationReason)));
+    connect(m_systrayShow, SIGNAL(triggered()), SLOT(toggleDisplay()));
+    connect(m_systrayHide, SIGNAL(triggered()), SLOT(toggleDisplay()));
+    connect(quitAction, SIGNAL(triggered()), SLOT(forceExit()));
+    connect(lockDbAction, SIGNAL(triggered()), m_ui->tabWidget,
+            SLOT(lockDatabases()));
+    connect(closeDbAction, SIGNAL(triggered()), m_ui->tabWidget,
+            SLOT(closeDatabase()));
+
+    // Show systray icon
+    m_systrayicon->show();
 }

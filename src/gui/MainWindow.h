@@ -20,6 +20,7 @@
 
 #include <QActionGroup>
 #include <QMainWindow>
+#include <QtGui/QSystemTrayIcon>
 
 #include "core/SignalMultiplexer.h"
 #include "gui/DatabaseWidget.h"
@@ -58,6 +59,10 @@ private Q_SLOTS:
     void showGroupContextMenu(const QPoint& globalPos);
     void saveToolbarState(bool value);
     void rememberOpenDatabases(const QString& filePath);
+    void setupSystemTrayIcon(bool execute = true);
+    void forceExit();
+    void toggleDisplay();
+    void toggleDisplay(QSystemTrayIcon::ActivationReason);
 
 private:
     static void setShortcut(QAction* action, QKeySequence::StandardKey standard, int fallback = 0);
@@ -70,6 +75,10 @@ private:
     QActionGroup* m_lastDatabasesActions;
     QActionGroup* m_copyAdditionalAttributeActions;
     QStringList m_openDatabases;
+    QSystemTrayIcon* m_systrayicon;
+    bool m_forceExit;
+    QAction* m_systrayShow;
+    QAction* m_systrayHide;
 
     Q_DISABLE_COPY(MainWindow)
 };

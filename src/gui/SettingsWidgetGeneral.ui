@@ -6,11 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>456</width>
-    <height>185</height>
+    <width>461</width>
+    <height>220</height>
    </rect>
   </property>
   <layout class="QFormLayout" name="formLayout">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::ExpandingFieldsGrow</enum>
+   </property>
    <item row="0" column="0">
     <widget class="QCheckBox" name="rememberLastDatabasesCheckBox">
      <property name="text">
@@ -18,6 +21,13 @@
      </property>
      <property name="checked">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="openPreviousDatabasesOnStartupCheckBox">
+     <property name="text">
+      <string>Open previous databases on startup</string>
      </property>
     </widget>
    </item>
@@ -31,6 +41,13 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="autoSaveOnExitCheckBox">
+     <property name="text">
+      <string>Automatically save on exit</string>
+     </property>
+    </widget>
+   </item>
    <item row="4" column="0">
     <widget class="QCheckBox" name="autoSaveAfterEveryChangeCheckBox">
      <property name="text">
@@ -38,10 +55,10 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QCheckBox" name="autoSaveOnExitCheckBox">
+   <item row="5" column="0">
+    <widget class="QCheckBox" name="minimizeOnCopyCheckBox">
      <property name="text">
-      <string>Automatically save on exit</string>
+      <string>Minimize when copying to clipboard</string>
      </property>
     </widget>
    </item>
@@ -55,17 +72,10 @@
    <item row="6" column="1">
     <widget class="ShortcutWidget" name="autoTypeShortcutWidget"/>
    </item>
-   <item row="1" column="0">
-    <widget class="QCheckBox" name="openPreviousDatabasesOnStartupCheckBox">
+   <item row="7" column="0">
+    <widget class="QCheckBox" name="systemTrayIconCheckBox">
      <property name="text">
-      <string>Open previous databases on startup</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QCheckBox" name="minimizeOnCopyCheckBox">
-     <property name="text">
-      <string>Minimize when copying to clipboard</string>
+      <string>System Tray Icon</string>
      </property>
     </widget>
    </item>

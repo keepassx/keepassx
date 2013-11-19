@@ -322,8 +322,10 @@ bool DatabaseTabWidget::closeDatabase(int index)
     }
 
     setCurrentIndex(index);
-
-    return closeDatabase(indexDatabase(index));
+    Database* db = indexDatabase(index);
+    if (!db) return false;
+ 
+    return closeDatabase(db);
 }
 
 void DatabaseTabWidget::closeDatabaseFromSender()
