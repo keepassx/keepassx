@@ -20,6 +20,9 @@
 
 #include <QCloseEvent>
 #include <QShortcut>
+#ifndef QT_NO_DEBUG
+#include <QDebug>
+#endif
 
 #include "autotype/AutoType.h"
 #include "core/Config.h"
@@ -55,6 +58,10 @@ MainWindow::MainWindow()
     QDBusConnection dbus = QDBusConnection::sessionBus();
     dbus.registerObject("/keepassx", this);
     dbus.registerService("org.keepassx.MainWindow");
+#else
+#ifndef QT_NO_DEBUG
+    qDebug() << "DBus is not available on this system";
+#endif
 #endif
 
     setWindowIcon(filePath()->applicationIcon());
@@ -522,6 +529,12 @@ void MainWindow::setupSystemTrayIcon(bool execute)
             delete m_systrayicon;
             m_systrayicon = 0;
         }
+        return;
+    }
+    if ( ! QSystemTrayIcon::isSystemTrayAvailable() ) {
+#ifndef QT_NO_DEBUG
+    qDebug() << "QSystemTrayIcon is not available";
+#endif
         return;
     }
     m_systrayicon = new QSystemTrayIcon(this);
