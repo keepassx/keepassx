@@ -25,7 +25,6 @@ PasswordPreviewDialog::PasswordPreviewDialog(QWidget *parent) :
     ui->setupUi(this);
 
     connect(ui->buttonClose, SIGNAL(clicked()), SLOT(close()));
-
 }
 
 PasswordPreviewDialog::~PasswordPreviewDialog()
@@ -44,3 +43,5 @@ void PasswordPreviewDialog::setProgressBar(int progress){
 void PasswordPreviewDialog::appendPasswordList(QString newPassword){
     ui->passwordPreviews->appendPlainText(newPassword);
 }
+
+

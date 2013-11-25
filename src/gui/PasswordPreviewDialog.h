@@ -35,6 +35,7 @@ public:
     void setMaximumProgressBar(int maximumProgress);
     void setProgressBar(int progress);
     void appendPasswordList(QString newPassword);
+    void passwordSelected(QWidget *parent);
     explicit PasswordPreviewDialog(QWidget *parent);
     ~PasswordPreviewDialog();
 
