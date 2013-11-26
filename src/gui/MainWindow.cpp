@@ -522,10 +522,11 @@ void MainWindow::toggleDisplay(QSystemTrayIcon::ActivationReason r)
 void MainWindow::setupSystemTrayIcon(bool execute)
 {
     if ( ! execute ) return;
-    if ( ! config()->get("SystemTrayIcon").toBool())
+    if ( m_systrayicon )
     {
-        if ( m_systrayicon )
+        if ( ! config()->get("SystemTrayIcon").toBool())
         {
+            m_systrayicon->hide();
             delete m_systrayicon;
             m_systrayicon = 0;
         }
