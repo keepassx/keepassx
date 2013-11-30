@@ -91,6 +91,10 @@ private:
     static bool m_xErrorOccured;
     static int (*m_oldXErrorHandler)(Display*, XErrorEvent*);
 
+    static const int m_unicodeToKeysymLen;
+    static const uint m_unicodeToKeysymKeys[];
+    static const uint m_unicodeToKeysymValues[];
+
     KeySym* m_keysymTable;
     int m_minKeycode;
     int m_maxKeycode;
