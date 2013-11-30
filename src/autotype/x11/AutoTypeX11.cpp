@@ -551,6 +551,9 @@ void AutoTypePlatformX11::ReadKeymap()
     m_altgrMask = 0;
     m_altgrKeysym = NoSymbol;
     modifiers = XGetModifierMapping(m_dpy);
+    /* default value, used if we do not find a mapping */
+    inx_altgr = 3;
+
     for (i = 0; i < 8; i++) {
         for (pos = 0; pos < modifiers->max_keypermod; pos++) {
             keycode = modifiers->modifiermap[i * modifiers->max_keypermod + pos];
@@ -567,12 +570,18 @@ void AutoTypePlatformX11::ReadKeymap()
                     m_altgrMask = 0x0101 << i;
                     /* I don't know why, but 0x2000 was required for mod3 on my Linux box */
                     m_altgrKeysym = keysym;
+
+                    /* set the index of the XGetKeyboardMapping for the AltGr key */
+                    inx_altgr = i;
                 }
             } else if (keysym == XK_ISO_Level3_Shift) {
                 /* if no Mode_switch, try to use ISO_Level3_Shift instead */
                 /* however, it may not work as intended - I don't know why */
                 m_altgrMask = 1 << i;
                 m_altgrKeysym = keysym;
+
+                /* set the index of the XGetKeyboardMapping for the AltGr key */
+                inx_altgr = i;
             }
         }
     }
@@ -606,54 +615,58 @@ void AutoTypePlatformX11::SendKeyPressedEvent(KeySym keysym, unsigned int shift)
     int revert_to;
     XKeyEvent event;
     int keycode;
-    int phase, inx;
+    int phase;
     bool found;
+    KeySym ks;
+    unsigned int mods_rtrn = 0;
+    XkbDescPtr kbd = XkbGetKeyboard (m_dpy, XkbCompatMapMask | XkbGeometryMask, XkbUseCoreKbd);
 
     XGetInputFocus(m_dpy, &cur_focus, &revert_to);
 
     found = FALSE;
     keycode = 0;
+
     if (keysym != NoSymbol) {
         for (phase = 0; phase < 2; phase++) {
-            for (keycode = m_minKeycode; !found && (keycode <= m_maxKeycode); keycode++) {
-                /* Determine keycode for the keysym:  we use this instead
-                of XKeysymToKeycode() because we must know shift_state, too */
-                inx = (keycode - m_minKeycode) * m_keysymPerKeycode;
-                if (m_keysymTable[inx] == keysym) {
-                    shift &= ~m_altgrMask;
-                    if (m_keysymTable[inx + 1] != NoSymbol) shift &= ~ShiftMask;
-                    found = TRUE;
-                    break;
-                } else if (m_keysymTable[inx + 1] == keysym) {
-                    shift &= ~m_altgrMask;
-                    shift |= ShiftMask;
-                    found = TRUE;
-                    break;
-                }
-            }
-            if (!found && m_altgrMask && 3 <= m_keysymPerKeycode) {
-                for (keycode = m_minKeycode; !found && (keycode <= m_maxKeycode); keycode++) {
-                    inx = (keycode - m_minKeycode) * m_keysymPerKeycode;
-                    if (m_keysymTable[inx + 2] == keysym) {
-                        shift &= ~ShiftMask;
-                        shift |= m_altgrMask;
-                        found = TRUE;
-                        break;
-                    } else if (4 <= m_keysymPerKeycode && m_keysymTable[inx + 3] == keysym) {
-                        shift |= ShiftMask | m_altgrMask;
-                        found = TRUE;
-                        break;
-                    }
-                }
-            }
+            keycode = XKeysymToKeycode(m_dpy, keysym);
+            XkbTranslateKeyCode(kbd, keycode, 0, &mods_rtrn, &ks);
+            if (ks == keysym) {
+                shift &= ~m_altgrMask;
+                shift &= ~ShiftMask;
+                found = TRUE;
+                break;
+            } 
+
+            XkbTranslateKeyCode(kbd, keycode, ShiftMask, &mods_rtrn, &ks);
+            if (ks == keysym) {
+                 shift &= ~m_altgrMask;
+                 shift |= ShiftMask;
+                 found = TRUE;
+                 break;
+            } 
+
+            XkbTranslateKeyCode(kbd, keycode, Mod5Mask, &mods_rtrn, &ks);
+            if (ks == keysym) {
+                 shift &= ~ShiftMask;
+                 shift |= m_altgrMask;
+                 found = TRUE;
+                 break;
+            } 
+         
+            XkbTranslateKeyCode(kbd, keycode, Mod5Mask, &mods_rtrn, &ks);
+            if (ks == keysym) {
+                 shift |= ShiftMask | m_altgrMask;
+                 found = TRUE;
+                 break;
+            } 
             if (found) break;
 
             if (0xF000 <= keysym) {
-                /* for special keys such as function keys,
-                first try to add it in the non-shifted position of the keymap */
-                if (AddKeysym(keysym, TRUE) == NoSymbol) AddKeysym(keysym, FALSE);
+                 /* for special keys such as function keys,
+                 first try to add it in the non-shifted position of the keymap */
+                 if (AddKeysym(keysym, TRUE) == NoSymbol) AddKeysym(keysym, FALSE);
             } else {
-                AddKeysym(keysym, FALSE);
+                    AddKeysym(keysym, FALSE);
             }
         }
     }
@@ -772,6 +785,7 @@ void AutoTypePlatformX11::SendKeyPressedEvent(KeySym keysym, unsigned int shift)
         SendEvent(&event);
         event.state &= ~ControlMask;
     }
+    XkbFreeKeyboard(kbd, XkbAllComponentsMask, True);
 }
 
 int AutoTypePlatformX11::MyErrorHandler(Display* my_dpy, XErrorEvent* event)

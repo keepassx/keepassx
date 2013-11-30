@@ -26,6 +26,7 @@
 #include <QX11Info>
 
 #include <X11/Xutil.h>
+#include <X11/XKBlib.h>
 #include <X11/extensions/XTest.h>
 
 #include "autotype/AutoTypePlatformPlugin.h"
@@ -98,6 +99,8 @@ private:
     int m_altMask;
     int m_metaMask;
     int m_altgrMask;
+    /* index of the XGetKeyboardMapping for the AltGr key */
+    int inx_altgr;
     KeySym m_altgrKeysym;
 };
 
