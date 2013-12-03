@@ -17,6 +17,8 @@
 
 #include "PasswordGeneratorWidget.h"
 #include "ui_PasswordGeneratorWidget.h"
+#include "PasswordPreviewDialog.h"
+
 
 #include "core/Config.h"
 
@@ -29,6 +31,7 @@ PasswordGeneratorWidget::PasswordGeneratorWidget(QWidget* parent)
     connect(m_ui->editNewPassword, SIGNAL(textChanged(QString)), SLOT(updateApplyEnabled(QString)));
     connect(m_ui->togglePasswordButton, SIGNAL(toggled(bool)), SLOT(togglePassword(bool)));
     connect(m_ui->buttonGenerate, SIGNAL(clicked()), SLOT(generatePassword()));
+    connect(m_ui->buttonPreview, SIGNAL(clicked()), SLOT(showPreviewDialog()));
     connect(m_ui->buttonApply, SIGNAL(clicked()), SLOT(emitNewPassword()));
     connect(m_ui->buttonApply, SIGNAL(clicked()), SLOT(saveSettings()));
 
@@ -95,6 +98,33 @@ void PasswordGeneratorWidget::generatePassword()
 
     QString password = passwordGenerator()->generatePassword(length, classes, flags);
     m_ui->editNewPassword->setText(password);
+}
+
+void PasswordGeneratorWidget::showPreviewDialog()
+{
+    int length = m_ui->spinBoxLength->value();
+    PasswordGenerator::CharClasses classes = charClasses();
+    PasswordGenerator::GeneratorFlags flags = generatorFlags();
+
+    PasswordPreviewDialog* passwordPreviewDialog = new PasswordPreviewDialog(this);
+    passwordPreviewDialog->show();
+
+    int maxPasswordsDisplayed = m_ui->spinBoxOptions->value();
+
+    passwordPreviewDialog->setMaximumProgressBar(maxPasswordsDisplayed);
+
+    int passwordsDisplayed = 0;
+
+    while(passwordsDisplayed <= maxPasswordsDisplayed){
+        passwordPreviewDialog->appendPasswordList(passwordGenerator()->generatePassword(length, classes, flags));
+
+        passwordPreviewDialog->setProgressBar(passwordsDisplayed);
+
+        passwordsDisplayed++;
+    }
+
+
+
 }
 
 void PasswordGeneratorWidget::emitNewPassword()

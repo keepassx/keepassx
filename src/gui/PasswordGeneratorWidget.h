@@ -44,6 +44,7 @@ private Q_SLOTS:
     void updateApplyEnabled(const QString& password);
     void togglePassword(bool checked);
     void generatePassword();
+    void showPreviewDialog();
     void emitNewPassword();
     void saveSettings();
 
