@@ -709,7 +709,9 @@ void DatabaseWidget::search()
     else {
         sensitivity = Qt::CaseInsensitive;
     }
-    QList<Entry*> searchResult = searchGroup->search(m_searchUi->searchEdit->text(), sensitivity);
+    
+    QStringList groupExcludedPatterns = config()->get("search/GroupExcludedPatterns").toString().split("\n");
+    QList<Entry*> searchResult = searchGroup->search(m_searchUi->searchEdit->text(), sensitivity, true, groupExcludedPatterns);
 
 
     m_entryView->setEntryList(searchResult);

@@ -208,13 +208,6 @@ Database* KeePass1Reader::readDatabase(QIODevice* device, const QString& passwor
 
     db->rootGroup()->setName(tr("Root"));
 
-    Q_FOREACH (Group* group, db->rootGroup()->children()) {
-        if (group->name() == "Backup") {
-            group->setSearchingEnabled(Group::Disable);
-            group->setAutoTypeEnabled(Group::Disable);
-        }
-    }
-
     Q_ASSERT(m_tmpParent->children().isEmpty());
     Q_ASSERT(m_tmpParent->entries().isEmpty());
 

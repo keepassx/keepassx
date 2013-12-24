@@ -112,7 +112,7 @@ public:
     Database* exportToDb();
 
     QList<Entry*> search(const QString& searchTerm, Qt::CaseSensitivity caseSensitivity,
-                         bool resolveInherit = true);
+                         bool resolveInherit = true, const QStringList& groupExcludedPatterns = QStringList());
 
 Q_SIGNALS:
     void dataChanged(Group* group);
@@ -148,6 +148,8 @@ private:
     void recCreateDelObjects();
     void updateTimeinfo();
     bool includeInSearch(bool resolveInherit);
+    bool nameMatch(const QString& searchTerm);
+    bool nameMatch(const QStringList& searchTerms); 
 
     QPointer<Database> m_db;
     Uuid m_uuid;

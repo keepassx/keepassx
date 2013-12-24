@@ -188,6 +188,7 @@ set(keepassx_FORMS
     gui/SearchWidget.ui
     gui/SettingsWidgetGeneral.ui
     gui/SettingsWidgetSecurity.ui
+    gui/SettingsWidgetSearch.ui
     gui/WelcomeWidget.ui
     gui/entry/EditEntryWidgetAdvanced.ui
     gui/entry/EditEntryWidgetAutoType.ui
