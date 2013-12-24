@@ -23,6 +23,7 @@
 namespace Ui {
     class SettingsWidgetGeneral;
     class SettingsWidgetSecurity;
+    class SettingsWidgetSearch;
 }
 
 class SettingsWidget : public EditWidget
@@ -45,8 +46,10 @@ private Q_SLOTS:
 private:
     QWidget* const m_secWidget;
     QWidget* const m_generalWidget;
+    QWidget* const m_searchWidget;
     const QScopedPointer<Ui::SettingsWidgetSecurity> m_secUi;
     const QScopedPointer<Ui::SettingsWidgetGeneral> m_generalUi;
+    const QScopedPointer<Ui::SettingsWidgetSearch> m_searchUi;
     Qt::Key m_globalAutoTypeKey;
     Qt::KeyboardModifiers m_globalAutoTypeModifiers;
 };

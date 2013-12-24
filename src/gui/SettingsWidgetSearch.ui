@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SettingsWidgetSearch</class>
+ <widget class="QWidget" name="SettingsWidgetSearch">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>374</width>
+    <height>303</height>
+   </rect>
+  </property>
+  <layout class="QFormLayout" name="formLayout">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+   </property>
+   <item row="2" column="0">
+    <widget class="QLabel" name="searchGroupExcludedPatternsLabel">
+     <property name="text">
+      <string>Group exclude patterns:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPlainTextEdit" name="searchGroupExcludedPatternsTextEdit"/>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="searchGroupExcludedPatternsHint">
+     <property name="text">
+      <string>(One pattern per line)</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

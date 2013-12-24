@@ -612,8 +612,23 @@ void Group::recCreateDelObjects()
     }
 }
 
+bool Group::nameMatch(const QString& searchTerm)
+{
+    QRegExp rx(searchTerm);
+    rx.setPatternSyntax(QRegExp::Wildcard);
+    return rx.exactMatch(name());
+}
+
+bool Group::nameMatch(const QStringList& searchTerms)
+{
+    Q_FOREACH (const QString& searchTerm, searchTerms) {
+        if (nameMatch(searchTerm)) return true;
+    }
+    return false;
+}
+
 QList<Entry*> Group::search(const QString& searchTerm, Qt::CaseSensitivity caseSensitivity,
-                            bool resolveInherit)
+                            bool resolveInherit, const QStringList& groupExcludedPatterns)
 {
     QList<Entry*> searchResult;
     if (includeInSearch(resolveInherit)) {
@@ -623,6 +638,7 @@ QList<Entry*> Group::search(const QString& searchTerm, Qt::CaseSensitivity caseS
             }
         }
         Q_FOREACH (Group* group, m_children) {
+            if (group->nameMatch(groupExcludedPatterns)) continue;
             searchResult.append(group->search(searchTerm, caseSensitivity, false));
         }
     }

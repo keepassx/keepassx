@@ -18,6 +18,7 @@
 #include "SettingsWidget.h"
 #include "ui_SettingsWidgetGeneral.h"
 #include "ui_SettingsWidgetSecurity.h"
+#include "ui_SettingsWidgetSearch.h"
 
 #include "autotype/AutoType.h"
 #include "core/Config.h"
@@ -26,15 +27,19 @@ SettingsWidget::SettingsWidget(QWidget* parent)
     : EditWidget(parent)
     , m_secWidget(new QWidget())
     , m_generalWidget(new QWidget())
+    , m_searchWidget(new QWidget())
     , m_secUi(new Ui::SettingsWidgetSecurity())
     , m_generalUi(new Ui::SettingsWidgetGeneral())
+    , m_searchUi(new Ui::SettingsWidgetSearch())
 {
     setHeadline(tr("Application Settings"));
 
     m_secUi->setupUi(m_secWidget);
     m_generalUi->setupUi(m_generalWidget);
+    m_searchUi->setupUi(m_searchWidget);
     add(tr("General"), m_generalWidget);
     add(tr("Security"), m_secWidget);
+    add(tr("Search"), m_searchWidget);
 
     m_generalUi->autoTypeShortcutWidget->setVisible(autoType()->isAvailable());
     m_generalUi->autoTypeShortcutLabel->setVisible(autoType()->isAvailable());
@@ -73,6 +78,8 @@ void SettingsWidget::loadSettings()
 
     m_secUi->clearClipboardCheckBox->setChecked(config()->get("security/clearclipboard").toBool());
     m_secUi->clearClipboardSpinBox->setValue(config()->get("security/clearclipboardtimeout").toInt());
+    
+    m_searchUi->searchGroupExcludedPatternsTextEdit->setPlainText(config()->get("search/GroupExcludedPatterns").toString());
 
     setCurrentRow(0);
 }
@@ -91,7 +98,8 @@ void SettingsWidget::saveSettings()
     }
     config()->set("security/clearclipboard", m_secUi->clearClipboardCheckBox->isChecked());
     config()->set("security/clearclipboardtimeout", m_secUi->clearClipboardSpinBox->value());
-
+    config()->set("search/GroupExcludedPatterns", m_searchUi->searchGroupExcludedPatternsTextEdit->toPlainText());
+    
     Q_EMIT editFinished(true);
 }
 
