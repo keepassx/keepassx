@@ -387,8 +387,13 @@ void MainWindow::switchToDatabases()
 
 void MainWindow::switchToSettings()
 {
-    m_ui->settingsWidget->loadSettings();
-    m_ui->stackedWidget->setCurrentIndex(1);
+    SettingsWidget *settingsWidget = new SettingsWidget( 0 );
+    settingsWidget->loadSettings();
+    settingsWidget->show();
+    /*m_ui->settingsWidget->loadSettings();
+    m_ui->settingsWidget->show();*/
+
+    //m_ui->stackedWidget->setCurrentIndex(1);
 }
 
 void MainWindow::databaseTabChanged(int tabIndex)
