@@ -47,6 +47,10 @@ SettingsWidget::SettingsWidget(QWidget* parent)
 
     connect(m_secUi->clearClipboardCheckBox, SIGNAL(toggled(bool)),
             m_secUi->clearClipboardSpinBox, SLOT(setEnabled(bool)));
+
+    connect(m_secUi->lockDatabaseCheckBox, SIGNAL(toggled(bool)),
+            m_secUi->lockDatabaseSpinBox, SLOT(setEnabled(bool)));
+    
 }
 
 SettingsWidget::~SettingsWidget()
@@ -73,6 +77,9 @@ void SettingsWidget::loadSettings()
 
     m_secUi->clearClipboardCheckBox->setChecked(config()->get("security/clearclipboard").toBool());
     m_secUi->clearClipboardSpinBox->setValue(config()->get("security/clearclipboardtimeout").toInt());
+    
+    m_secUi->lockDatabaseCheckBox->setChecked(config()->get("security/lockdatabase").toBool());
+    m_secUi->lockDatabaseSpinBox->setValue(config()->get("security/lockdatabasetimeout").toInt());
 
     setCurrentRow(0);
 }
@@ -91,6 +98,8 @@ void SettingsWidget::saveSettings()
     }
     config()->set("security/clearclipboard", m_secUi->clearClipboardCheckBox->isChecked());
     config()->set("security/clearclipboardtimeout", m_secUi->clearClipboardSpinBox->value());
+    config()->set("security/lockdatabase", m_secUi->lockDatabaseCheckBox->isChecked());
+    config()->set("security/lockdatabasetimeout", m_secUi->lockDatabaseSpinBox->value());
 
     Q_EMIT editFinished(true);
 }

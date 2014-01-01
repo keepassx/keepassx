@@ -18,9 +18,11 @@
 #ifndef KEEPASSX_MAINWINDOW_H
 #define KEEPASSX_MAINWINDOW_H
 
-#include <QActionGroup>
-#include <QMainWindow>
+#include <QtGui/QActionGroup>
+#include <QtGui/QMainWindow>
+#include <QTimer>
 
+#include "core/Config.h"
 #include "core/SignalMultiplexer.h"
 #include "gui/DatabaseWidget.h"
 
@@ -39,6 +41,7 @@ public:
 public Q_SLOTS:
     void openDatabase(const QString& fileName, const QString& pw = QString(),
                       const QString& keyFile = QString());
+    void triggerDatabaseLock();
 
 protected:
      void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE;
@@ -70,6 +73,10 @@ private:
     QActionGroup* m_lastDatabasesActions;
     QActionGroup* m_copyAdditionalAttributeActions;
     QStringList m_openDatabases;
+    
+    bool eventFilter(QObject *obj, QEvent *ev);
+    QTimer* myTimer;
+    int timeout;
 
     Q_DISABLE_COPY(MainWindow)
 };

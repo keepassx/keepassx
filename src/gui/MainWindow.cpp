@@ -22,7 +22,6 @@
 #include <QShortcut>
 
 #include "autotype/AutoType.h"
-#include "core/Config.h"
 #include "core/Database.h"
 #include "core/Entry.h"
 #include "core/FilePath.h"
@@ -34,10 +33,35 @@
 
 const QString MainWindow::BaseWindowTitle = "KeePassX";
 
+bool MainWindow::eventFilter(QObject *obj, QEvent *ev)
+{
+    if (config()->get("security/lockdatabase").toBool()) {
+        if(ev->type() == QEvent::KeyPress ||
+           ev->type() == QEvent::MouseMove ||
+           ev->type() == QEvent::MouseButtonPress ||
+           ev->type() == QEvent::MouseButtonRelease ||
+           ev->type() == QEvent::Wheel ||
+           ev->type() == QEvent::KeyPress ||
+           ev->type() == QEvent::KeyRelease){
+            timeout = config()->get("security/lockdatabasetimeout").toInt();
+            myTimer->start(timeout * 1000);
+        }
+    }    
+    return QObject::eventFilter(obj, ev);
+}
+
+
 MainWindow::MainWindow()
     : m_ui(new Ui::MainWindow())
 {
     m_ui->setupUi(this);
+    
+    myTimer = new QTimer(this);
+    myTimer->setSingleShot(true);
+    connect(myTimer, SIGNAL(timeout()), this, SLOT(triggerDatabaseLock()));
+    //make sure config is initialized before installing the event filter
+    config();
+    qApp->installEventFilter(this);
 
     setWindowIcon(filePath()->applicationIcon());
     QAction* toggleViewAction = m_ui->toolBar->toggleViewAction();
@@ -242,6 +266,11 @@ void MainWindow::openRecentDatabase(QAction* action)
 void MainWindow::clearLastDatabases()
 {
     config()->set("LastDatabases", QVariant());
+}
+
+void MainWindow::triggerDatabaseLock()
+{
+    m_ui->tabWidget->lockDatabases();
 }
 
 void MainWindow::openDatabase(const QString& fileName, const QString& pw, const QString& keyFile)

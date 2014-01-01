@@ -34,6 +34,29 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="0">
+       <widget class="QCheckBox" name="lockDatabaseCheckBox">
+           <property name="text">
+               <string>Lock database after</string>
+           </property>
+           <property name="checked">
+               <bool>true</bool>
+           </property>
+       </widget>
+   </item>
+   <item row="1" column="1">
+       <widget class="QSpinBox" name="lockDatabaseSpinBox">
+           <property name="suffix">
+               <string> sec</string>
+           </property>
+           <property name="minimum">
+               <number>1</number>
+           </property>
+           <property name="maximum">
+               <number>999</number>
+           </property>
+       </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
