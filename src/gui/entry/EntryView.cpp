@@ -64,7 +64,8 @@ void EntryView::setGroup(Group* group)
     m_model->setGroup(group);
 
     if(m_model->rowCount() > 0) {
-        setCurrentEntry(m_model->entryFromIndex(m_model->index(0, 0)));
+        QModelIndex index = m_sortModel->mapToSource(m_sortModel->index(0, 0));
+        setCurrentEntry(m_model->entryFromIndex(index));
     }
     else {
         Q_EMIT entrySelectionChanged();
