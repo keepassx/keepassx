@@ -41,7 +41,7 @@
 
 #include "TestQCommandLineParser.h"
 
-#include <QtTest>
+#include <QtTest/QtTest>
 
 #include "tests.h"
 #include "core/qcommandlineparser.h"

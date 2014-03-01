@@ -24,7 +24,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTemporaryFile>
-#include <QTest>
+#include <QtTest/QTest>
 #include <QToolBar>
 #include <QToolButton>
 

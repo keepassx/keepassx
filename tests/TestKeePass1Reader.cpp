@@ -18,7 +18,7 @@
 #include "TestKeePass1Reader.h"
 
 #include <QBuffer>
-#include <QTest>
+#include <QtTest/QTest>
 
 #include "config-keepassx-tests.h"
 #include "tests.h"

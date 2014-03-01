@@ -42,7 +42,7 @@
 #include "modeltest.h"
 
 #include <QDebug>
-#include <QTest>
+#include <QtTest/QTest>
 
 Q_DECLARE_METATYPE ( QModelIndex )
 

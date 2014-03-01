@@ -18,8 +18,8 @@
 #include "TestGroup.h"
 
 #include <QPointer>
-#include <QSignalSpy>
-#include <QTest>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QTest>
 
 #include "tests.h"
 #include "core/Database.h"

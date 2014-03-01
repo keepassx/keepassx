@@ -18,7 +18,7 @@
 #include "TestKeePass2Writer.h"
 
 #include <QBuffer>
-#include <QTest>
+#include <QtTest/QTest>
 
 #include "tests.h"
 #include "core/Database.h"
