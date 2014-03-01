@@ -17,7 +17,7 @@
 
 #include "TestWildcardMatcher.h"
 
-#include <QTest>
+#include <QtTest/QTest>
 
 #include "tests.h"
 #include "autotype/WildcardMatcher.h"

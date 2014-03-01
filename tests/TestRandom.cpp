@@ -20,7 +20,7 @@
 #include "tests.h"
 #include "core/Endian.h"
 
-#include <QTest>
+#include <QtTest/QTest>
 
 void TestRandom::initTestCase()
 {

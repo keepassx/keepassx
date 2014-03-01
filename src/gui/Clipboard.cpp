@@ -22,8 +22,8 @@
 #include <QTimer>
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
-#include <QDBusConnection>
-#include <QDBusMessage>
+#include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusMessage>
 #endif
 
 #include "core/Config.h"

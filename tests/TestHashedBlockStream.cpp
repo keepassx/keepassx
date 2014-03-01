@@ -18,7 +18,7 @@
 #include "TestHashedBlockStream.h"
 
 #include <QBuffer>
-#include <QTest>
+#include <QtTest/QTest>
 
 #include "tests.h"
 #include "crypto/Crypto.h"
