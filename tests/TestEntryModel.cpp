@@ -17,8 +17,8 @@
 
 #include "TestEntryModel.h"
 
-#include <QSignalSpy>
-#include <QTest>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QTest>
 
 #include "modeltest.h"
 #include "tests.h"
