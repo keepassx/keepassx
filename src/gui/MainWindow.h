@@ -79,14 +79,11 @@ private:
     QActionGroup* m_lastDatabasesActions;
     QActionGroup* m_copyAdditionalAttributeActions;
     QStringList m_openDatabases;
-<<<<<<< HEAD
     QSystemTrayIcon* m_systrayicon;
     bool m_forceExit;
     QAction* m_systrayShow;
     QAction* m_systrayHide;
-=======
     InactivityTimer* m_inactivityTimer;
->>>>>>> upstream/master
 
     Q_DISABLE_COPY(MainWindow)
 };
