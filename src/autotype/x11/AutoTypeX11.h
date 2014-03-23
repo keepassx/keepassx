@@ -27,10 +27,13 @@
 
 #include <X11/Xutil.h>
 #include <X11/extensions/XTest.h>
+#include <X11/XKBlib.h>
 
 #include "autotype/AutoTypePlatformPlugin.h"
 #include "autotype/AutoTypeAction.h"
 #include "core/Global.h"
+
+#define N_MOD_INDICES (Mod5MapIndex + 1)
 
 class AutoTypePlatformX11 : public QObject, public AutoTypePlatformInterface
 {
@@ -39,6 +42,7 @@ class AutoTypePlatformX11 : public QObject, public AutoTypePlatformInterface
 
 public:
     AutoTypePlatformX11();
+    void unload() Q_DECL_OVERRIDE;
     QStringList windowTitles();
     WId activeWindow();
     QString activeWindowTitle();
@@ -51,7 +55,7 @@ public:
     KeySym charToKeySym(const QChar& ch);
     KeySym keyToKeySym(Qt::Key key);
 
-    void SendKeyPressedEvent(KeySym keysym, unsigned int shift = 0);
+    void SendKeyPressedEvent(KeySym keysym);
 
 Q_SIGNALS:
     void globalShortcutTriggered();
@@ -68,10 +72,14 @@ private:
     static int x11ErrorHandler(Display* display, XErrorEvent* error);
 
     void updateKeymap();
-    int AddKeysym(KeySym keysym, bool top);
+    bool isRemapKeycodeValid();
+    int AddKeysym(KeySym keysym);
     void AddModifier(KeySym keysym);
-    void ReadKeymap();
-    void SendEvent(XKeyEvent* event);
+    void SendEvent(XKeyEvent* event, int event_type);
+    void SendModifier(XKeyEvent *event, unsigned int mask, int event_type);
+    int GetKeycode(KeySym keysym, unsigned int *mask);
+    bool keysymModifiers(KeySym keysym, int keycode, unsigned int *mask);
+
     static int MyErrorHandler(Display* my_dpy, XErrorEvent* event);
 
     Display* m_dpy;
@@ -91,14 +99,20 @@ private:
     static bool m_xErrorOccured;
     static int (*m_oldXErrorHandler)(Display*, XErrorEvent*);
 
+    static const int m_unicodeToKeysymLen;
+    static const uint m_unicodeToKeysymKeys[];
+    static const uint m_unicodeToKeysymValues[];
+
+    XkbDescPtr m_xkb;
     KeySym* m_keysymTable;
     int m_minKeycode;
     int m_maxKeycode;
     int m_keysymPerKeycode;
-    int m_altMask;
-    int m_metaMask;
-    int m_altgrMask;
-    KeySym m_altgrKeysym;
+    /* dedicated keycode for remapped keys */
+    unsigned int m_remapKeycode;
+    KeySym m_currentRemapKeysym;
+    KeyCode m_modifier_keycode[N_MOD_INDICES];
+    bool m_loaded;
 };
 
 class AutoTypeExecturorX11 : public AutoTypeExecutor

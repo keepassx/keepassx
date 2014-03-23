@@ -17,6 +17,7 @@
 
 #include "SymmetricCipherGcrypt.h"
 
+#include "config-keepassx.h"
 #include "crypto/Crypto.h"
 
 SymmetricCipherGcrypt::SymmetricCipherGcrypt(SymmetricCipher::Algorithm algo, SymmetricCipher::Mode mode,
@@ -43,6 +44,11 @@ int SymmetricCipherGcrypt::gcryptAlgo(SymmetricCipher::Algorithm algo)
     case SymmetricCipher::Twofish:
         return GCRY_CIPHER_TWOFISH;
 
+#ifdef GCRYPT_HAS_SALSA20
+    case SymmetricCipher::Salsa20:
+        return GCRY_CIPHER_SALSA20;
+#endif
+
     default:
         Q_ASSERT(false);
         return -1;
@@ -57,6 +63,9 @@ int SymmetricCipherGcrypt::gcryptMode(SymmetricCipher::Mode mode)
 
     case SymmetricCipher::Cbc:
         return GCRY_CIPHER_MODE_CBC;
+
+    case SymmetricCipher::Stream:
+        return GCRY_CIPHER_MODE_STREAM;
 
     default:
         Q_ASSERT(false);
@@ -134,15 +143,18 @@ void SymmetricCipherGcrypt::processInPlace(QByteArray& data, quint64 rounds)
 
     gcry_error_t error;
 
+    char* rawData = data.data();
+    int size = data.size();
+
     if (m_direction == SymmetricCipher::Decrypt) {
         for (quint64 i = 0; i != rounds; ++i) {
-            error = gcry_cipher_decrypt(m_ctx, data.data(), data.size(), Q_NULLPTR, 0);
+            error = gcry_cipher_decrypt(m_ctx, rawData, size, Q_NULLPTR, 0);
             Q_ASSERT(error == 0);
         }
     }
     else {
         for (quint64 i = 0; i != rounds; ++i) {
-            error = gcry_cipher_encrypt(m_ctx, data.data(), data.size(), Q_NULLPTR, 0);
+            error = gcry_cipher_encrypt(m_ctx, rawData, size, Q_NULLPTR, 0);
             Q_ASSERT(error == 0);
         }
     }

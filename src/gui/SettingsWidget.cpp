@@ -36,6 +36,9 @@ SettingsWidget::SettingsWidget(QWidget* parent)
     add(tr("General"), m_generalWidget);
     add(tr("Security"), m_secWidget);
 
+    m_generalUi->autoTypeShortcutWidget->setVisible(autoType()->isAvailable());
+    m_generalUi->autoTypeShortcutLabel->setVisible(autoType()->isAvailable());
+
     connect(this, SIGNAL(accepted()), SLOT(saveSettings()));
     connect(this, SIGNAL(rejected()), SLOT(reject()));
 
@@ -44,6 +47,8 @@ SettingsWidget::SettingsWidget(QWidget* parent)
 
     connect(m_secUi->clearClipboardCheckBox, SIGNAL(toggled(bool)),
             m_secUi->clearClipboardSpinBox, SLOT(setEnabled(bool)));
+    connect(m_secUi->lockDatabaseIdleCheckBox, SIGNAL(toggled(bool)),
+            m_secUi->lockDatabaseIdleSpinBox, SLOT(setEnabled(bool)));
 }
 
 SettingsWidget::~SettingsWidget()
@@ -61,14 +66,21 @@ void SettingsWidget::loadSettings()
     m_generalUi->minimizeOnCopyCheckBox->setChecked(config()->get("MinimizeOnCopy").toBool());
     m_generalUi->systemTrayIconCheckBox->setChecked(config()->get("SystemTrayIcon").toBool());
 
-    m_globalAutoTypeKey = static_cast<Qt::Key>(config()->get("GlobalAutoTypeKey").toInt());
-    m_globalAutoTypeModifiers = static_cast<Qt::KeyboardModifiers>(config()->get("GlobalAutoTypeModifiers").toInt());
-    if (m_globalAutoTypeKey > 0 && m_globalAutoTypeModifiers > 0) {
-        m_generalUi->autoTypeShortcutWidget->setShortcut(m_globalAutoTypeKey, m_globalAutoTypeModifiers);
+    if (autoType()->isAvailable()) {
+        m_globalAutoTypeKey = static_cast<Qt::Key>(config()->get("GlobalAutoTypeKey").toInt());
+        m_globalAutoTypeModifiers = static_cast<Qt::KeyboardModifiers>(config()->get("GlobalAutoTypeModifiers").toInt());
+        if (m_globalAutoTypeKey > 0 && m_globalAutoTypeModifiers > 0) {
+            m_generalUi->autoTypeShortcutWidget->setShortcut(m_globalAutoTypeKey, m_globalAutoTypeModifiers);
+        }
     }
 
     m_secUi->clearClipboardCheckBox->setChecked(config()->get("security/clearclipboard").toBool());
     m_secUi->clearClipboardSpinBox->setValue(config()->get("security/clearclipboardtimeout").toInt());
+
+    m_secUi->lockDatabaseIdleCheckBox->setChecked(config()->get("security/lockdatabaseidle").toBool());
+    m_secUi->lockDatabaseIdleSpinBox->setValue(config()->get("security/lockdatabaseidlesec").toInt());
+
+    m_secUi->passwordCleartextCheckBox->setChecked(config()->get("security/passwordscleartext").toBool());
 
     setCurrentRow(0);
 }
@@ -76,16 +88,27 @@ void SettingsWidget::loadSettings()
 void SettingsWidget::saveSettings()
 {
     config()->set("RememberLastDatabases", m_generalUi->rememberLastDatabasesCheckBox->isChecked());
-    config()->set("OpenPreviousDatabasesOnStartup", m_generalUi->openPreviousDatabasesOnStartupCheckBox->isChecked());
-    config()->set("ModifiedOnExpandedStateChanges", m_generalUi->modifiedExpandedChangedCheckBox->isChecked());
-    config()->set("AutoSaveAfterEveryChange", m_generalUi->autoSaveAfterEveryChangeCheckBox->isChecked());
+    config()->set("OpenPreviousDatabasesOnStartup",
+                  m_generalUi->openPreviousDatabasesOnStartupCheckBox->isChecked());
+    config()->set("ModifiedOnExpandedStateChanges",
+                  m_generalUi->modifiedExpandedChangedCheckBox->isChecked());
+    config()->set("AutoSaveAfterEveryChange",
+                  m_generalUi->autoSaveAfterEveryChangeCheckBox->isChecked());
     config()->set("AutoSaveOnExit", m_generalUi->autoSaveOnExitCheckBox->isChecked());
     config()->set("MinimizeOnCopy", m_generalUi->minimizeOnCopyCheckBox->isChecked());
-    config()->set("GlobalAutoTypeKey", m_generalUi->autoTypeShortcutWidget->key());
-    config()->set("GlobalAutoTypeModifiers", static_cast<int>(m_generalUi->autoTypeShortcutWidget->modifiers()));
+    if (autoType()->isAvailable()) {
+        config()->set("GlobalAutoTypeKey", m_generalUi->autoTypeShortcutWidget->key());
+        config()->set("GlobalAutoTypeModifiers",
+                      static_cast<int>(m_generalUi->autoTypeShortcutWidget->modifiers()));
+    }
     config()->set("security/clearclipboard", m_secUi->clearClipboardCheckBox->isChecked());
     config()->set("security/clearclipboardtimeout", m_secUi->clearClipboardSpinBox->value());
     config()->set("SystemTrayIcon", m_generalUi->systemTrayIconCheckBox->isChecked());
+
+    config()->set("security/lockdatabaseidle", m_secUi->lockDatabaseIdleCheckBox->isChecked());
+    config()->set("security/lockdatabaseidlesec", m_secUi->lockDatabaseIdleSpinBox->value());
+
+    config()->set("security/passwordscleartext", m_secUi->passwordCleartextCheckBox->isChecked());
 
     Q_EMIT editFinished(true);
 }

@@ -63,7 +63,7 @@
     </widget>
    </item>
    <item row="6" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="autoTypeShortcutLabel">
      <property name="text">
       <string>Global Auto-Type shortcut</string>
      </property>
@@ -88,6 +88,15 @@
    <header>autotype/ShortcutWidget.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>rememberLastDatabasesCheckBox</tabstop>
+  <tabstop>openPreviousDatabasesOnStartupCheckBox</tabstop>
+  <tabstop>modifiedExpandedChangedCheckBox</tabstop>
+  <tabstop>autoSaveOnExitCheckBox</tabstop>
+  <tabstop>autoSaveAfterEveryChangeCheckBox</tabstop>
+  <tabstop>minimizeOnCopyCheckBox</tabstop>
+  <tabstop>autoTypeShortcutWidget</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

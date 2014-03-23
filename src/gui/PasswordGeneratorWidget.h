@@ -19,6 +19,7 @@
 #define KEEPASSX_PASSWORDGENERATORWIDGET_H
 
 #include <QWidget>
+#include <QComboBox>
 
 #include "core/Global.h"
 #include "core/PasswordGenerator.h"
@@ -27,6 +28,8 @@ namespace Ui {
     class PasswordGeneratorWidget;
 }
 
+class PasswordGenerator;
+
 class PasswordGeneratorWidget : public QWidget
 {
     Q_OBJECT
@@ -34,6 +37,7 @@ class PasswordGeneratorWidget : public QWidget
 public:
     explicit PasswordGeneratorWidget(QWidget* parent = Q_NULLPTR);
     ~PasswordGeneratorWidget();
+    void loadSettings();
     void reset();
 
 Q_SIGNALS:
@@ -41,14 +45,21 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void updateApplyEnabled(const QString& password);
-    void togglePassword(bool checked);
-    void generatePassword();
+
     void emitNewPassword();
+    void saveSettings();
+    void sliderMoved();
+    void spinBoxChanged();
+
+    void updateGenerator();
 
 private:
+    bool m_updatingSpinBox;
+
     PasswordGenerator::CharClasses charClasses();
     PasswordGenerator::GeneratorFlags generatorFlags();
 
+    const QScopedPointer<PasswordGenerator> m_generator;
     const QScopedPointer<Ui::PasswordGeneratorWidget> m_ui;
 };
 

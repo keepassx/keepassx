@@ -71,7 +71,7 @@ Config::Config(QObject* parent)
     userPath += "/keepassx/";
 #else
     userPath = QDir::fromNativeSeparators(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
-    userPath += "/keepassx/";
+    // storageLocation() appends the application name ("/keepassx/") to the end
 #endif
 
     userPath += "keepassx2.ini";
@@ -96,6 +96,9 @@ void Config::init(const QString& fileName)
     m_defaults.insert("MinimizeOnCopy", false);
     m_defaults.insert("security/clearclipboard", true);
     m_defaults.insert("security/clearclipboardtimeout", 10);
+    m_defaults.insert("security/lockdatabaseidle", false);
+    m_defaults.insert("security/lockdatabaseidlesec", 10);
+    m_defaults.insert("security/passwordscleartext", false);
     m_defaults.insert("SystemTrayIcon", false);
 }
 

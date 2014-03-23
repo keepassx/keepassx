@@ -17,8 +17,13 @@
 
 #include "EntryAttributes.h"
 
-const QStringList EntryAttributes::DefaultAttributes(QStringList() << "Title" << "UserName"
-                                                      << "Password" << "URL" << "Notes");
+const QString EntryAttributes::TitleKey = "Title";
+const QString EntryAttributes::UserNameKey = "UserName";
+const QString EntryAttributes::PasswordKey = "Password";
+const QString EntryAttributes::URLKey = "URL";
+const QString EntryAttributes::NotesKey = "Notes";
+const QStringList EntryAttributes::DefaultAttributes(QStringList() << TitleKey << UserNameKey
+                                                     << PasswordKey << URLKey << NotesKey);
 
 EntryAttributes::EntryAttributes(QObject* parent)
     : QObject(parent)

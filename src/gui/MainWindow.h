@@ -29,6 +29,8 @@ namespace Ui {
     class MainWindow;
 }
 
+class InactivityTimer;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -61,6 +63,7 @@ private Q_SLOTS:
     void showGroupContextMenu(const QPoint& globalPos);
     void saveToolbarState(bool value);
     void rememberOpenDatabases(const QString& filePath);
+    void applySettingsChanges();
     void setupSystemTrayIcon(bool execute = true);
     void toggleDisplay();
     void toggleDisplay(QSystemTrayIcon::ActivationReason);
@@ -76,10 +79,14 @@ private:
     QActionGroup* m_lastDatabasesActions;
     QActionGroup* m_copyAdditionalAttributeActions;
     QStringList m_openDatabases;
+<<<<<<< HEAD
     QSystemTrayIcon* m_systrayicon;
     bool m_forceExit;
     QAction* m_systrayShow;
     QAction* m_systrayHide;
+=======
+    InactivityTimer* m_inactivityTimer;
+>>>>>>> upstream/master
 
     Q_DISABLE_COPY(MainWindow)
 };

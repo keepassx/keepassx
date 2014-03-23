@@ -29,6 +29,7 @@
 #include "core/Database.h"
 #include "core/Entry.h"
 #include "core/FilePath.h"
+#include "core/InactivityTimer.h"
 #include "core/Metadata.h"
 #include "gui/AboutDialog.h"
 #include "gui/DatabaseWidget.h"
@@ -91,6 +92,11 @@ MainWindow::MainWindow()
         autoType()->registerGlobalShortcut(globalAutoTypeKey, globalAutoTypeModifiers);
     }
 
+    m_inactivityTimer = new InactivityTimer(this);
+    connect(m_inactivityTimer, SIGNAL(inactivityDetected()),
+            m_ui->tabWidget, SLOT(lockDatabases()));
+    applySettingsChanges();
+
     setShortcut(m_ui->actionDatabaseOpen, QKeySequence::Open, Qt::CTRL + Qt::Key_O);
     setShortcut(m_ui->actionDatabaseSave, QKeySequence::Save, Qt::CTRL + Qt::Key_S);
     setShortcut(m_ui->actionDatabaseSaveAs, QKeySequence::SaveAs);
@@ -128,6 +134,8 @@ MainWindow::MainWindow()
     m_ui->actionEntryEdit->setIcon(filePath()->icon("actions", "entry-edit", false));
     m_ui->actionEntryDelete->setIcon(filePath()->icon("actions", "entry-delete", false));
     m_ui->actionEntryAutoType->setIcon(filePath()->icon("actions", "auto-type", false));
+    m_ui->actionEntryCopyUsername->setIcon(filePath()->icon("actions", "username-copy", false));
+    m_ui->actionEntryCopyPassword->setIcon(filePath()->icon("actions", "password-copy", false));
 
     m_ui->actionGroupNew->setIcon(filePath()->icon("actions", "group-new", false));
     m_ui->actionGroupEdit->setIcon(filePath()->icon("actions", "group-edit", false));
@@ -161,6 +169,7 @@ MainWindow::MainWindow()
     connect(m_ui->stackedWidget, SIGNAL(currentChanged(int)), SLOT(setMenuActionState()));
     connect(m_ui->stackedWidget, SIGNAL(currentChanged(int)), SLOT(updateWindowTitle()));
     connect(m_ui->settingsWidget, SIGNAL(editFinished(bool)), SLOT(switchToDatabases()));
+    connect(m_ui->settingsWidget, SIGNAL(accepted()), SLOT(applySettingsChanges()));
 
     connect(m_ui->actionDatabaseNew, SIGNAL(triggered()), m_ui->tabWidget,
             SLOT(newDatabase()));
@@ -190,10 +199,17 @@ MainWindow::MainWindow()
             SLOT(switchToEntryEdit()));
     m_actionMultiplexer.connect(m_ui->actionEntryDelete, SIGNAL(triggered()),
             SLOT(deleteEntries()));
+
+    m_actionMultiplexer.connect(m_ui->actionEntryCopyTitle, SIGNAL(triggered()),
+            SLOT(copyTitle()));
     m_actionMultiplexer.connect(m_ui->actionEntryCopyUsername, SIGNAL(triggered()),
             SLOT(copyUsername()));
     m_actionMultiplexer.connect(m_ui->actionEntryCopyPassword, SIGNAL(triggered()),
             SLOT(copyPassword()));
+    m_actionMultiplexer.connect(m_ui->actionEntryCopyURL, SIGNAL(triggered()),
+            SLOT(copyURL()));
+    m_actionMultiplexer.connect(m_ui->actionEntryCopyNotes, SIGNAL(triggered()),
+            SLOT(copyNotes()));
     m_actionMultiplexer.connect(m_ui->actionEntryAutoType, SIGNAL(triggered()),
             SLOT(performAutoType()));
     m_actionMultiplexer.connect(m_ui->actionEntryOpenUrl, SIGNAL(triggered()),
@@ -241,15 +257,12 @@ void MainWindow::updateCopyAttributesMenu()
         return;
     }
 
-    m_ui->menuEntryCopyAttribute->clear();
-    Entry* entry = dbWidget->entryView()->currentEntry();
-
-    Q_FOREACH (const QString& key, EntryAttributes::DefaultAttributes) {
-        QAction* action = m_ui->menuEntryCopyAttribute->addAction(key);
-        m_copyAdditionalAttributeActions->addAction(action);
+    QList<QAction*> actions = m_ui->menuEntryCopyAttribute->actions();
+    for (int i = EntryAttributes::DefaultAttributes.size() + 1; i < actions.size(); i++) {
+        delete actions[i];
     }
 
-    m_ui->menuEntryCopyAttribute->addSeparator();
+    Entry* entry = dbWidget->entryView()->currentEntry();
 
     Q_FOREACH (const QString& key, entry->attributes()->customKeys()) {
         QAction* action = m_ui->menuEntryCopyAttribute->addAction(key);
@@ -296,8 +309,11 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
             m_ui->actionEntryClone->setEnabled(singleEntrySelected && !inSearch);
             m_ui->actionEntryEdit->setEnabled(singleEntrySelected);
             m_ui->actionEntryDelete->setEnabled(entriesSelected);
+            m_ui->actionEntryCopyTitle->setEnabled(singleEntrySelected);
             m_ui->actionEntryCopyUsername->setEnabled(singleEntrySelected);
             m_ui->actionEntryCopyPassword->setEnabled(singleEntrySelected);
+            m_ui->actionEntryCopyURL->setEnabled(singleEntrySelected);
+            m_ui->actionEntryCopyNotes->setEnabled(singleEntrySelected);
             m_ui->menuEntryCopyAttribute->setEnabled(singleEntrySelected);
             m_ui->actionEntryAutoType->setEnabled(singleEntrySelected);
             m_ui->actionEntryOpenUrl->setEnabled(singleEntrySelected);
@@ -585,4 +601,20 @@ void MainWindow::setupSystemTrayIcon(bool execute)
 
     // Show systray icon
     m_systrayicon->show();
+}
+
+void MainWindow::applySettingsChanges()
+{
+    int timeout = config()->get("security/lockdatabaseidlesec").toInt() * 1000;
+    if (timeout <= 0) {
+        timeout = 60;
+    }
+
+    m_inactivityTimer->setInactivityTimeout(timeout);
+    if (config()->get("security/lockdatabaseidle").toBool()) {
+        m_inactivityTimer->activate();
+    }
+    else {
+        m_inactivityTimer->deactivate();
+    }
 }
