@@ -73,6 +73,9 @@ private:
 
     static const QString BaseWindowTitle;
 
+    void saveWindowInformation();
+    bool saveLastDatabases();
+
     const QScopedPointer<Ui::MainWindow> m_ui;
     SignalMultiplexer m_actionMultiplexer;
     QAction* m_clearHistoryAction;

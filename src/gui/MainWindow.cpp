@@ -65,6 +65,8 @@ MainWindow::MainWindow()
 #endif
 #endif
 
+    restoreGeometry(config()->get("window/Geometry").toByteArray());
+
     setWindowIcon(filePath()->applicationIcon());
     QAction* toggleViewAction = m_ui->toolBar->toggleViewAction();
     toggleViewAction->setText(tr("Show toolbar"));
@@ -442,6 +444,33 @@ void MainWindow::databaseTabChanged(int tabIndex)
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
+    if ( m_systrayicon && ! m_forceExit ) {
+        event->ignore();
+        hide();
+    }
+    else {
+        bool accept = saveLastDatabases();
+
+        if (accept) {
+            saveWindowInformation();
+
+            event->accept();
+        }
+        else {
+            m_forceExit = false;
+            event->ignore();
+        }
+    }
+}
+
+void MainWindow::saveWindowInformation()
+{
+    config()->set("window/Geometry", saveGeometry());
+}
+
+bool MainWindow::saveLastDatabases()
+{
+    bool accept;
     m_openDatabases.clear();
     bool openPreviousDatabasesOnStartup = config()->get("OpenPreviousDatabasesOnStartup").toBool();
 
@@ -450,18 +479,11 @@ void MainWindow::closeEvent(QCloseEvent* event)
                 this, SLOT(rememberOpenDatabases(QString)));
     }
 
-    if ( m_systrayicon && ! m_forceExit ) {
-        event->ignore();
-        hide();
+    if (!m_ui->tabWidget->closeAllDatabases()) {
+        accept = false;
     }
     else {
-        if (!m_ui->tabWidget->closeAllDatabases()) {
-            m_forceExit = false;
-            event->ignore();
-        }
-        else {
-            event->accept();
-        }
+        accept = true;
     }
 
     if (openPreviousDatabasesOnStartup) {
@@ -469,6 +491,8 @@ void MainWindow::closeEvent(QCloseEvent* event)
                    this, SLOT(rememberOpenDatabases(QString)));
         config()->set("LastOpenedDatabases", m_openDatabases);
     }
+
+    return accept;
 }
 
 void MainWindow::showEntryContextMenu(const QPoint& globalPos)
