@@ -10,27 +10,11 @@
     <height>303</height>
    </rect>
   </property>
-  <layout class="QFormLayout" name="formLayout">
+  <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QCheckBox" name="clearClipboardCheckBox">
      <property name="text">
       <string>Clear clipboard after</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QSpinBox" name="clearClipboardSpinBox">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="suffix">
-      <string> sec</string>
-     </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>999</number>
      </property>
     </widget>
    </item>
@@ -57,7 +41,36 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="0" column="1">
+    <widget class="QSpinBox" name="clearClipboardSpinBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="suffix">
+      <string> sec</string>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>999</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="0" colspan="2">
     <widget class="QCheckBox" name="passwordCleartextCheckBox">
      <property name="text">
       <string>Show passwords in cleartext by default</string>

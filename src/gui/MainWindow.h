@@ -34,7 +34,9 @@ class InactivityTimer;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+#if defined(Q_WS_X11)
     Q_CLASSINFO("D-Bus Interface", "org.keepassx.MainWindow")
+#endif
 public:
     MainWindow();
     ~MainWindow();

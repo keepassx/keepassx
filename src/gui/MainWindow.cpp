@@ -191,6 +191,7 @@ MainWindow::MainWindow()
             SLOT(importKeePass1Database()));
     connect(m_ui->actionLockDatabases, SIGNAL(triggered()), m_ui->tabWidget,
             SLOT(lockDatabases()));
+    connect(m_ui->actionClose, SIGNAL(triggered()), SLOT(close()));
     connect(m_ui->actionQuit, SIGNAL(triggered()), SLOT(forceExit()));
 
     m_actionMultiplexer.connect(m_ui->actionEntryNew, SIGNAL(triggered()),
@@ -564,6 +565,7 @@ void MainWindow::setupSystemTrayIcon(bool execute)
     if ( ! execute ) return;
     if ( ! config()->get("SystemTrayIcon").toBool() )
     {
+        m_ui->actionClose->setEnabled(false);
         if ( m_systrayicon )
         {
             m_systrayicon->hide();
@@ -576,6 +578,12 @@ void MainWindow::setupSystemTrayIcon(bool execute)
 #ifndef QT_NO_DEBUG
     qDebug() << "QSystemTrayIcon is not available";
 #endif
+        return;
+    }
+    // Already setup, no need to setup 2 time. Just be sure it shown.
+    if ( m_systrayicon )
+    {
+        m_systrayicon->show();
         return;
     }
     m_systrayicon = new QSystemTrayIcon(this);
@@ -625,6 +633,7 @@ void MainWindow::setupSystemTrayIcon(bool execute)
 
     // Show systray icon
     m_systrayicon->show();
+    m_ui->actionClose->setEnabled(true);
 }
 
 void MainWindow::applySettingsChanges()
