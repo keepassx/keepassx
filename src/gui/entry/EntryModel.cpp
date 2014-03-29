@@ -113,7 +113,7 @@ int EntryModel::columnCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
     // Explicit cast for c++11 compatibility
-    return (int) EntryModel::Total;
+    return static_cast<int>(EntryModel::Total);
 }
 
 QVariant EntryModel::data(const QModelIndex& index, int role) const
