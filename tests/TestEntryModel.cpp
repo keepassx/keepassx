@@ -282,7 +282,7 @@ void TestEntryModel::testProxyModel()
 
     QSignalSpy spyColumnRemove(modelProxy, SIGNAL(columnsAboutToBeRemoved(QModelIndex,int,int)));
     modelProxy->hideColumn(0, true);
-    QCOMPARE(modelProxy->columnCount(), 3);
+    QCOMPARE(modelProxy->columnCount(), 4);
     QVERIFY(spyColumnRemove.size() >= 1);
 
     int oldSpyColumnRemoveSize = spyColumnRemove.size();
@@ -298,7 +298,7 @@ void TestEntryModel::testProxyModel()
 
     QSignalSpy spyColumnInsert(modelProxy, SIGNAL(columnsAboutToBeInserted(QModelIndex,int,int)));
     modelProxy->hideColumn(0, false);
-    QCOMPARE(modelProxy->columnCount(), 4);
+    QCOMPARE(modelProxy->columnCount(), 5);
     QVERIFY(spyColumnInsert.size() >= 1);
 
     int oldSpyColumnInsertSize = spyColumnInsert.size();
