@@ -112,8 +112,8 @@ int EntryModel::rowCount(const QModelIndex& parent) const
 int EntryModel::columnCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-
-    return 4;
+    // Explicit cast for c++11 compatibility
+    return (int) EntryModel::Total;
 }
 
 QVariant EntryModel::data(const QModelIndex& index, int role) const
@@ -126,27 +126,29 @@ QVariant EntryModel::data(const QModelIndex& index, int role) const
 
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
-        case ParentGroup:
+        case EntryModel::ParentGroup:
             if (entry->group()) {
                 return entry->group()->name();
             }
             break;
-        case Title:
+        case EntryModel::Title:
             return entry->title();
-        case Username:
+        case EntryModel::Username:
             return entry->username();
-        case Url:
+        case EntryModel::Url:
             return entry->url();
+        case EntryModel::Notes:
+            return entry->notes();
         }
     }
     else if (role == Qt::DecorationRole) {
         switch (index.column()) {
-        case ParentGroup:
+        case EntryModel::ParentGroup:
             if (entry->group()) {
                 return entry->group()->iconPixmap();
             }
             break;
-        case Title:
+        case EntryModel::Title:
             if (entry->isExpired()) {
                 return databaseIcons()->iconPixmap(DatabaseIcons::ExpiredIconIndex);
             }
@@ -169,14 +171,16 @@ QVariant EntryModel::headerData(int section, Qt::Orientation orientation, int ro
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch (section) {
-        case ParentGroup:
+        case EntryModel::ParentGroup:
             return tr("Group");
-        case Title:
+        case EntryModel::Title:
             return tr("Title");
-        case Username:
+        case EntryModel::Username:
             return tr("Username");
-        case Url:
+        case EntryModel::Url:
             return tr("URL");
+        case EntryModel::Notes:
+            return tr("Notes");
         }
     }
 
