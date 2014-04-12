@@ -45,6 +45,7 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void updateApplyEnabled(const QString& password);
+    void updatePasswordStrength(const QString& password);
 
     void emitNewPassword();
     void saveSettings();

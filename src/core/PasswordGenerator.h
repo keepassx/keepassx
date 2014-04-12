@@ -21,6 +21,7 @@
 #include <QFlags>
 #include <QString>
 #include <QVector>
+#include <QStringList>
 
 #include "core/Global.h"
 
@@ -48,6 +49,7 @@ public:
 public:
     PasswordGenerator();
 
+    int calculateEntropy(QString password);
     void setLength(int length);
     void setCharClasses(const CharClasses& classes);
     void setFlags(const GeneratorFlags& flags);
@@ -57,8 +59,10 @@ public:
     QString generatePassword() const;
 
 private:
+    CharClass characterType(QChar c);
     QVector<PasswordGroup> passwordGroups() const;
     int numCharClasses() const;
+    int calculateRawEntropy(QString password);
 
     int m_length;
     CharClasses m_classes;
