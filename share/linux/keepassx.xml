@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+  <mime-type type="application/x-keepass">
+    <comment>KeePass 1 database</comment>
+    <glob pattern="*.kdb"/>
+    <icon name="application-x-keepassx"/>
+  </mime-type>
   <mime-type type="application/x-keepass2">
     <comment>KeePass 2 database</comment>
     <glob pattern="*.kdbx"/>
