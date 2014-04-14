@@ -29,6 +29,7 @@
 #include "autotype/AutoType.h"
 #include "core/Config.h"
 #include "core/FilePath.h"
+#include "core/Group.h"
 #include "core/Metadata.h"
 #include "core/Tools.h"
 #include "gui/ChangeMasterKeyWidget.h"
@@ -213,7 +214,26 @@ void DatabaseWidget::createEntry()
     m_newEntry->setUuid(Uuid::random());
     m_newEntry->setUsername(m_db->metadata()->defaultUserName());
     m_newParent = m_groupView->currentGroup();
+    setIconFromParent();
     switchToEntryEdit(m_newEntry, true);
+}
+
+void DatabaseWidget::setIconFromParent()
+{
+    if (!config()->get("UseGroupIconOnEntryCreation").toBool()) {
+        return;
+    }
+
+    if (m_newParent->iconNumber() == Group::DefaultIconNumber && m_newParent->iconUuid().isNull()) {
+        return;
+    }
+
+    if (m_newParent->iconUuid().isNull()) {
+        m_newEntry->setIcon(m_newParent->iconNumber());
+    }
+    else {
+        m_newEntry->setIcon(m_newParent->iconUuid());
+    }
 }
 
 void DatabaseWidget::cloneEntry()
