@@ -67,6 +67,7 @@ void SettingsWidget::loadSettings()
     m_generalUi->autoSaveOnExitCheckBox->setChecked(config()->get("AutoSaveOnExit").toBool());
     m_generalUi->minimizeOnCopyCheckBox->setChecked(config()->get("MinimizeOnCopy").toBool());
     m_generalUi->systemTrayIconCheckBox->setChecked(config()->get("SystemTrayIcon").toBool());
+    m_generalUi->useGroupIconOnEntryCreationCheckBox->setChecked(config()->get("UseGroupIconOnEntryCreation").toBool());
 
     if (autoType()->isAvailable()) {
         m_globalAutoTypeKey = static_cast<Qt::Key>(config()->get("GlobalAutoTypeKey").toInt());
@@ -84,6 +85,8 @@ void SettingsWidget::loadSettings()
 
     m_secUi->passwordCleartextCheckBox->setChecked(config()->get("security/passwordscleartext").toBool());
 
+    m_secUi->autoTypeAskCheckBox->setChecked(config()->get("security/autotypeask").toBool());
+
     setCurrentRow(0);
 }
 
@@ -98,19 +101,20 @@ void SettingsWidget::saveSettings()
                   m_generalUi->autoSaveAfterEveryChangeCheckBox->isChecked());
     config()->set("AutoSaveOnExit", m_generalUi->autoSaveOnExitCheckBox->isChecked());
     config()->set("MinimizeOnCopy", m_generalUi->minimizeOnCopyCheckBox->isChecked());
+    config()->set("UseGroupIconOnEntryCreation",
+                  m_generalUi->useGroupIconOnEntryCreationCheckBox->isChecked());
     if (autoType()->isAvailable()) {
         config()->set("GlobalAutoTypeKey", m_generalUi->autoTypeShortcutWidget->key());
         config()->set("GlobalAutoTypeModifiers",
                       static_cast<int>(m_generalUi->autoTypeShortcutWidget->modifiers()));
     }
+    config()->set("SystemTrayIcon", m_generalUi->systemTrayIconCheckBox->isChecked());
     config()->set("security/clearclipboard", m_secUi->clearClipboardCheckBox->isChecked());
     config()->set("security/clearclipboardtimeout", m_secUi->clearClipboardSpinBox->value());
-    config()->set("SystemTrayIcon", m_generalUi->systemTrayIconCheckBox->isChecked());
-
     config()->set("security/lockdatabaseidle", m_secUi->lockDatabaseIdleCheckBox->isChecked());
     config()->set("security/lockdatabaseidlesec", m_secUi->lockDatabaseIdleSpinBox->value());
-
     config()->set("security/passwordscleartext", m_secUi->passwordCleartextCheckBox->isChecked());
+    config()->set("security/autotypeask", m_secUi->autoTypeAskCheckBox->isChecked());
 
     Q_EMIT editFinished(true);
 }
