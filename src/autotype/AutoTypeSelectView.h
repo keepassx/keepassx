@@ -29,6 +29,9 @@ class AutoTypeSelectView : public EntryView
 
 public:
     explicit AutoTypeSelectView(QWidget* parent = Q_NULLPTR);
+    virtual const QString& getHeaderConfigKeyName();
+    
+    static const QString m_HEADER_CONFIG_KEY_NAME;
 
 protected:
     void mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
