@@ -22,6 +22,10 @@
 
 class EntryView;
 
+/**
+ * Abstract class that tests saving of QHeaderView state of EntryView and any
+ * children of EntryView (AutoTypeSelectView).
+ */
 class TestHeaderConfig : public QObject
 {
     Q_OBJECT
@@ -38,8 +42,18 @@ private Q_SLOTS:
     void cleanup();
     
 protected:
+    /**
+     * Constructor.
+     * @param configHeaderKeyName The key name that stores header state for the
+     * class under test.
+     */
     TestHeaderConfig(const QString& configHeaderKeyName);
     virtual ~TestHeaderConfig() { }
+    
+    /**
+     * Returns a instance of the class under test.
+     * @return EntryView* or a child of EntryView*.
+     */
     virtual EntryView* allocTestClass() = 0;
     
 private:
