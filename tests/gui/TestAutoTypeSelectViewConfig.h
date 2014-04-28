@@ -15,39 +15,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSX_TESTHEADERCONFIG_H
-#define KEEPASSX_TESTHEADERCONFIG_H
+#ifndef KEEPASSX_TESTAUTOTYPESELECTVIEWCONFIG_H
+#define	KEEPASSX_TESTAUTOTYPESELECTVIEWCONFIG_H
 
-#include <QObject>
+#include "TestHeaderConfig.h"
 
 class EntryView;
 
-class TestHeaderConfig : public QObject
+class TestAutoTypeSelectViewConfig : public TestHeaderConfig 
 {
-    Q_OBJECT
-            
-private Q_SLOTS:
-    void initTestCase();
-    void init();
-    void testKeyNameCorrect();
-    void testNoKeyGivesNull();
-    void setState();
-    void testRestoreState();
-    void testChangeSaved();
-    void testDifferentViewHasSameState();
-    void cleanup();
+public:
+    TestAutoTypeSelectViewConfig();
+    virtual ~TestAutoTypeSelectViewConfig() { }
     
 protected:
-    TestHeaderConfig(const QString& configHeaderKeyName);
-    virtual ~TestHeaderConfig() { }
-    virtual EntryView* allocTestClass() = 0;
-    
-private:
-    TestHeaderConfig() { }
-    EntryView* m_entryView;
-    QString m_headerKeyName;
+    virtual EntryView* allocTestClass();
 };
 
-
-#endif	// KEEPASSX_TESTHEADERCONFIG_H
+#endif	// KEEPASSX_TESTAUTOTYPESELECTVIEWCONFIG_H
 

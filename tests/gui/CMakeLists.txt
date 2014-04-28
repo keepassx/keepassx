@@ -17,4 +17,6 @@ add_unit_test(NAME testgui SOURCES TestGui.cpp MOCS TestGui.h LIBS ${TEST_LIBRAR
 
 add_unit_test(NAME testguipixmaps SOURCES TestGuiPixmaps.cpp MOCS TestGuiPixmaps.h LIBS ${TEST_LIBRARIES})
 
-add_unit_test(NAME testheaderconfig SOURCES TestHeaderConfig.cpp MOCS TestHeaderConfig.h LIBS ${TEST_LIBRARIES})
+add_unit_test(NAME testentryviewconfig SOURCES TestEntryViewConfig.cpp TestHeaderConfig.cpp MOCS TestEntryViewConfig.h TestHeaderConfig.h LIBS ${TEST_LIBRARIES})
+
+add_unit_test(NAME testautotypeselectviewconfig SOURCES TestAutoTypeSelectViewConfig.cpp TestHeaderConfig.cpp MOCS TestAutoTypeSelectViewConfig.h TestHeaderConfig.h LIBS ${TEST_LIBRARIES})

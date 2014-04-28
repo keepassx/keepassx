@@ -4,6 +4,12 @@
 
 #include <QTest>
 #include <QHeaderView>
+#include <QScopedPointer>
+
+TestHeaderConfig::TestHeaderConfig(const QString& configHeaderKeyName)
+    : m_headerKeyName(configHeaderKeyName)
+{    
+}
 
 void TestHeaderConfig::initTestCase()
 {
@@ -12,18 +18,18 @@ void TestHeaderConfig::initTestCase()
 
 void TestHeaderConfig::init()
 {
-    m_entryView = new EntryView();
+    m_entryView = allocTestClass();
 }
 
 void TestHeaderConfig::testKeyNameCorrect()
 {
     QString actual = m_entryView->getHeaderConfigKeyName();
-    QCOMPARE(actual, EntryView::m_HEADER_CONFIG_KEY_NAME);
+    QCOMPARE(actual, m_headerKeyName);
 }
 
 void TestHeaderConfig::testNoKeyGivesNull()
 {
-    QVariant actual = config()->get(EntryView::m_HEADER_CONFIG_KEY_NAME);
+    QVariant actual = config()->get(m_headerKeyName);
     QVERIFY(actual.isNull() );    
 }
 
@@ -33,12 +39,12 @@ void TestHeaderConfig::setState()
     QVERIFY(m_entryView->header()->count() > 0);
     m_entryView->header()->resizeSection(0, 100);
     QByteArray state = m_entryView->header()->saveState();
-    config()->set(EntryView::m_HEADER_CONFIG_KEY_NAME, state);
+    config()->set(m_headerKeyName, state);
 }
 
 void TestHeaderConfig::testRestoreState()
 {
-    QVariant expected = config()->get(EntryView::m_HEADER_CONFIG_KEY_NAME);
+    QVariant expected = config()->get(m_headerKeyName);
     m_entryView->show();
     QByteArray actual = m_entryView->header()->saveState();
     QCOMPARE(actual, expected.toByteArray() );
@@ -52,7 +58,7 @@ void TestHeaderConfig::testChangeSaved()
     m_entryView->header()->resizeSection(1, 75);
     QByteArray expected = m_entryView->header()->saveState();
     QByteArray actualValueInConfig = 
-            config()->get(EntryView::m_HEADER_CONFIG_KEY_NAME).toByteArray();
+            config()->get(m_headerKeyName).toByteArray();
     QCOMPARE(actualValueInConfig, expected);    
 }
 
@@ -60,11 +66,11 @@ void TestHeaderConfig::testDifferentViewHasSameState()
 {
     m_entryView->show();
     QByteArray expected = m_entryView->header()->saveState();
-    EntryView anotherView;
-    
-    anotherView.show();
-    QCOMPARE(anotherView.header()->sectionSize(1), 75);
-    QByteArray actualHeaderState = anotherView.header()->saveState();
+    QScopedPointer<EntryView> anotherView(allocTestClass() );
+
+    anotherView->show();
+    QCOMPARE(anotherView->header()->sectionSize(1), 75);
+    QByteArray actualHeaderState = anotherView->header()->saveState();
     QCOMPARE(actualHeaderState, expected);
 }
 
@@ -72,5 +78,3 @@ void TestHeaderConfig::cleanup()
 {
     delete m_entryView;
 }
-
-QTEST_MAIN(TestHeaderConfig)
