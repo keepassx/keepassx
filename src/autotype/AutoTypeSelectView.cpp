@@ -19,6 +19,9 @@
 
 #include <QMouseEvent>
 
+const QString AutoTypeSelectView::m_HEADER_CONFIG_KEY_NAME =
+    "autoTypeSelectViewHeaderSettings";
+
 AutoTypeSelectView::AutoTypeSelectView(QWidget* parent)
     : EntryView(parent)
 {
@@ -53,4 +56,9 @@ void AutoTypeSelectView::selectFirstEntry()
     if (index.isValid()) {
         setCurrentIndex(index);
     }
+}
+
+const QString& AutoTypeSelectView::getHeaderConfigKeyName()
+{
+    return AutoTypeSelectView::m_HEADER_CONFIG_KEY_NAME;
 }
