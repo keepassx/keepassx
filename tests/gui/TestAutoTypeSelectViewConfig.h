@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 Felix Geyer <debfx@fobos.de>
+ * 
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,29 +15,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSX_AUTOTYPESELECTVIEW_H
-#define KEEPASSX_AUTOTYPESELECTVIEW_H
+#ifndef KEEPASSX_TESTAUTOTYPESELECTVIEWCONFIG_H
+#define	KEEPASSX_TESTAUTOTYPESELECTVIEWCONFIG_H
 
-#include "core/Global.h"
-#include "gui/entry/EntryView.h"
+#include "TestHeaderConfig.h"
 
-class Entry;
+class EntryView;
 
-class AutoTypeSelectView : public EntryView
+class TestAutoTypeSelectViewConfig : public TestHeaderConfig 
 {
-    Q_OBJECT
-
 public:
-    explicit AutoTypeSelectView(QWidget* parent = Q_NULLPTR);
-    virtual const QString& getHeaderConfigKeyName();
+    TestAutoTypeSelectViewConfig();
+    virtual ~TestAutoTypeSelectViewConfig() { }
     
-    static const QString m_HEADER_CONFIG_KEY_NAME;
-
 protected:
-    void mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
-
-private Q_SLOTS:
-    void selectFirstEntry();
+    virtual EntryView* allocTestClass();
 };
 
-#endif // KEEPASSX_AUTOTYPESELECTVIEW_H
+#endif	// KEEPASSX_TESTAUTOTYPESELECTVIEWCONFIG_H
+

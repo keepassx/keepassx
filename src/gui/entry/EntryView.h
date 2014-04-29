@@ -42,7 +42,10 @@ public:
     Entry* entryFromIndex(const QModelIndex& index);
     void setEntryList(const QList<Entry*>& entries);
     bool inEntryListMode();
-
+    virtual const QString& getHeaderConfigKeyName();
+    
+    static const QString m_HEADER_CONFIG_KEY_NAME;
+    
 public Q_SLOTS:
     void setGroup(Group* group);
 
@@ -52,16 +55,22 @@ Q_SIGNALS:
 
 protected:
     void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
+    void showEvent(QShowEvent* event) Q_DECL_OVERRIDE;
+    void connectHeaderSignals();
+    void saveHeaderSettings();
+    void restoreHeaderSettings();
 
 private Q_SLOTS:
     void emitEntryActivated(const QModelIndex& index);
     void switchToEntryListMode();
     void switchToGroupMode();
+    void sectionChanged(int, int, int);
 
 private:
     EntryModel* const m_model;
     SortFilterHideProxyModel* const m_sortModel;
     bool m_inEntryListMode;
+    bool m_headerSignalsConnected;
 };
 
 #endif // KEEPASSX_ENTRYVIEW_H

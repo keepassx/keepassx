@@ -16,16 +16,22 @@
  */
 
 #include "EntryView.h"
+#include "core/Config.h"
 
 #include <QKeyEvent>
+#include <QHeaderView>
 
 #include "gui/SortFilterHideProxyModel.h"
+
+const QString EntryView::m_HEADER_CONFIG_KEY_NAME = "entryViewHeaderSettings";
+
 
 EntryView::EntryView(QWidget* parent)
     : QTreeView(parent)
     , m_model(new EntryModel(this))
     , m_sortModel(new SortFilterHideProxyModel(this))
     , m_inEntryListMode(false)
+    , m_headerSignalsConnected(false)
 {
     m_sortModel->setSourceModel(m_model);
     m_sortModel->setDynamicSortFilter(true);
@@ -40,7 +46,7 @@ EntryView::EntryView(QWidget* parent)
     setDragEnabled(true);
     setSortingEnabled(true);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
-
+    
     // QAbstractItemView::startDrag() uses this property as the default drag action
     setDefaultDropAction(Qt::MoveAction);
 
@@ -57,6 +63,13 @@ void EntryView::keyPressEvent(QKeyEvent* event)
     }
 
     QTreeView::keyPressEvent(event);
+}
+
+void EntryView::showEvent(QShowEvent* event)
+{
+    restoreHeaderSettings();
+    
+    QTreeView::showEvent(event);
 }
 
 void EntryView::setGroup(Group* group)
@@ -135,4 +148,36 @@ void EntryView::switchToGroupMode()
     sortByColumn(-1, Qt::AscendingOrder);
     sortByColumn(0, Qt::AscendingOrder);
     m_inEntryListMode = false;
+}
+
+const QString& EntryView::getHeaderConfigKeyName()
+{
+    return EntryView::m_HEADER_CONFIG_KEY_NAME;
+}
+
+void EntryView::saveHeaderSettings()
+{
+    config()->set(getHeaderConfigKeyName(), header()->saveState() );
+}
+
+void EntryView::restoreHeaderSettings()
+{
+    header()->restoreState(config()->get(getHeaderConfigKeyName() ).toByteArray() );
+    
+    // Don't listen for header change signals until last saved values restored.
+    connectHeaderSignals();
+}
+
+void EntryView::connectHeaderSignals()
+{
+    if(!m_headerSignalsConnected) {        
+        m_headerSignalsConnected = true;
+        connect(header(), SIGNAL(sectionResized(int, int, int)), SLOT(sectionChanged(int, int, int)));
+        connect(header(), SIGNAL(sectionMoved(int, int, int)), SLOT(sectionChanged(int, int, int)));
+    }
+}
+
+void EntryView::sectionChanged(int, int, int)
+{
+    saveHeaderSettings();
 }
