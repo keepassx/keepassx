@@ -493,7 +493,9 @@ Group* KeePass2XmlReader::parseGroup()
         if (m_xml.name() == "UUID") {
             Uuid uuid = readUuid();
             if (uuid.isNull()) {
-                raiseError("Null group uuid");
+                qWarning("KeePass2XmlReader::parseGroup: Null group uuid, created new uuid. \"%s\"", qPrintable(m_xml.name().toString()));
+                uuid = Uuid::random();
+                group->setUuid(uuid);
             }
             else {
                 group->setUuid(uuid);
@@ -665,7 +667,11 @@ Entry* KeePass2XmlReader::parseEntry(bool history)
         if (m_xml.name() == "UUID") {
             Uuid uuid = readUuid();
             if (uuid.isNull()) {
-                raiseError("Null entry uuid");
+                // if uuid missing, create a new one
+                // based on KeePass source (KdbxFile.Read.Streamed.cs) 
+                qWarning("KeePass2XmlReader::parseEntry: Null entry uuid, created new uuid. \"%s\"", qPrintable(m_xml.name().toString()));
+                uuid = Uuid::random();
+                entry->setUuid(uuid);
             }
             else {
                 entry->setUuid(uuid);
@@ -984,9 +990,12 @@ QDateTime KeePass2XmlReader::readDateTime()
 {
     QString str = readString();
     QDateTime dt = QDateTime::fromString(str, Qt::ISODate);
-
+    
+    // if the dt is not valid or missing, replace it with the current date time.
+    // based on KeePass source (KdbxFile.Read.Streamed.cs) 
     if (!dt.isValid()) {
-        raiseError("Invalid date time value");
+        qWarning("KeePass2XmlReader::readDateTime: Invalid date time value. Replacing invalid date time value with current date time.\"%s\"", qPrintable(m_xml.name().toString()));
+        dt = QDateTime::currentDateTime();
     }
 
     return dt;
@@ -1043,7 +1052,7 @@ Uuid KeePass2XmlReader::readUuid()
 {
     QByteArray uuidBin = readBinary();
     if (uuidBin.length() != Uuid::Length) {
-        raiseError("Invalid uuid value");
+        qWarning("KeePass2XmlReader::readUuid: Invalid uuid value. \"%s\"", qPrintable(m_xml.name().toString()));
         return Uuid();
     }
     else {
