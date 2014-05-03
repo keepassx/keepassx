@@ -341,6 +341,11 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
             Q_FOREACH (QAction* action, m_ui->menuGroups->actions()) {
                 action->setEnabled(false);
             }
+            m_ui->actionEntryCopyTitle->setEnabled(false);
+            m_ui->actionEntryCopyUsername->setEnabled(false);
+            m_ui->actionEntryCopyPassword->setEnabled(false);
+            m_ui->actionEntryCopyURL->setEnabled(false);
+            m_ui->actionEntryCopyNotes->setEnabled(false);
             m_ui->menuEntryCopyAttribute->setEnabled(false);
 
             m_ui->actionSearch->setEnabled(false);
@@ -363,6 +368,11 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
         Q_FOREACH (QAction* action, m_ui->menuGroups->actions()) {
             action->setEnabled(false);
         }
+        m_ui->actionEntryCopyTitle->setEnabled(false);
+        m_ui->actionEntryCopyUsername->setEnabled(false);
+        m_ui->actionEntryCopyPassword->setEnabled(false);
+        m_ui->actionEntryCopyURL->setEnabled(false);
+        m_ui->actionEntryCopyNotes->setEnabled(false);
         m_ui->menuEntryCopyAttribute->setEnabled(false);
 
         m_ui->actionSearch->setEnabled(false);
