@@ -45,6 +45,10 @@
 #include "gui/group/EditGroupWidget.h"
 #include "gui/group/GroupView.h"
 
+extern "C" {
+#include <liboath/oath.h>
+}
+
 DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     : QStackedWidget(parent)
     , m_db(db)
@@ -375,7 +379,47 @@ void DatabaseWidget::copyPassword()
         return;
     }
 
-    setClipboardTextAndMinimize(currentEntry->password());
+    QString q_url = currentEntry->url();
+    const char *url = qPrintable(q_url);
+    if ( strncmp(url, "totp+", sizeof("totp+")-1) == 0 )
+      {
+	char output_otp[20];
+	int ret;
+	const char *secret = qPrintable(currentEntry->password());
+	char *bin_secret = NULL;
+	size_t bin_secret_len;
+
+	ret = oath_init();
+	
+	if ( 0 == ret )
+	  ret = oath_base32_decode(secret, strlen(secret),
+				   &bin_secret, &bin_secret_len);
+					 
+	memset(output_otp, 0, sizeof(output_otp));
+	
+	if ( 0 == ret )
+	  ret = oath_totp_generate(bin_secret,
+				   bin_secret_len,
+				   time(NULL),
+				   OATH_TOTP_DEFAULT_TIME_STEP_SIZE,
+				   OATH_TOTP_DEFAULT_START_TIME,
+				   6, output_otp);
+	oath_done();
+	if ( 0 == ret )
+	  {
+	    setClipboardTextAndMinimize(QString(output_otp));
+	  }
+	else
+	  {
+	    setClipboardTextAndMinimize(QString("000000"));
+	  }
+
+	free(bin_secret);
+      }
+    else
+      {
+	setClipboardTextAndMinimize(currentEntry->password());
+      }
 }
 
 void DatabaseWidget::copyURL()
