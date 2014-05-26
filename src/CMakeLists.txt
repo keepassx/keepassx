@@ -267,7 +267,8 @@ if(APPLE AND NOT (${CMAKE_VERSION} VERSION_LESS 2.8.8))
   include(CPack)
 
   include(DeployQt4)
-  install_qt4_executable(${PROGNAME}.app "qjpeg;qgif;qico;qtaccessiblewidgets")
+  install_qt4_plugin_path("${CMAKE_CURRENT_BINARY_DIR}/autotype/mac/libkeepassx-autotype-mac.so" ${PROGNAME}.app 0 MACAUTO)
+  install_qt4_executable(${PROGNAME}.app "qjpeg;qgif;qico;qtaccessiblewidgets" ${MACAUTO})
 endif()
 
 if(MINGW AND NOT (${CMAKE_VERSION} VERSION_LESS 2.8.8))
