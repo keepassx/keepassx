@@ -158,7 +158,7 @@ int AutoTypePlatformMac::initialTimeout()
 
 AutoTypeExecutor* AutoTypePlatformMac::createExecutor()
 {
-    return new AutoTypeExecturorMac(this);
+    return new AutoTypeExecutorMac(this);
 }
 
 
@@ -532,19 +532,19 @@ pid_t AutoTypePlatformMac::getKeepassxPID2()
 }
 
 
-AutoTypeExecturorMac::AutoTypeExecturorMac(AutoTypePlatformMac* platform)
+AutoTypeExecutorMac::AutoTypeExecutorMac(AutoTypePlatformMac* platform)
     : m_platform(platform)
 {
 }
 
 
-void AutoTypeExecturorMac::execChar(AutoTypeChar* action)
+void AutoTypeExecutorMac::execChar(AutoTypeChar* action)
 {
     m_platform->sendUnicode(action->character.unicode());
 }
 
 
-void AutoTypeExecturorMac::execKey(AutoTypeKey* action)
+void AutoTypeExecutorMac::execKey(AutoTypeKey* action)
 {
     m_platform->sendKeycode(m_platform->keyToKeycodeWithMods(action->key));
 }

@@ -66,7 +66,7 @@ private:
     void flushUnicode();
     void keyDownUp(CGEventRef theEvent);
     void sleepTime(int msec);
-    inline void sleepKeyStrokeDelay(){ sleepTime(5); };
+    inline void sleepKeyStrokeDelay() { sleepTime(5); }
     static OSStatus hotKeyHandler(EventHandlerCallRef,
                                   EventRef, void *userData);
     pid_t getKeepassxPID();
@@ -92,10 +92,10 @@ private:
 };
 
 
-class AutoTypeExecturorMac : public AutoTypeExecutor
+class AutoTypeExecutorMac : public AutoTypeExecutor
 {
 public:
-    explicit AutoTypeExecturorMac(AutoTypePlatformMac* platform);
+    explicit AutoTypeExecutorMac(AutoTypePlatformMac* platform);
 
     void execChar(AutoTypeChar* action);
     void execKey(AutoTypeKey* action);
