@@ -6,15 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>339</width>
-    <height>237</height>
+    <width>374</width>
+    <height>292</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="0" colspan="2">
-    <widget class="QCheckBox" name="autoSaveAfterEveryChangeCheckBox">
+   <item row="0" column="0" colspan="2">
+    <widget class="QCheckBox" name="rememberLastDatabasesCheckBox">
      <property name="text">
-      <string>Automatically save after every change</string>
+      <string>Remember last databases</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -22,23 +25,6 @@
     <widget class="QCheckBox" name="openPreviousDatabasesOnStartupCheckBox">
      <property name="text">
       <string>Open previous databases on startup</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1">
-    <widget class="ShortcutWidget" name="autoTypeShortcutWidget"/>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="autoTypeShortcutLabel">
-     <property name="text">
-      <string>Global Auto-Type shortcut</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QCheckBox" name="autoSaveOnExitCheckBox">
-     <property name="text">
-      <string>Automatically save on exit</string>
      </property>
     </widget>
    </item>
@@ -52,6 +38,20 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QCheckBox" name="autoSaveOnExitCheckBox">
+     <property name="text">
+      <string>Automatically save on exit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QCheckBox" name="autoSaveAfterEveryChangeCheckBox">
+     <property name="text">
+      <string>Automatically save after every change</string>
+     </property>
+    </widget>
+   </item>
    <item row="5" column="0" colspan="2">
     <widget class="QCheckBox" name="minimizeOnCopyCheckBox">
      <property name="text">
@@ -59,17 +59,48 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QCheckBox" name="rememberLastDatabasesCheckBox">
+   <item row="6" column="0" colspan="2">
+    <widget class="QCheckBox" name="useGroupIconOnEntryCreationCheckBox">
      <property name="text">
-      <string>Remember last databases</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
+      <string>Use group icon on entry creation</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="0" colspan="2">
+   <item row="7" column="1">
+    <widget class="ShortcutWidget" name="autoTypeShortcutWidget"/>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="autoTypeShortcutLabel">
+     <property name="text">
+      <string>Global Auto-Type shortcut</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="2">
+    <widget class="QCheckBox" name="autoTypeEntryTitleMatchCheckBox">
+     <property name="text">
+      <string>Use entry title to match windows for global auto-type</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="languageLabel">
+     <property name="text">
+      <string>Language</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QComboBox" name="languageComboBox"/>
+   </item>
+   <item row="10" column="0" colspan="2">
+    <widget class="QCheckBox" name="systemTrayIconCheckBox">
+     <property name="text">
+      <string>System Tray Icon</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0" colspan="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -82,21 +113,7 @@
      </property>
     </spacer>
    </item>
-   <item row="8" column="0" colspan="2">
-    <widget class="QCheckBox" name="systemTrayIconCheckBox">
-     <property name="text">
-      <string>System Tray Icon</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0" colspan="2">
-    <widget class="QCheckBox" name="useGroupIconOnEntryCreationCheckBox">
-     <property name="text">
-      <string>Use group icon on entry creation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="2">
+   <item row="0" column="2" rowspan="13">
     <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

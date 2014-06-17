@@ -28,6 +28,8 @@
 #include "format/KeePass2XmlReader.h"
 #include "config-keepassx-tests.h"
 
+QTEST_GUILESS_MAIN(TestKeePass2XmlReader)
+
 namespace QTest {
     template<>
     char* toString(const Uuid& uuid)
@@ -66,7 +68,7 @@ QDateTime TestKeePass2XmlReader::genDT(int year, int month, int day, int hour, i
 
 void TestKeePass2XmlReader::initTestCase()
 {
-    Crypto::init();
+    QVERIFY(Crypto::init());
 
     KeePass2XmlReader reader;
     QString xmlFile = QString(KEEPASSX_TEST_DATA_DIR).append("/NewDatabase.xml");
@@ -378,5 +380,3 @@ void TestKeePass2XmlReader::cleanupTestCase()
 {
     delete m_db;
 }
-
-QTEST_GUILESS_MAIN(TestKeePass2XmlReader)

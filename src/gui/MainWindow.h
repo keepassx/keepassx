@@ -89,6 +89,7 @@ private:
     QAction* m_systrayShow;
     QAction* m_systrayHide;
     InactivityTimer* m_inactivityTimer;
+    int m_countDefaultAttributes;
 
     Q_DISABLE_COPY(MainWindow)
 };
