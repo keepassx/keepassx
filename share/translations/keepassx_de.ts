@@ -262,7 +262,7 @@ Save changes?</source>
     </message>
     <message>
         <source>Save database as</source>
-        <translation>Datenbank speichern als</translation>
+        <translation>Datenbank speichern unter</translation>
     </message>
     <message>
         <source>New database</source>
@@ -801,7 +801,7 @@ Save changes?</source>
     </message>
     <message>
         <source>Save database</source>
-        <translation>Datenbank speichern als</translation>
+        <translation>Datenbank speichern</translation>
     </message>
     <message>
         <source>Close database</source>
