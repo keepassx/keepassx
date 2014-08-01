@@ -20,7 +20,7 @@
     </message>
     <message>
         <source>Couldn&apos;t find an entry that matches the window title.</source>
-        <translation>Kann keinen Eintrag finden der auf den Fenstertitel passt, finden.</translation>
+        <translation>Konnte dem Fenstertitel keinen passenden Eintrag zuordnen.</translation>
     </message>
 </context>
 <context>
@@ -944,7 +944,7 @@ Save changes?</source>
     </message>
     <message>
         <source>Exclude look-alike characters</source>
-        <translation>Gleichaussehende Zeichen ausschließen</translation>
+        <translation>Gleich aussehende Zeichen ausschließen</translation>
     </message>
     <message>
         <source>Ensure that the password contains characters from every group</source>
@@ -1025,7 +1025,7 @@ Save changes?</source>
     </message>
     <message>
         <source>Error opening underlying device: </source>
-        <translation>Fehler beim Öffnen des zugrunde liegenden Geräts: </translation>
+        <translation>Fehler beim Öffnen des zugrunde liegenden Gerätes: </translation>
     </message>
     <message>
         <source>Error reading data from underlying device: </source>
