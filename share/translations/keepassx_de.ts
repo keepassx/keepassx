@@ -35,7 +35,7 @@
     </message>
     <message>
         <source>Default sequence</source>
-        <translation>Standart Reihenfolge</translation>
+        <translation>Standardreihenfolge</translation>
     </message>
 </context>
 <context>
@@ -73,7 +73,7 @@
     </message>
     <message>
         <source>Create</source>
-        <translation>Erzeugen</translation>
+        <translation>Erstellen</translation>
     </message>
     <message>
         <source>Key files</source>
@@ -167,16 +167,15 @@
     </message>
     <message>
         <source>Transform rounds:</source>
-        <translatorcomment>not sure</translatorcomment>
-        <translation>Transformationen:</translation>
+        <translation>Verschlüsselungsdurchläufe:</translation>
     </message>
     <message>
         <source>Default username:</source>
-        <translation>Standart Benutzername:</translation>
+        <translation>Standardbenutzername:</translation>
     </message>
     <message>
         <source>Use recycle bin:</source>
-        <translation>Papierkorbbenutzung:</translation>
+        <translation>Verwende Papierkorb:</translation>
     </message>
     <message>
         <source> MiB</source>
@@ -192,7 +191,7 @@
     </message>
     <message>
         <source>Max. history size:</source>
-        <translation>Max Größe des Verlaufs:</translation>
+        <translation>Max. Verlaufsgröße:</translation>
     </message>
 </context>
 <context>
@@ -445,7 +444,7 @@ Save changes?</source>
     </message>
     <message>
         <source>Inherit default Auto-Type sequence from the group</source>
-        <translation>Standart Auto-Type-Sequenz von der Gruppe erben</translation>
+        <translation>Standard-Auto-Type-Sequenz von der Gruppe erben</translation>
     </message>
     <message>
         <source>Use custom Auto-Type sequence:</source>
@@ -465,11 +464,11 @@ Save changes?</source>
     </message>
     <message>
         <source>Use default sequence</source>
-        <translation>Standart Sequenz benutzen</translation>
+        <translation>Standardsequenz benutzen</translation>
     </message>
     <message>
         <source>Set custom sequence:</source>
-        <translation>Benutzerdefinierte Sequenzbenutzen:</translation>
+        <translation>Benutzerdefinierte Sequenz verwenden:</translation>
     </message>
 </context>
 <context>
@@ -484,11 +483,11 @@ Save changes?</source>
     </message>
     <message>
         <source>Delete</source>
-        <translation>Entfernen</translation>
+        <translation>Löschen</translation>
     </message>
     <message>
         <source>Delete all</source>
-        <translation>Alle entfernen</translation>
+        <translation>Alle löschen</translation>
     </message>
 </context>
 <context>
@@ -604,7 +603,7 @@ Save changes?</source>
     </message>
     <message>
         <source>Delete custom icon</source>
-        <translation>Benutzerdefiniertes Symbol entfernen</translation>
+        <translation>Benutzerdefiniertes Symbol löschen</translation>
     </message>
     <message>
         <source>Images</source>
@@ -724,7 +723,7 @@ Save changes?</source>
     </message>
     <message>
         <source>Not a KeePass database.</source>
-        <translation>Keine KeePassDatenbank.</translation>
+        <translation>Keine KeePass-Datenbank.</translation>
     </message>
     <message>
         <source>Unsupported encryption algorithm.</source>
@@ -732,7 +731,7 @@ Save changes?</source>
     </message>
     <message>
         <source>Unsupported KeePass database version.</source>
-        <translation>Nicht unterstützte Version der KeePassDatenbank.</translation>
+        <translation>Nicht unterstützte KeePass-Datenbankversion.</translation>
     </message>
     <message>
         <source>Root</source>
@@ -743,11 +742,11 @@ Save changes?</source>
     <name>KeePass2Reader</name>
     <message>
         <source>Not a KeePass database.</source>
-        <translation>Keine KeePassDatenbank.</translation>
+        <translation>Keine KeePass-Datenbank.</translation>
     </message>
     <message>
         <source>Unsupported KeePass database version.</source>
-        <translation>Nicht unterstützte Version der KeePassDatenbank.</translation>
+        <translation>Nicht unterstützte KeePass-Datenbankversion.</translation>
     </message>
     <message>
         <source>Wrong key or database file is corrupt.</source>
@@ -790,11 +789,11 @@ Save changes?</source>
     </message>
     <message>
         <source>Quit</source>
-        <translation>Schließen</translation>
+        <translation>Beenden</translation>
     </message>
     <message>
         <source>About</source>
-        <translation>Info</translation>
+        <translation>Über</translation>
     </message>
     <message>
         <source>Open database</source>
@@ -910,7 +909,7 @@ Save changes?</source>
     </message>
     <message>
         <source>read-only</source>
-        <translation>nur lesezugriff</translation>
+        <translation>Nur Lesezugriff</translation>
     </message>
 </context>
 <context>
@@ -1003,7 +1002,7 @@ Save changes?</source>
     <name>QSaveFile</name>
     <message>
         <source>Existing file %1 is not writable</source>
-        <translation>Bestehende Datein %1 ist nicht schreibbar</translation>
+        <translation>Bestehende Datei(en) %1 ist nicht schreibbar</translation>
     </message>
     <message>
         <source>Writing canceled by application</source>
@@ -1102,11 +1101,11 @@ Save changes?</source>
     </message>
     <message>
         <source>Automatically save after every change</source>
-        <translation>Automatisch speichern nach jeder Änderung</translation>
+        <translation>Automatisch nach jeder Änderung speichern</translation>
     </message>
     <message>
         <source>Minimize when copying to clipboard</source>
-        <translation>Minimieren wenn in die Zwischenablage kopiert wurde</translation>
+        <translation>Minimieren beim Kopieren in die Zwischenablage</translation>
     </message>
     <message>
         <source>Use group icon on entry creation</source>
@@ -1170,7 +1169,7 @@ Save changes?</source>
     <name>main</name>
     <message>
         <source>KeePassX - cross-platform password manager</source>
-        <translation>KeePassX - platformübergreifender Passwortmanager</translation>
+        <translation>KeePassX - plattformübergreifender Passwortmanager</translation>
     </message>
     <message>
         <source>filename of the password database to open (*.kdbx)</source>
@@ -1178,7 +1177,7 @@ Save changes?</source>
     </message>
     <message>
         <source>path to a custom config file</source>
-        <translation>Pfad zu einer benutzerdefierten Konfigurationsdatei</translation>
+        <translation>Pfad zu einer benutzerdefinierten Konfigurationsdatei</translation>
     </message>
     <message>
         <source>password of the database (DANGEROUS!)</source>
