@@ -71,8 +71,10 @@ void SettingsWidget::loadSettings()
     m_generalUi->autoTypeEntryTitleMatchCheckBox->setChecked(config()->get("AutoTypeEntryTitleMatch").toBool());
 
     QList<QPair<QString, QString> > languages = Translator::availableLanguages();
-    for (int i = 0; i < languages.size(); i++) {
-        m_generalUi->languageComboBox->addItem(languages[i].second, languages[i].first);
+    if (m_generalUi->languageComboBox->count()<1) {
+      for (int i = 0; i < languages.size(); i++) {
+          m_generalUi->languageComboBox->addItem(languages[i].second, languages[i].first);
+      }
     }
     int defaultIndex = m_generalUi->languageComboBox->findData(config()->get("GUI/Language"));
     if (defaultIndex > 0) {
