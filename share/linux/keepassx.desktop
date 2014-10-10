@@ -9,4 +9,4 @@ Icon=keepassx
 Terminal=false
 Type=Application
 Categories=Qt;Utility;
-MimeType=application/x-keepass2;
+MimeType=application/x-keepass2;application/x-keepass;

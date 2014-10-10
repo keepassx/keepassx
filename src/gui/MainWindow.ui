@@ -70,7 +70,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -95,6 +95,7 @@
     <addaction name="actionImportKeePass1"/>
     <addaction name="separator"/>
     <addaction name="actionLockDatabases"/>
+    <addaction name="actionClose"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -363,6 +364,11 @@
    </property>
    <property name="text">
     <string>Lock databases</string>
+   </property>
+  </action> 
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
    </property>
   </action>
   <action name="actionEntryCopyTitle">

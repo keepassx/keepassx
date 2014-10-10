@@ -15,7 +15,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QFile>
 
 #include "config-keepassx.h"
 #include "core/Config.h"
@@ -26,6 +25,8 @@
 #include "gui/Application.h"
 #include "gui/MainWindow.h"
 #include "gui/MessageBox.h"
+
+#include <QFile>
 
 int main(int argc, char** argv)
 {
@@ -102,6 +103,5 @@ int main(int argc, char** argv)
             }
         }
     }
-
     return app.exec();
 }

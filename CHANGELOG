@@ -1,5 +1,10 @@
-2.0 Alpha 6 (2014-04-12)
-=========================
+2.0 Alpha 6.1 (2014-04-18) Didier Fabert <didier.fabert@gmail.com>
+===================================================================
+
+- Sync with upstream
+
+2.0 Alpha 6 (2014-04-12) Felix Geyer <debfx@fobos.de>
+=====================================================
 
 - Add option to lock databases after user inactivity [#62]
 - Add compatibility with libgcrypt 1.6 [#129]
@@ -11,8 +16,13 @@
 - Remember window size [#154]
 - Disallow global auto-typing when the database is locked
 
-2.0 Alpha 5 (2013-12-20)
-=========================
+2.0 Alpha 5.1 (2014-03-23) Didier Fabert <didier.fabert@gmail.com>
+===================================================================
+
+- Sync with upstream
+
+2.0 Alpha 5 (2013-12-20) Felix Geyer <debfx@fobos.de>
+=====================================================
 
 - Support copying entries and groups using drag'n'drop [#74]
 - Open last used databases on startup [#36]
@@ -24,8 +34,14 @@
 - Fixed auto-type producing wrong chars in some keyboard configurations [#116]
 - Added some more actions to the toolbar
 
-2.0 Alpha 4 (2013-03-29)
-=========================
+2.0 Alpha 4.1 (2013-11-17) Didier Fabert <didier.fabert@gmail.com>
+===================================================================
+
+- Add DBus support on X11 system
+- Add System tray icon option
+
+2.0 Alpha 4 (2013-03-29) Felix Geyer <debfx@fobos.de>
+=====================================================
 
 - Add random password generator [#52]
 - Merge the 'Description' tab into the 'Entry' tab [#59]
@@ -33,8 +49,8 @@
 - Fix crash on Mac OS X Mountain Lion during startup [#50]
 - Improved KeePassX application icon [#58]
 
-2.0 Alpha 3 (2012-10-27)
-=========================
+2.0 Alpha 3 (2012-10-27) Felix Geyer <debfx@fobos.de>
+=====================================================
 
 - Auto-Type on Linux / X11
 - Database locking
@@ -43,8 +59,8 @@
 - Add menu entry to open URLs in the browser
 - Add menu entry to copy an entry attribute to clipboard
 
-2.0 Alpha 2 (2012-07-02)
-=========================
+2.0 Alpha 2 (2012-07-02) Felix Geyer <debfx@fobos.de>
+=====================================================
 
 - Import kdb (KeePass 1) files [#2]
 - Display history items [#23]
@@ -55,7 +71,13 @@
 - Sortable entry view
 - Support building Mac OS X bundles
 
+<<<<<<< HEAD
+
+2.0 Alpha 1 (2012-05-07) Felix Geyer <debfx@fobos.de>
+=====================================================
+=======
 2.0 Alpha 1 (2012-05-07)
 =========================
+>>>>>>> upstream/master
 
 - First release.

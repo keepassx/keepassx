@@ -1,2 +1,5 @@
 CMakeLists.txt.*
+*.kdev4
 build/
+.kdev_include_paths
+test.kdbx
