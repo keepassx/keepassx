@@ -24,6 +24,7 @@
 #include "core/Global.h"
 
 #include "gui/entry/EntryModel.h"
+#include "core/FileSystemWatcher.h"
 
 class ChangeMasterKeyWidget;
 class DatabaseOpenWidget;
@@ -131,6 +132,7 @@ private Q_SLOTS:
     void emitEntryContextMenuRequested(const QPoint& pos);
     void updateMasterKey(bool accepted);
     void openDatabase(bool accepted);
+    void databaseModifedExternally();
     void unlockDatabase(bool accepted);
     void emitCurrentModeChanged();
     void clearLastGroup(Group* group);
@@ -166,6 +168,7 @@ private:
     QTimer* m_searchTimer;
     QWidget* m_widgetBeforeLock;
     QString m_filename;
+    FileSystemWatcher m_file_watcher;
 };
 
 #endif // KEEPASSX_DATABASEWIDGET_H
