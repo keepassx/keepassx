@@ -1,0 +1,5 @@
+language: cpp
+compiler: gcc
+install: sudo apt-get install build-essential libqt4-dev libgcrypt11-dev zlib1g-dev libxtst-dev
+before_script: mkdir build && pushd build
+script: cmake .. && make && make test
