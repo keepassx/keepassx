@@ -61,6 +61,7 @@ private Q_SLOTS:
     void saveToolbarState(bool value);
     void rememberOpenDatabases(const QString& filePath);
     void applySettingsChanges();
+    void lockDatabases();
 
 private:
     static void setShortcut(QAction* action, QKeySequence::StandardKey standard, int fallback = 0);
