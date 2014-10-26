@@ -50,21 +50,46 @@
       <string> sec</string>
      </property>
      <property name="minimum">
-      <number>10</number>
+      <number>1</number>
      </property>
      <property name="maximum">
       <number>9999</number>
      </property>
     </widget>
    </item>
+
    <item row="2" column="0">
+    <widget class="QCheckBox" name="closeProgramIdleCheckBox">
+     <property name="text">
+      <string>Close program after inactivity of</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QSpinBox" name="closeProgramIdleSpinBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="suffix">
+      <string> sec</string>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>9999</number>
+     </property>
+    </widget>
+   </item>
+
+   <item row="3" column="0">
     <widget class="QCheckBox" name="passwordCleartextCheckBox">
      <property name="text">
       <string>Show passwords in cleartext by default</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="QCheckBox" name="autoTypeAskCheckBox">
      <property name="text">
       <string>Always ask before performing auto-type</string>

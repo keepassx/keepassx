@@ -77,6 +77,7 @@ private:
     QActionGroup* m_copyAdditionalAttributeActions;
     QStringList m_openDatabases;
     InactivityTimer* m_inactivityTimer;
+    InactivityTimer* m_inactivityTimerClose;
     int m_countDefaultAttributes;
 
     Q_DISABLE_COPY(MainWindow)

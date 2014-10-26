@@ -862,6 +862,18 @@ void DatabaseWidget::lock()
     setCurrentWidget(m_unlockDatabaseWidget);
 }
 
+void DatabaseWidget::close()
+{
+    if(currentMode() != DatabaseWidget::EditMode)
+    {
+        window()->close();
+    } else {
+        m_widgetBeforeLock = currentWidget();
+        m_unlockDatabaseWidget->load(m_filename, m_db);
+        setCurrentWidget(m_unlockDatabaseWidget);
+    }
+}
+
 void DatabaseWidget::updateFilename(const QString& fileName)
 {
     m_filename = fileName;

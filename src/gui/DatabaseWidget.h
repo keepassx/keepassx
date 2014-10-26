@@ -69,6 +69,7 @@ public:
     void setCurrentWidget(QWidget* widget);
     DatabaseWidget::Mode currentMode() const;
     void lock();
+    void close();
     void updateFilename(const QString& filename);
     int numberOfSelectedEntries() const;
     QStringList customEntryAttributes() const;

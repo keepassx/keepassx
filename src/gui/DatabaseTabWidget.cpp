@@ -538,6 +538,21 @@ void DatabaseTabWidget::lockDatabases()
     }
 }
 
+void DatabaseTabWidget::closeProgram()
+{
+    QHashIterator<Database*, DatabaseManagerStruct> i(m_dbList);
+    while (i.hasNext()) {
+        i.next();
+        DatabaseWidget::Mode mode = i.value().dbWidget->currentMode();
+
+        if ((mode == DatabaseWidget::ViewMode || mode == DatabaseWidget::EditMode)
+                && i.value().dbWidget->dbHasKey()) {
+            i.value().dbWidget->close();
+            updateTabName(i.key());
+        }
+    }
+}
+
 void DatabaseTabWidget::modified()
 {
     Q_ASSERT(qobject_cast<Database*>(sender()));

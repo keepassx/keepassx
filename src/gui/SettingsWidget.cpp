@@ -52,6 +52,8 @@ SettingsWidget::SettingsWidget(QWidget* parent)
             m_secUi->clearClipboardSpinBox, SLOT(setEnabled(bool)));
     connect(m_secUi->lockDatabaseIdleCheckBox, SIGNAL(toggled(bool)),
             m_secUi->lockDatabaseIdleSpinBox, SLOT(setEnabled(bool)));
+    connect(m_secUi->closeProgramIdleCheckBox, SIGNAL(toggled(bool)),
+            m_secUi->closeProgramIdleSpinBox, SLOT(setEnabled(bool)));
 }
 
 SettingsWidget::~SettingsWidget()
@@ -94,6 +96,9 @@ void SettingsWidget::loadSettings()
     m_secUi->lockDatabaseIdleCheckBox->setChecked(config()->get("security/lockdatabaseidle").toBool());
     m_secUi->lockDatabaseIdleSpinBox->setValue(config()->get("security/lockdatabaseidlesec").toInt());
 
+    m_secUi->closeProgramIdleCheckBox->setChecked(config()->get("security/closeprogramidle").toBool());
+    m_secUi->closeProgramIdleSpinBox->setValue(config()->get("security/closeprogramidlesec").toInt());
+
     m_secUi->passwordCleartextCheckBox->setChecked(config()->get("security/passwordscleartext").toBool());
 
     m_secUi->autoTypeAskCheckBox->setChecked(config()->get("security/autotypeask").toBool());
@@ -128,6 +133,9 @@ void SettingsWidget::saveSettings()
 
     config()->set("security/lockdatabaseidle", m_secUi->lockDatabaseIdleCheckBox->isChecked());
     config()->set("security/lockdatabaseidlesec", m_secUi->lockDatabaseIdleSpinBox->value());
+
+    config()->set("security/closeprogramidle", m_secUi->closeProgramIdleCheckBox->isChecked());
+    config()->set("security/closeprogramidlesec", m_secUi->closeProgramIdleSpinBox->value());
 
     config()->set("security/passwordscleartext", m_secUi->passwordCleartextCheckBox->isChecked());
 

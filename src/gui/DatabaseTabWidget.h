@@ -72,6 +72,7 @@ public Q_SLOTS:
     bool readOnly(int index = -1);
     void performGlobalAutoType();
     void lockDatabases();
+    void closeProgram();
 
 Q_SIGNALS:
     void tabNameChanged();
