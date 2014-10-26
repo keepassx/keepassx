@@ -70,6 +70,11 @@ MainWindow::MainWindow()
     m_inactivityTimer = new InactivityTimer(this);
     connect(m_inactivityTimer, SIGNAL(inactivityDetected()),
             m_ui->tabWidget, SLOT(lockDatabases()));
+
+    m_inactivityTimerClose = new InactivityTimer(this);
+    connect(m_inactivityTimerClose, SIGNAL(inactivityDetected()),
+            m_ui->tabWidget, SLOT(closeProgram()));
+
     applySettingsChanges();
 
     setShortcut(m_ui->actionDatabaseOpen, QKeySequence::Open, Qt::CTRL + Qt::Key_O);
@@ -232,7 +237,7 @@ void MainWindow::updateCopyAttributesMenu()
     }
 
     QList<QAction*> actions = m_ui->menuEntryCopyAttribute->actions();
-    for (int i = m_countDefaultAttributes; i < actions.size(); i++) {
+    for (int i = m_countDefaultAttributes + 1; i < actions.size(); i++) {
         delete actions[i];
     }
 
@@ -499,16 +504,30 @@ void MainWindow::rememberOpenDatabases(const QString& filePath)
 
 void MainWindow::applySettingsChanges()
 {
-    int timeout = config()->get("security/lockdatabaseidlesec").toInt() * 1000;
-    if (timeout <= 0) {
-        timeout = 60;
+    int lockTimeout = config()->get("security/lockdatabaseidlesec").toInt() * 1000;
+    int closeTimeout = config()->get("security/closeprogramidlesec").toInt() * 1000;
+
+    if (lockTimeout <= 0) {
+        lockTimeout = 60;
     }
 
-    m_inactivityTimer->setInactivityTimeout(timeout);
+    if (closeTimeout <= 0) {
+        closeTimeout = 60;
+    }
+
+    m_inactivityTimer->setInactivityTimeout(lockTimeout);
     if (config()->get("security/lockdatabaseidle").toBool()) {
         m_inactivityTimer->activate();
     }
     else {
         m_inactivityTimer->deactivate();
+    }
+    
+    m_inactivityTimerClose->setInactivityTimeout(closeTimeout);
+    if (config()->get("security/closeprogramidle").toBool()) {
+        m_inactivityTimerClose->activate();
+    }
+    else {
+        m_inactivityTimerClose->deactivate();
     }
 }
