@@ -46,6 +46,9 @@ public:
     int columnCount(const QModelIndex& parent = QModelIndex()) const Q_DECL_OVERRIDE;
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    Qt::DropActions supportedDragActions() const Q_DECL_OVERRIDE;
+#endif
     Qt::DropActions supportedDropActions() const Q_DECL_OVERRIDE;
     Qt::ItemFlags flags(const QModelIndex& modelIndex) const Q_DECL_OVERRIDE;
     QStringList mimeTypes() const Q_DECL_OVERRIDE;

@@ -43,8 +43,6 @@ set(keepassx_SOURCES
     core/ListDeleter.h
     core/Metadata.cpp
     core/PasswordGenerator.cpp
-    core/qsavefile.cpp
-    core/qsavefile_p.h
     core/SignalMultiplexer.cpp
     core/TimeDelta.cpp
     core/TimeInfo.cpp
@@ -130,6 +128,14 @@ if(NOT GCRYPT_HAS_SALSA20)
   )
 endif()
 
+if (NOT USE_QT5)
+  set(keepassx_SOURCES
+      ${keepassx_SOURCES}
+      core/qsavefile.cpp
+      core/qsavefile_p.h
+  )
+endif()
+
 set(keepassx_SOURCES_MAINEXE
     main.cpp
 )
@@ -149,7 +155,6 @@ set(keepassx_MOC
     core/Group.h
     core/InactivityTimer.h
     core/Metadata.h
-    core/qsavefile.h
     gui/AboutDialog.h
     gui/Application.h
     gui/ChangeMasterKeyWidget.h
@@ -192,6 +197,12 @@ set(keepassx_MOC
     streams/StoreDataStream.h
     streams/SymmetricCipherStream.h
 )
+if (NOT USE_QT5)
+  set(keepassx_MOC
+      ${keepassx_MOC}
+      core/qsavefile.h
+  )
+endif()
 
 set(keepassx_FORMS
     gui/AboutDialog.ui
@@ -220,13 +231,31 @@ if(MINGW)
       ${CMAKE_SOURCE_DIR}/share/windows/icon.rc)
 endif()
 
+if(USE_QT5)
+qt5_wrap_ui(keepassx_SOURCES ${keepassx_FORMS})
+qt5_wrap_cpp(keepassx_SOURCES ${keepassx_MOC})
+else()
 qt4_wrap_ui(keepassx_SOURCES ${keepassx_FORMS})
 qt4_wrap_cpp(keepassx_SOURCES ${keepassx_MOC})
+endif()
 
 add_library(keepassx_core STATIC ${keepassx_SOURCES})
 set_target_properties(keepassx_core PROPERTIES COMPILE_DEFINITIONS KEEPASSX_BUILDING_CORE)
 
 add_executable(${PROGNAME} WIN32 MACOSX_BUNDLE ${keepassx_SOURCES_MAINEXE})
+if(USE_QT5)
+target_link_libraries(${PROGNAME}
+                      keepassx_core
+                      Qt5::Core
+                      Qt5::Widgets
+                      Qt5::Concurrent
+                      ${GCRYPT_LIBRARIES}
+                      ${ZLIB_LIBRARIES})
+
+if(UNIX AND NOT APPLE)
+  target_link_libraries(${PROGNAME} Qt5::DBus)
+endif()
+else()
 target_link_libraries(${PROGNAME}
                       keepassx_core
                       ${QT_QTCORE_LIBRARY}
@@ -236,6 +265,7 @@ target_link_libraries(${PROGNAME}
 
 if(UNIX AND NOT APPLE)
   target_link_libraries(${PROGNAME} ${QT_QTDBUS_LIBRARY})
+endif()
 endif()
 
 set_target_properties(${PROGNAME} PROPERTIES ENABLE_EXPORTS ON)

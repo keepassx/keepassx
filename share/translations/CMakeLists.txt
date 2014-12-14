@@ -19,7 +19,12 @@ list(REMOVE_ITEM TRANSLATION_FILES keepassx_en.ts)
 list(REMOVE_ITEM TRANSLATION_FILES ${TRANSLATION_EN_ABS})
 message(STATUS ${TRANSLATION_FILES})
 
-qt4_add_translation(QM_FILES ${TRANSLATION_FILES})
+if(USE_QT5)
+  find_package(Qt5LinguistTools REQUIRED)
+  qt5_add_translation(QM_FILES ${TRANSLATION_FILES})
+else()
+  qt4_add_translation(QM_FILES ${TRANSLATION_FILES})
+endif()
 
 install(FILES ${QM_FILES} DESTINATION ${DATA_INSTALL_DIR}/translations)
 add_custom_target(translations DEPENDS ${QM_FILES})

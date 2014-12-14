@@ -23,6 +23,8 @@ project(KeePassX)
 
 cmake_minimum_required(VERSION 2.6.4)
 
+option(USE_QT5 "Force use of Qt5." $ENV{USE_QT5})
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 include(CheckCCompilerFlag)
@@ -154,6 +156,24 @@ else()
   set(DATA_INSTALL_DIR   "${CMAKE_INSTALL_DATAROOTDIR}/keepassx")
 endif()
 
+
+if(USE_QT5)
+if(WITH_TESTS)
+  find_package(Qt5Test REQUIRED)
+  include_directories(${Qt5Test_INCLUDE_DIRS})
+endif(WITH_TESTS)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Concurrent REQUIRED)
+if(UNIX AND NOT APPLE)
+  find_package(Qt5DBus REQUIRED)
+  find_package(Qt5X11Extras REQUIRED)
+  include_directories(${Qt5DBus_INCLUDE_DIRS})
+  include_directories(${Qt5X11Extras_INCLUDE_DIRS})
+endif()
+include_directories(${Qt5Widgets_INCLUDE_DIRS})
+include_directories(${Qt5Concurrent_INCLUDE_DIRS})
+ADD_DEFINITIONS(-fPIC)
+else()
 if(WITH_TESTS)
   enable_testing()
 endif(WITH_TESTS)
@@ -165,6 +185,7 @@ endif()
 
 find_package(Qt4 4.6.0 REQUIRED ${QT_REQUIRED_MODULES})
 include(${QT_USE_FILE})
+endif()
 # Debian sets the the build type to None for package builds.
 # Make sure we don't enable asserts there.
 set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_NONE QT_NO_DEBUG)

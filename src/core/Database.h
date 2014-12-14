@@ -18,6 +18,7 @@
 #ifndef KEEPASSX_DATABASE_H
 #define KEEPASSX_DATABASE_H
 
+#include <QObject>
 #include <QDateTime>
 #include <QHash>
 

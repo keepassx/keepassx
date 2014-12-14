@@ -36,3 +36,9 @@ bool SortFilterHideProxyModel::filterAcceptsColumn(int sourceColumn, const QMode
 
     return sourceColumn >= m_hiddenColumns.size() || !m_hiddenColumns.at(sourceColumn);
 }
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+Qt::DropActions SortFilterHideProxyModel::supportedDragActions() const
+{
+    return Qt::MoveAction | Qt::CopyAction;
+}
+#endif
