@@ -181,6 +181,25 @@ void DatabaseTabWidget::importKeePass1Database()
     dbStruct.dbWidget->switchToImportKeepass1(fileName);
 }
 
+void DatabaseTabWidget::importFirefoxPwExport()
+{
+    QString fileName = fileDialog()->getOpenFileName(this, tr("Open Password file exported by Firefox Addon 'Password Exporter'"), QString(),
+            tr("Password XML") + " (*.xml);;" + tr("All files (*)"));
+
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    Database* db = new Database();
+    DatabaseManagerStruct dbStruct;
+    dbStruct.dbWidget = new DatabaseWidget(db, this);
+    dbStruct.modified = true;
+
+    insertDatabase(db, dbStruct);
+
+    dbStruct.dbWidget->switchToImportFirefoxPwExport(fileName);
+}
+
 bool DatabaseTabWidget::closeDatabase(Database* db)
 {
     Q_ASSERT(db);

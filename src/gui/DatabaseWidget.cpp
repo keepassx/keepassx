@@ -38,6 +38,7 @@
 #include "gui/DatabaseOpenWidget.h"
 #include "gui/DatabaseSettingsWidget.h"
 #include "gui/KeePass1OpenWidget.h"
+#include "gui/FirefoxPwEOpenWidget.h"
 #include "gui/MessageBox.h"
 #include "gui/UnlockDatabaseWidget.h"
 #include "gui/entry/EditEntryWidget.h"
@@ -125,6 +126,8 @@ DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     m_databaseOpenWidget->setObjectName("databaseOpenWidget");
     m_keepass1OpenWidget = new KeePass1OpenWidget();
     m_keepass1OpenWidget->setObjectName("keepass1OpenWidget");
+    m_firefoxPwEOpenWidget = new FirefoxPwEOpenWidget();
+    m_firefoxPwEOpenWidget->setObjectName("FirefoxPwEOpenWidget");
     m_unlockDatabaseWidget = new UnlockDatabaseWidget();
     m_unlockDatabaseWidget->setObjectName("unlockDatabaseWidget");
     addWidget(m_mainWidget);
@@ -135,6 +138,7 @@ DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     addWidget(m_historyEditEntryWidget);
     addWidget(m_databaseOpenWidget);
     addWidget(m_keepass1OpenWidget);
+    addWidget(m_firefoxPwEOpenWidget);
     addWidget(m_unlockDatabaseWidget);
 
     connect(m_splitter, SIGNAL(splitterMoved(int,int)), SIGNAL(splitterSizesChanged()));
@@ -153,6 +157,7 @@ DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     connect(m_databaseSettingsWidget, SIGNAL(editFinished(bool)), SLOT(switchToView(bool)));
     connect(m_databaseOpenWidget, SIGNAL(editFinished(bool)), SLOT(openDatabase(bool)));
     connect(m_keepass1OpenWidget, SIGNAL(editFinished(bool)), SLOT(openDatabase(bool)));
+    connect(m_firefoxPwEOpenWidget, SIGNAL(editFinished(bool)), SLOT(openDatabase(bool)));
     connect(m_unlockDatabaseWidget, SIGNAL(editFinished(bool)), SLOT(unlockDatabase(bool)));
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(emitCurrentModeChanged()));
     connect(m_searchUi->searchEdit, SIGNAL(textChanged(QString)), this, SLOT(startSearchTimer()));
@@ -617,6 +622,8 @@ void DatabaseWidget::openDatabase(bool accepted)
         m_databaseOpenWidget = Q_NULLPTR;
         delete m_keepass1OpenWidget;
         m_keepass1OpenWidget = Q_NULLPTR;
+        delete m_firefoxPwEOpenWidget;
+        m_firefoxPwEOpenWidget = Q_NULLPTR;
     }
     else {
         if (m_databaseOpenWidget->database()) {
@@ -700,6 +707,13 @@ void DatabaseWidget::switchToImportKeepass1(const QString& fileName)
     updateFilename(fileName);
     m_keepass1OpenWidget->load(fileName);
     setCurrentWidget(m_keepass1OpenWidget);
+}
+
+void DatabaseWidget::switchToImportFirefoxPwExport(const QString& fileName)
+{
+    updateFilename(fileName);
+    m_firefoxPwEOpenWidget->load(fileName);
+    setCurrentWidget(m_firefoxPwEOpenWidget);
 }
 
 void DatabaseWidget::openSearch()

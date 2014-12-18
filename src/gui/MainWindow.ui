@@ -93,6 +93,7 @@
     <addaction name="actionChangeDatabaseSettings"/>
     <addaction name="separator"/>
     <addaction name="actionImportKeePass1"/>
+    <addaction name="actionImportFirefoxPwExport"/>
     <addaction name="separator"/>
     <addaction name="actionLockDatabases"/>
     <addaction name="actionQuit"/>
@@ -293,6 +294,11 @@
   <action name="actionImportKeePass1">
    <property name="text">
     <string>Import KeePass 1 database</string>
+   </property>
+  </action>
+  <action name="actionImportFirefoxPwExport">
+   <property name="text">
+    <string>Import from Firefox Addon 'Password Exporter'</string>
    </property>
   </action>
   <action name="actionEntryClone">
