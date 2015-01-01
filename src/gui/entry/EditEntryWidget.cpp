@@ -97,6 +97,8 @@ void EditEntryWidget::setupMain()
     m_mainUi->expirePresets->setMenu(createPresetsMenu());
     connect(m_mainUi->expirePresets->menu(), SIGNAL(triggered(QAction*)), this, SLOT(useExpiryPreset(QAction*)));
 
+    connect(m_mainUi->passwordEdit, SIGNAL(textChanged(QString)), this, SLOT(setPasswordRepeat(QString)));
+
     m_mainUi->passwordGenerator->hide();
     m_mainUi->passwordGenerator->reset();
 }
@@ -244,6 +246,18 @@ void EditEntryWidget::updateAttachmentButtonsEnabled(const QModelIndex& current)
     m_advancedUi->saveAttachmentButton->setEnabled(enable);
     m_advancedUi->openAttachmentButton->setEnabled(enable);
     m_advancedUi->removeAttachmentButton->setEnabled(enable && !m_history);
+}
+
+void EditEntryWidget::setPasswordRepeat(const QString &password)
+{
+  if (m_mainUi->passwordEdit->echoMode() == QLineEdit::Normal){
+    QString temp(password);
+    temp.chop(1);
+
+    if (m_mainUi->passwordRepeatEdit->text() == temp){
+      m_mainUi->passwordRepeatEdit->setText(password);
+    }
+  }
 }
 
 QString EditEntryWidget::entryTitle() const

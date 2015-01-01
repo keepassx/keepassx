@@ -95,6 +95,7 @@ private Q_SLOTS:
     void updateHistoryButtons(const QModelIndex& current, const QModelIndex& previous);
     void useExpiryPreset(QAction* action);
     void updateAttachmentButtonsEnabled(const QModelIndex& current);
+    void setPasswordRepeat(const QString& password);
 
 private:
     void setupMain();
