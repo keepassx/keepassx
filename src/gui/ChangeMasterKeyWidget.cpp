@@ -121,8 +121,11 @@ void ChangeMasterKeyWidget::generateKey()
     if (m_ui->keyFileGroup->isChecked()) {
         FileKey fileKey;
         QString errorMsg;
-        if (!fileKey.load(m_ui->keyFileCombo->currentText(), &errorMsg)) {
-            // TODO: error handling
+        QString fileKeyName = m_ui->keyFileCombo->currentText();
+        if (!fileKey.load(fileKeyName, &errorMsg)) {
+            m_ui->messageWidget->showMessageError(tr("Unable to load Key File : ")
+                                                  .append(fileKeyName).append("\n").append(errorMsg));
+            return;
         }
         m_key.addKey(fileKey);
     }
