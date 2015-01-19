@@ -64,6 +64,12 @@ On Debian you can install them with:
 sudo apt-get install build-essential cmake libqt4-dev libgcrypt11-dev zlib1g-dev
 ```
 
+On Mac OS X you can install them through Fink (http://www.finkproject.org/) as:
+
+```bash
+sudo fink install qt4-base-mac qt4-base-mac-qtdbus-shlibs libgcrypt libgpg-error
+```
+
 #### Build Steps
 
 To compile from source:
@@ -73,6 +79,13 @@ mkdir build
 cd build
 cmake ..
 make [-jX]
+```
+
+On Mac OS X, you may need to have the Qt .../bin directory in the PATH variable
+before running cmake, e.g.,
+
+```bash
+PATH=/sw/bin/qt4-mac/bin:$PATH
 ```
 
 You will have the compiled KeePassX binary inside the `./build/src/` directory.
