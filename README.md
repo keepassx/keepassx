@@ -67,7 +67,7 @@ sudo apt-get install build-essential cmake libqt4-dev libgcrypt11-dev zlib1g-dev
 On Mac OS X you can install them through Fink (http://www.finkproject.org/) as:
 
 ```bash
-sudo fink install qt4-base-mac qt4-base-mac-qtdbus-shlibs libgcrypt libgpg-error
+sudo fink install cmake qt4-base-mac qt4-base-mac-qtdbus-shlibs libgcrypt libgpg-error
 ```
 
 #### Build Steps
