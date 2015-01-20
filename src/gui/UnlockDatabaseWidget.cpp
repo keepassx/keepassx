@@ -46,10 +46,11 @@ void UnlockDatabaseWidget::openDatabase()
     }
 
     if (m_db->verifyKey(masterKey)) {
+        m_ui->messageWidget->setVisible(false);
         Q_EMIT editFinished(true);
     }
     else {
-        MessageBox::warning(this, tr("Error"), tr("Wrong key."));
+        m_ui->messageWidget->showMessageError(tr("Wrong key."));
         m_ui->editPassword->clear();
     }
 }

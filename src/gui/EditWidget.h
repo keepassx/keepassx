@@ -46,6 +46,12 @@ Q_SIGNALS:
     void accepted();
     void rejected();
 
+protected:
+    void showMessageError(const QString& text);
+    void showMessageWarning(const QString& text);
+    void showMessageInformation(const QString& text);
+    void hideMessage();
+
 private:
     const QScopedPointer<Ui::EditWidget> m_ui;
 
