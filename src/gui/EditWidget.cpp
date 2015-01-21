@@ -71,19 +71,9 @@ QLabel* EditWidget::headlineLabel()
     return m_ui->headerLabel;
 }
 
-void EditWidget::showMessageError(const QString& text)
+void EditWidget::showMessage(const QString& text, MessageWidget::MessageType type)
 {
-    m_ui->messageWidget->showMessageError(text);
-}
-
-void EditWidget::showMessageWarning(const QString& text)
-{
-    m_ui->messageWidget->showMessageWarning(text);
-}
-
-void EditWidget::showMessageInformation(const QString& text)
-{
-    m_ui->messageWidget->showMessageInformation(text);
+    m_ui->messageWidget->showMessage(text, type);
 }
 
 void EditWidget::hideMessage()

@@ -76,6 +76,9 @@ EditEntryWidget::EditEntryWidget(QWidget* parent)
 
     connect(this, SIGNAL(accepted()), SLOT(saveEntry()));
     connect(this, SIGNAL(rejected()), SLOT(cancel()));
+
+    connect(m_iconsWidget, SIGNAL(messageEditEntry(QString, MessageWidget::MessageType)), SLOT(showMessage(QString, MessageWidget::MessageType)));
+    connect(m_iconsWidget, SIGNAL(messageEditEntryDismiss()), SLOT(hideMessage()));
 }
 
 EditEntryWidget::~EditEntryWidget()
@@ -394,7 +397,7 @@ void EditEntryWidget::saveEntry()
     }
 
     if (!passwordsEqual()) {
-        showMessageError(tr("Different passwords supplied."));
+        showMessage(tr("Different passwords supplied."), MessageWidget::Error);
         return;
     }
 
@@ -607,13 +610,13 @@ void EditEntryWidget::insertAttachment()
 
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly)) {
-        showMessageError(tr("Unable to open file").append(":\n").append(file.errorString()));
+        showMessage(tr("Unable to open file").append(":\n").append(file.errorString()), MessageWidget::Error);
         return;
     }
 
     QByteArray data;
     if (!Tools::readAllFromDevice(&file, data)) {
-        showMessageError(tr("Unable to open file").append(":\n").append(file.errorString()));
+        showMessage(tr("Unable to open file").append(":\n").append(file.errorString()), MessageWidget::Error);
         return;
     }
 
@@ -640,11 +643,11 @@ void EditEntryWidget::saveCurrentAttachment()
 
         QFile file(savePath);
         if (!file.open(QIODevice::WriteOnly)) {
-            showMessageError(tr("Unable to save the attachment:\n").append(file.errorString()));
+            showMessage(tr("Unable to save the attachment:\n").append(file.errorString()), MessageWidget::Error);
             return;
         }
         if (file.write(attachmentData) != attachmentData.size()) {
-            showMessageError(tr("Unable to save the attachment:\n").append(file.errorString()));
+            showMessage(tr("Unable to save the attachment:\n").append(file.errorString()), MessageWidget::Error);
             return;
         }
     }
@@ -665,12 +668,12 @@ void EditEntryWidget::openAttachment(const QModelIndex& index)
     QTemporaryFile* file = new QTemporaryFile(tmpFileTemplate, this);
 
     if (!file->open()) {
-        showMessageError(tr("Unable to save the attachment:\n").append(file->errorString()));
+        showMessage(tr("Unable to save the attachment:\n").append(file->errorString()), MessageWidget::Error);
         return;
     }
 
     if (file->write(attachmentData) != attachmentData.size()) {
-        showMessageError(tr("Unable to save the attachment:\n").append(file->errorString()));
+        showMessage(tr("Unable to save the attachment:\n").append(file->errorString()), MessageWidget::Error);
         return;
     }
 

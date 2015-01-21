@@ -42,6 +42,7 @@ MainWindow::MainWindow()
     restoreGeometry(config()->get("GUI/MainWindowGeometry").toByteArray());
 
     setWindowIcon(filePath()->applicationIcon());
+    m_ui->globalMessageWidget->setHidden(true);
     QAction* toggleViewAction = m_ui->toolBar->toggleViewAction();
     toggleViewAction->setText(tr("Show toolbar"));
     m_ui->menuView->addAction(toggleViewAction);
@@ -202,6 +203,11 @@ MainWindow::MainWindow()
 
     m_actionMultiplexer.connect(m_ui->actionSearch, SIGNAL(triggered()),
                                 SLOT(openSearch()));
+
+    connect(m_ui->tabWidget, SIGNAL(messageGlobal(QString,MessageWidget::MessageType)), this, SLOT(displayGlobalMessage(QString, MessageWidget::MessageType)));
+    connect(m_ui->tabWidget, SIGNAL(messageDismissGlobal()), this, SLOT(hideGlobalMessage()));
+    connect(m_ui->tabWidget, SIGNAL(messageTab(QString,MessageWidget::MessageType)), this, SLOT(displayTabMessage(QString, MessageWidget::MessageType)));
+    connect(m_ui->tabWidget, SIGNAL(messageDismissTab()), this, SLOT(hideTabMessage()));
 
     updateTrayIcon();
 }
@@ -582,3 +588,28 @@ bool MainWindow::isTrayIconEnabled() const
     return config()->get("GUI/ShowTrayIcon").toBool()
             && QSystemTrayIcon::isSystemTrayAvailable();
 }
+
+void MainWindow::displayGlobalMessage(const QString& text, MessageWidget::MessageType type)
+{
+    m_ui->globalMessageWidget->showMessage(text, type);
+}
+
+void MainWindow::displayTabMessage(const QString& text, MessageWidget::MessageType type)
+{
+    //if (m_ui->stackedWidget->currentIndex() == 0) {
+        m_ui->tabWidget->currentDatabaseWidget()->showMessage(text, type);
+    //}
+}
+
+void MainWindow::hideGlobalMessage()
+{
+    m_ui->globalMessageWidget->hideMessage();
+}
+
+void MainWindow::hideTabMessage()
+{
+    if (m_ui->stackedWidget->currentIndex() == 0) {
+        m_ui->tabWidget->currentDatabaseWidget()->hideMessage();
+    }
+}
+

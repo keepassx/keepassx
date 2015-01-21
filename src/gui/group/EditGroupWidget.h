@@ -44,6 +44,8 @@ public:
 
 Q_SIGNALS:
     void editFinished(bool accepted);
+    void messageEditEntry(QString, MessageWidget::MessageType);
+    void messageEditEntryDismiss();
 
 private Q_SLOTS:
     void save();

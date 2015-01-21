@@ -50,7 +50,7 @@ void UnlockDatabaseWidget::openDatabase()
         Q_EMIT editFinished(true);
     }
     else {
-        m_ui->messageWidget->showMessageError(tr("Wrong key."));
+        m_ui->messageWidget->showMessage(tr("Wrong key."), MessageWidget::Error);
         m_ui->editPassword->clear();
     }
 }
