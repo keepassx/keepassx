@@ -639,7 +639,7 @@ void AutoTypePlatformX11::SendKeyPressedEvent(KeySym keysym)
     int keycode;
 
     if (keysym == NoSymbol) {
-        qWarning("No such key: keysym=0x%lX", static_cast<long>(keysym));
+        qWarning("No such key: keysym=0x%lX", static_cast<unsigned long>(keysym));
         return;
     }
 
@@ -667,7 +667,7 @@ void AutoTypePlatformX11::SendKeyPressedEvent(KeySym keysym)
     /* determine keycode and mask for the given keysym */
     keycode = GetKeycode(keysym, &mask);
     if (keycode < 8 || keycode > 255) {
-        qWarning("Unable to get valid keycode for key: keysym=0x%lX", static_cast<long>(keysym));
+        qWarning("Unable to get valid keycode for key: keysym=0x%lX", static_cast<unsigned long>(keysym));
         return;
     }
 
