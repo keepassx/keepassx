@@ -19,6 +19,8 @@
 #include "AutoTypeX11.h"
 #include "KeySymMap.h"
 
+#include <X11/Intrinsic.h>
+
 #include <time.h>
 
 bool AutoTypePlatformX11::m_catchXErrors = false;
