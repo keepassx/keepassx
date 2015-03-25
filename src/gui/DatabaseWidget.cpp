@@ -358,6 +358,8 @@ void DatabaseWidget::copyTitle()
 
 void DatabaseWidget::copyUsername()
 {
+	//Hack for workaround of ticket #274 until I find a better solution
+	m_entryView->setFocus();
     Entry* currentEntry = m_entryView->currentEntry();
     if (!currentEntry) {
         Q_ASSERT(false);
@@ -368,13 +370,12 @@ void DatabaseWidget::copyUsername()
 }
 
 void DatabaseWidget::copyPassword()
-{
+{	
     Entry* currentEntry = m_entryView->currentEntry();
     if (!currentEntry) {
         Q_ASSERT(false);
         return;
     }
-
     setClipboardTextAndMinimize(currentEntry->password());
 }
 
