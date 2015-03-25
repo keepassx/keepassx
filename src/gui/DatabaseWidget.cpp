@@ -358,8 +358,9 @@ void DatabaseWidget::copyTitle()
 
 void DatabaseWidget::copyUsername()
 {
-	//Hack for workaround of ticket #274 until I find a better solution
-	m_entryView->setFocus();
+	if(!m_entryView->hasFocus()){
+		m_entryView->setFocus();	
+	}
     Entry* currentEntry = m_entryView->currentEntry();
     if (!currentEntry) {
         Q_ASSERT(false);
@@ -381,6 +382,9 @@ void DatabaseWidget::copyPassword()
 
 void DatabaseWidget::copyURL()
 {
+	if(!m_entryView->hasFocus()){
+		m_entryView->setFocus();	
+	}
     Entry* currentEntry = m_entryView->currentEntry();
     if (!currentEntry) {
         Q_ASSERT(false);
@@ -433,6 +437,9 @@ void DatabaseWidget::performAutoType()
 
 void DatabaseWidget::openUrl()
 {
+	if(!m_entryView->hasFocus()){
+		m_entryView->setFocus();	
+	}
     Entry* currentEntry = m_entryView->currentEntry();
     if (!currentEntry) {
         Q_ASSERT(false);
