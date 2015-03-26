@@ -21,6 +21,8 @@
 #define KEEPASSX_LINEEDIT_H
 
 #include <QLineEdit>
+#include <QMessageBox>
+#include <QKeyEvent>
 
 #include "core/Global.h"
 
@@ -33,8 +35,13 @@ class LineEdit : public QLineEdit
 public:
     explicit LineEdit(QWidget* parent = Q_NULLPTR);
 
+Q_SIGNALS:
+    void copyPasswordActivated();
+
+
 protected:
     void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE;
+    void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void updateCloseButton(const QString& text);
