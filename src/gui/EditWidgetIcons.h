@@ -22,6 +22,7 @@
 
 #include "core/Global.h"
 #include "core/Uuid.h"
+#include "gui/MessageWidget.h"
 
 class Database;
 class DefaultIconModel;
@@ -49,6 +50,10 @@ public:
 
     IconStruct save();
     void load(Uuid currentUuid, Database* database, IconStruct iconStruct);
+
+Q_SIGNALS:
+    void messageEditEntry(QString, MessageWidget::MessageType);
+    void messageEditEntryDismiss();
 
 private Q_SLOTS:
     void addCustomIcon();

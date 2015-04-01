@@ -65,6 +65,10 @@ private Q_SLOTS:
     void applySettingsChanges();
     void trayIconTriggered(QSystemTrayIcon::ActivationReason reason);
     void toggleWindow();
+    void displayGlobalMessage(const QString& text, MessageWidget::MessageType type);
+    void displayTabMessage(const QString& text, MessageWidget::MessageType type);
+    void hideGlobalMessage();
+    void hideTabMessage();
 
 private:
     static void setShortcut(QAction* action, QKeySequence::StandardKey standard, int fallback = 0);

@@ -24,6 +24,7 @@
 #include "core/Global.h"
 
 #include "gui/entry/EntryModel.h"
+#include "gui/MessageWidget.h"
 
 class ChangeMasterKeyWidget;
 class DatabaseOpenWidget;
@@ -40,6 +41,7 @@ class QFile;
 class QMenu;
 class QSplitter;
 class UnlockDatabaseWidget;
+class MessageWidget;
 
 namespace Ui {
     class SearchWidget;
@@ -118,6 +120,8 @@ public Q_SLOTS:
     void switchToOpenDatabase(const QString& fileName, const QString& password, const QString& keyFile);
     void switchToImportKeepass1(const QString& fileName);
     void openSearch();
+    void showMessage(const QString& text, MessageWidget::MessageType type);
+    void hideMessage();
 
 private Q_SLOTS:
     void entryActivationSignalReceived(Entry* entry, EntryModel::ModelColumn column);
@@ -166,6 +170,7 @@ private:
     QTimer* m_searchTimer;
     QWidget* m_widgetBeforeLock;
     QString m_filename;
+    MessageWidget* m_messageWidget;
 };
 
 #endif // KEEPASSX_DATABASEWIDGET_H

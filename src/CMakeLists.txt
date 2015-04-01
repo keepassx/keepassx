@@ -85,9 +85,11 @@ set(keepassx_SOURCES
     gui/FileDialog.cpp
     gui/IconModels.cpp
     gui/KeePass1OpenWidget.cpp
+    gui/kmessagewidget.cpp
     gui/LineEdit.cpp
     gui/MainWindow.cpp
     gui/MessageBox.cpp
+    gui/MessageWidget.cpp
     gui/PasswordEdit.cpp
     gui/PasswordGeneratorWidget.cpp
     gui/PasswordComboBox.cpp
@@ -166,8 +168,10 @@ set(keepassx_MOC
     gui/EditWidgetProperties.h
     gui/IconModels.h
     gui/KeePass1OpenWidget.h
+    gui/kmessagewidget.h
     gui/LineEdit.h
     gui/MainWindow.h
+    gui/MessageWidget.h
     gui/PasswordEdit.h
     gui/PasswordGeneratorWidget.h
     gui/PasswordComboBox.h

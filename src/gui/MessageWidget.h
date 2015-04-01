@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 Felix Geyer <debfx@fobos.de>
+ *  Copyright (C) 2015 Pedro Alves <devel@pgalves.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,46 +15,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSX_EDITWIDGET_H
-#define KEEPASSX_EDITWIDGET_H
+#ifndef MESSAGEWIDGET_H
+#define MESSAGEWIDGET_H
 
-#include <QScopedPointer>
+#include "gui/kmessagewidget.h"
 
-#include "gui/DialogyWidget.h"
-#include "gui/MessageWidget.h"
-
-class QLabel;
-
-namespace Ui {
-    class EditWidget;
-}
-
-class EditWidget : public DialogyWidget
+class MessageWidget : public KMessageWidget
 {
     Q_OBJECT
 
 public:
-    explicit EditWidget(QWidget* parent = Q_NULLPTR);
-    ~EditWidget();
+    explicit MessageWidget(QWidget* parent = 0);
 
-    void add(const QString& labelText, QWidget* widget);
-    void setRowHidden(QWidget* widget, bool hide);
-    void setCurrentRow(int index);
-    void setHeadline(const QString& text);
-    QLabel* headlineLabel();
-
-Q_SIGNALS:
-    void accepted();
-    void rejected();
-
-protected Q_SLOTS:
+public Q_SLOTS:
     void showMessage(const QString& text, MessageWidget::MessageType type);
     void hideMessage();
 
-private:
-    const QScopedPointer<Ui::EditWidget> m_ui;
-
-    Q_DISABLE_COPY(EditWidget)
 };
 
-#endif // KEEPASSX_EDITWIDGET_H
+#endif // MESSAGEWIDGET_H

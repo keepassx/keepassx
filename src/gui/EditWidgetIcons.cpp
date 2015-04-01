@@ -139,7 +139,7 @@ void EditWidgetIcons::addCustomIcon()
                 m_ui->customIconsView->setCurrentIndex(index);
             }
             else {
-                // TODO: show error
+                Q_EMIT messageEditEntry(tr("Error adding custom icon : ").append(filename), MessageWidget::Error);
             }
         }
     }
@@ -193,8 +193,8 @@ void EditWidgetIcons::removeCustomIcon()
                 }
             }
             else {
-                MessageBox::information(this, tr("Can't delete icon!"),
-                                        tr("Can't delete icon. Still used by %n item(s).", 0, iconUsedCount));
+                Q_EMIT messageEditEntry(tr("Can't delete icon. Still used by %n item(s).", 0, iconUsedCount)
+                                        , MessageWidget::Error);
             }
         }
     }

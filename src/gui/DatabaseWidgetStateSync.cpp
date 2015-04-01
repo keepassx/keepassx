@@ -152,3 +152,4 @@ QVariant DatabaseWidgetStateSync::intListToVariant(const QList<int>& list)
 
     return result;
 }
+
