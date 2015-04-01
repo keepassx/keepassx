@@ -55,7 +55,6 @@ macro(add_unit_test)
   parse_arguments(TEST "NAME;SOURCES;MOCS;LIBS" "" ${ARGN})
   set(_test_NAME ${TEST_NAME})
   set(_srcList ${TEST_SOURCES})
-  qt_wrap_cpp(_srcList ${TEST_MOCS})
   add_executable(${_test_NAME} ${_srcList})
   target_link_libraries(${_test_NAME} ${TEST_LIBS})
   set_target_properties(${_test_NAME} PROPERTIES
@@ -103,7 +102,6 @@ if(UNIX AND NOT APPLE)
 endif()
 
 set(modeltest_SOURCRS modeltest.cpp)
-qt_wrap_cpp(modeltest_SOURCRS modeltest.h)
 add_library(modeltest STATIC ${modeltest_SOURCRS})
 set_target_properties(modeltest PROPERTIES
   POSITION_INDEPENDENT_CODE ON)

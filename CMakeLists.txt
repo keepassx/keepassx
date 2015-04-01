@@ -21,7 +21,7 @@ endif()
 
 project(KeePassX)
 
-cmake_minimum_required(VERSION 2.6.4)
+cmake_minimum_required(VERSION 2.8.6)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -195,13 +195,7 @@ else()
   endforeach ()
 endif()
 
-macro(qt_wrap_cpp var)
-  if (WITH_QT5)
-    qt5_wrap_cpp(${var} ${ARGN})
-  else()
-    qt4_wrap_cpp(${var} ${ARGN})
-  endif()
-endmacro()
+set(CMAKE_AUTOMOC TRUE)
 
 macro(qt_wrap_ui var)
   if (WITH_QT5)

@@ -230,7 +230,6 @@ if(MINGW)
 endif()
 
 qt_wrap_ui(keepassx_SOURCES ${keepassx_FORMS})
-qt_wrap_cpp(keepassx_SOURCES ${keepassx_MOC})
 
 add_library(keepassx_core STATIC ${keepassx_SOURCES})
 set_target_properties(keepassx_core PROPERTIES
