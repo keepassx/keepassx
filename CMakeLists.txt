@@ -195,6 +195,7 @@ else()
   endforeach ()
 endif()
 
+set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 set(CMAKE_AUTOMOC TRUE)
 
 macro(qt_wrap_ui var)

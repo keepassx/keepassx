@@ -57,8 +57,6 @@ macro(add_unit_test)
   set(_srcList ${TEST_SOURCES})
   add_executable(${_test_NAME} ${_srcList})
   target_link_libraries(${_test_NAME} ${TEST_LIBS})
-  set_target_properties(${_test_NAME} PROPERTIES
-    POSITION_INDEPENDENT_CODE ON)
 
   if(NOT TEST_OUTPUT)
     set(TEST_OUTPUT plaintext)
@@ -101,8 +99,6 @@ endif()
 
 set(modeltest_SOURCRS modeltest.cpp)
 add_library(modeltest STATIC ${modeltest_SOURCRS})
-set_target_properties(modeltest PROPERTIES
-  POSITION_INDEPENDENT_CODE ON)
 
 add_unit_test(NAME testgroup SOURCES TestGroup.cpp MOCS TestGroup.h
               LIBS ${TEST_LIBRARIES})
