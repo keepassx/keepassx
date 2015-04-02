@@ -21,6 +21,7 @@ target_link_libraries(kdbx-extract
                       ${QT_QTCORE_LIBRARY}
                       ${QT_QTGUI_LIBRARY}
                       ${QT_QTWIDGETS_LIBRARY}
+                      ${QT_QTDBUS_LIBRARY}
                       ${GCRYPT_LIBRARIES}
                       ${ZLIB_LIBRARIES})
 set_target_properties(kdbx-extract PROPERTIES
