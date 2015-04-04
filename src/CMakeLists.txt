@@ -62,6 +62,7 @@ set(keepassx_SOURCES
     crypto/SymmetricCipherGcrypt.cpp
     format/KeePass1.h
     format/KeePass1Reader.cpp
+    format/FirefoxPwEReader.cpp
     format/KeePass2.h
     format/KeePass2RandomStream.cpp
     format/KeePass2Reader.cpp
@@ -85,6 +86,7 @@ set(keepassx_SOURCES
     gui/FileDialog.cpp
     gui/IconModels.cpp
     gui/KeePass1OpenWidget.cpp
+    gui/FirefoxPwEOpenWidget.cpp
     gui/LineEdit.cpp
     gui/MainWindow.cpp
     gui/MessageBox.cpp
@@ -166,6 +168,7 @@ set(keepassx_MOC
     gui/EditWidgetProperties.h
     gui/IconModels.h
     gui/KeePass1OpenWidget.h
+    gui/FirefoxPwEOpenWidget.h
     gui/LineEdit.h
     gui/MainWindow.h
     gui/PasswordEdit.h

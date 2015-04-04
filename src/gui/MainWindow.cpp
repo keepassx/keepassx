@@ -161,6 +161,8 @@ MainWindow::MainWindow()
             SLOT(changeDatabaseSettings()));
     connect(m_ui->actionImportKeePass1, SIGNAL(triggered()), m_ui->tabWidget,
             SLOT(importKeePass1Database()));
+    connect(m_ui->actionImportFirefoxPwExport, SIGNAL(triggered()), m_ui->tabWidget,
+            SLOT(importFirefoxPwExport()));
     connect(m_ui->actionLockDatabases, SIGNAL(triggered()), m_ui->tabWidget,
             SLOT(lockDatabases()));
     connect(m_ui->actionQuit, SIGNAL(triggered()), SLOT(close()));
@@ -359,6 +361,7 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
     m_ui->actionDatabaseOpen->setEnabled(inDatabaseTabWidgetOrWelcomeWidget);
     m_ui->menuRecentDatabases->setEnabled(inDatabaseTabWidgetOrWelcomeWidget);
     m_ui->actionImportKeePass1->setEnabled(inDatabaseTabWidgetOrWelcomeWidget);
+    m_ui->actionImportFirefoxPwExport->setEnabled(inDatabaseTabWidgetOrWelcomeWidget);
 
     m_ui->actionLockDatabases->setEnabled(m_ui->tabWidget->hasLockableDatabases());
 }

@@ -36,6 +36,7 @@ class EntryView;
 class Group;
 class GroupView;
 class KeePass1OpenWidget;
+class FirefoxPwEOpenWidget;
 class QFile;
 class QMenu;
 class QSplitter;
@@ -117,6 +118,7 @@ public Q_SLOTS:
     void switchToOpenDatabase(const QString& fileName);
     void switchToOpenDatabase(const QString& fileName, const QString& password, const QString& keyFile);
     void switchToImportKeepass1(const QString& fileName);
+    void switchToImportFirefoxPwExport(const QString& fileName);
     void openSearch();
 
 private Q_SLOTS:
@@ -155,6 +157,7 @@ private:
     DatabaseSettingsWidget* m_databaseSettingsWidget;
     DatabaseOpenWidget* m_databaseOpenWidget;
     KeePass1OpenWidget* m_keepass1OpenWidget;
+    FirefoxPwEOpenWidget* m_firefoxPwEOpenWidget;
     UnlockDatabaseWidget* m_unlockDatabaseWidget;
     QSplitter* m_splitter;
     GroupView* m_groupView;
