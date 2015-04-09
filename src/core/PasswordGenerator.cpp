@@ -127,7 +127,7 @@ QVector<PasswordGroup> PasswordGenerator::passwordGroups() const
         { '{',  '~', SpecialCharacters },
 
         { 0, 0, LowerLetters }}; // Sentinel
-    static const char* lookalikes = "lI1|" "O0";
+    static const char* lookalikes = "lI1|" "O0" "6G";
 
     const ClassRange* range = &asciiClasses[0];
 
