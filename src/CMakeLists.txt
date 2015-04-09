@@ -221,8 +221,16 @@ if(MINGW)
 endif()
 
 if (UNIX AND NOT APPLE)
+  list(APPEND keepassx_MOC
+    secrets/adaptors/SecretServiceAdaptor.h
+
+    secrets/SecretService.h
+  )
   list(APPEND keepassx_SOURCES
+    secrets/adaptors/SecretServiceAdaptor.cpp
+
     secrets/Secret.cpp
+    secrets/SecretService.cpp
   )
 endif ()
 
