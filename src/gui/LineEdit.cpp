@@ -55,6 +55,14 @@ LineEdit::LineEdit(QWidget* parent)
                    qMax(msz.height(), m_clearButton->sizeHint().height() + frameWidth * 2 + 2));
 }
 
+void LineEdit::keyPressEvent(QKeyEvent *event)
+{
+    if( (event->key() == Qt::Key_C) && (event->modifiers() & Qt::ControlModifier) ){
+		Q_EMIT copyPasswordActivated();
+    }    
+    QLineEdit::keyPressEvent(event);    
+}
+
 void LineEdit::resizeEvent(QResizeEvent* event)
 {
     QSize sz = m_clearButton->sizeHint();
