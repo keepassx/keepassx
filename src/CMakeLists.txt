@@ -220,6 +220,20 @@ if(MINGW)
       ${CMAKE_SOURCE_DIR}/share/windows/icon.rc)
 endif()
 
+if (UNIX AND NOT APPLE)
+  list(APPEND keepassx_MOC
+    secrets/adaptors/SecretServiceAdaptor.h
+
+    secrets/SecretService.h
+  )
+  list(APPEND keepassx_SOURCES
+    secrets/adaptors/SecretServiceAdaptor.cpp
+
+    secrets/Secret.cpp
+    secrets/SecretService.cpp
+  )
+endif ()
+
 qt4_wrap_ui(keepassx_SOURCES ${keepassx_FORMS})
 qt4_wrap_cpp(keepassx_SOURCES ${keepassx_MOC})
 
