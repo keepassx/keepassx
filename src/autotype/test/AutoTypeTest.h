@@ -31,6 +31,9 @@ class AutoTypePlatformTest : public QObject,
 {
     Q_OBJECT
     Q_INTERFACES(AutoTypePlatformInterface AutoTypeTestInterface)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    Q_PLUGIN_METADATA(IID "org.keepassx.AutoTypePlatformInterface/1" FILE "autotypetest.json")
+#endif
 
 public:
     QString keyToString(Qt::Key key);

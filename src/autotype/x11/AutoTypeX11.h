@@ -39,6 +39,9 @@ class AutoTypePlatformX11 : public QObject, public AutoTypePlatformInterface
 {
     Q_OBJECT
     Q_INTERFACES(AutoTypePlatformInterface)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    Q_PLUGIN_METADATA(IID "org.keepassx.AutoTypePlatformInterface/1" FILE "autotypex11.json")
+#endif
 
 public:
     AutoTypePlatformX11();

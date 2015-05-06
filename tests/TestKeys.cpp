@@ -172,7 +172,12 @@ void TestKeys::benchmarkTransformKey()
     QByteArray env = qgetenv("BENCHMARK");
 
     if (env.isEmpty() || env == "0" || env == "no") {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+        QSKIP("Benchmark skipped. Set env variable BENCHMARK=1 to enable.");
+        return;
+#else
         QSKIP("Benchmark skipped. Set env variable BENCHMARK=1 to enable.", SkipAll);
+#endif
     }
 
     PasswordKey pwKey;

@@ -43,8 +43,6 @@ set(keepassx_SOURCES
     core/ListDeleter.h
     core/Metadata.cpp
     core/PasswordGenerator.cpp
-    core/qsavefile.cpp
-    core/qsavefile_p.h
     core/SignalMultiplexer.cpp
     core/TimeDelta.cpp
     core/TimeInfo.cpp
@@ -149,7 +147,6 @@ set(keepassx_MOC
     core/Group.h
     core/InactivityTimer.h
     core/Metadata.h
-    core/qsavefile.h
     gui/AboutDialog.h
     gui/Application.h
     gui/ChangeMasterKeyWidget.h
@@ -193,6 +190,18 @@ set(keepassx_MOC
     streams/SymmetricCipherStream.h
 )
 
+if (NOT WITH_QT5)
+  set(keepassx_SOURCES
+      ${keepassx_SOURCES}
+      core/qsavefile.cpp
+      core/qsavefile_p.h
+  )
+  set(keepassx_MOC
+      ${keepassx_MOC}
+      core/qsavefile.h
+  )
+endif ()
+
 set(keepassx_FORMS
     gui/AboutDialog.ui
     gui/ChangeMasterKeyWidget.ui
@@ -220,17 +229,18 @@ if(MINGW)
       ${CMAKE_SOURCE_DIR}/share/windows/icon.rc)
 endif()
 
-qt4_wrap_ui(keepassx_SOURCES ${keepassx_FORMS})
-qt4_wrap_cpp(keepassx_SOURCES ${keepassx_MOC})
+qt_wrap_ui(keepassx_SOURCES ${keepassx_FORMS})
 
 add_library(keepassx_core STATIC ${keepassx_SOURCES})
-set_target_properties(keepassx_core PROPERTIES COMPILE_DEFINITIONS KEEPASSX_BUILDING_CORE)
+set_target_properties(keepassx_core PROPERTIES
+  COMPILE_DEFINITIONS KEEPASSX_BUILDING_CORE)
 
 add_executable(${PROGNAME} WIN32 MACOSX_BUNDLE ${keepassx_SOURCES_MAINEXE})
 target_link_libraries(${PROGNAME}
                       keepassx_core
                       ${QT_QTCORE_LIBRARY}
                       ${QT_QTGUI_LIBRARY}
+                      ${QT_QTWIDGETS_LIBRARY}
                       ${GCRYPT_LIBRARIES}
                       ${ZLIB_LIBRARIES})
 
