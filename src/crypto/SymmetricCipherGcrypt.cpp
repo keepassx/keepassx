@@ -30,6 +30,7 @@ SymmetricCipherGcrypt::SymmetricCipherGcrypt(SymmetricCipher::Algorithm algo, Sy
     Q_ASSERT(Crypto::initalized());
 
     gcry_error_t error;
+    Q_UNUSED( error );
 
     error = gcry_cipher_open(&m_ctx, m_algo, m_mode, 0);
     Q_ASSERT(error == 0); // TODO: real error checking
@@ -87,6 +88,7 @@ void SymmetricCipherGcrypt::setKey(const QByteArray& key)
 {
     m_key = key;
     gcry_error_t error = gcry_cipher_setkey(m_ctx, m_key.constData(), m_key.size());
+    Q_UNUSED( error );
     Q_ASSERT(error == 0);
 }
 
@@ -94,6 +96,7 @@ void SymmetricCipherGcrypt::setIv(const QByteArray& iv)
 {
     m_iv = iv;
     gcry_error_t error = gcry_cipher_setiv(m_ctx, m_iv.constData(), m_iv.size());
+    Q_UNUSED( error );
     Q_ASSERT(error == 0);
 }
 
@@ -105,6 +108,7 @@ QByteArray SymmetricCipherGcrypt::process(const QByteArray& data)
     result.resize(data.size());
 
     gcry_error_t error;
+    Q_UNUSED( error );
 
     if (m_direction == SymmetricCipher::Decrypt) {
         error = gcry_cipher_decrypt(m_ctx, result.data(), data.size(), data.constData(), data.size());
@@ -123,6 +127,7 @@ void SymmetricCipherGcrypt::processInPlace(QByteArray& data)
     // TODO: check block size
 
     gcry_error_t error;
+    Q_UNUSED( error );
 
     if (m_direction == SymmetricCipher::Decrypt) {
         error = gcry_cipher_decrypt(m_ctx, data.data(), data.size(), Q_NULLPTR, 0);
@@ -139,6 +144,7 @@ void SymmetricCipherGcrypt::processInPlace(QByteArray& data, quint64 rounds)
     // TODO: check block size
 
     gcry_error_t error;
+    Q_UNUSED( error );
 
     char* rawData = data.data();
     int size = data.size();
@@ -160,6 +166,7 @@ void SymmetricCipherGcrypt::processInPlace(QByteArray& data, quint64 rounds)
 void SymmetricCipherGcrypt::reset()
 {
     gcry_error_t error;
+    Q_UNUSED( error );
 
     error = gcry_cipher_reset(m_ctx);
     Q_ASSERT(error == 0);
