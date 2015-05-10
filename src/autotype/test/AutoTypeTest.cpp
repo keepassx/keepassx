@@ -117,5 +117,6 @@ void AutoTypeExecturorTest::execKey(AutoTypeKey* action)
 {
     m_platform->addActionKey(action);
 }
-
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 Q_EXPORT_PLUGIN2(keepassx-autotype-test, AutoTypePlatformTest)
+#endif

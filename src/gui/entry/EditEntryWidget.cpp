@@ -589,7 +589,12 @@ void EditEntryWidget::insertAttachment()
 
     QString defaultDir = config()->get("LastAttachmentDir").toString();
     if (defaultDir.isEmpty() || !QDir(defaultDir).exists()) {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+        defaultDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+#else
         defaultDir = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+#endif
+
     }
     QString filename = fileDialog()->getOpenFileName(this, tr("Select file"), defaultDir);
     if (filename.isEmpty() || !QFile::exists(filename)) {
@@ -623,7 +628,11 @@ void EditEntryWidget::saveCurrentAttachment()
     QString filename = m_attachmentsModel->keyByIndex(index);
     QString defaultDirName = config()->get("LastAttachmentDir").toString();
     if (defaultDirName.isEmpty() || !QDir(defaultDirName).exists()) {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+        defaultDirName = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+#else
         defaultDirName = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+#endif
     }
     QDir dir(defaultDirName);
     QString savePath = fileDialog()->getSaveFileName(this, tr("Save attachment"),

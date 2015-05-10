@@ -55,7 +55,11 @@ macro(add_unit_test)
   parse_arguments(TEST "NAME;SOURCES;MOCS;LIBS" "" ${ARGN})
   set(_test_NAME ${TEST_NAME})
   set(_srcList ${TEST_SOURCES})
+if(USE_QT5)
+  qt5_wrap_cpp(_srcList ${TEST_MOCS})
+else()
   qt4_wrap_cpp(_srcList ${TEST_MOCS})
+endif()
   add_executable(${_test_NAME} ${_srcList})
   target_link_libraries(${_test_NAME} ${TEST_LIBS})
 
@@ -84,6 +88,20 @@ macro(add_unit_test)
 endmacro(add_unit_test)
 
 
+if(USE_QT5)
+set(TEST_LIBRARIES
+    keepassx_core
+    Qt5::Core
+    Qt5::Widgets
+    Qt5::Test
+    ${GCRYPT_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+)
+
+if(UNIX AND NOT APPLE)
+  set(TEST_LIBRARIES ${TEST_LIBRARIES} Qt5::DBus)
+endif()
+else()
 set(TEST_LIBRARIES
     keepassx_core
     ${QT_QTCORE_LIBRARY}
@@ -96,9 +114,13 @@ set(TEST_LIBRARIES
 if(UNIX AND NOT APPLE)
   set(TEST_LIBRARIES ${TEST_LIBRARIES} ${QT_QTDBUS_LIBRARY})
 endif()
-
+endif()
 set(modeltest_SOURCRS modeltest.cpp)
+if(USE_QT5)
+qt5_wrap_cpp(modeltest_SOURCRS modeltest.h)
+else()
 qt4_wrap_cpp(modeltest_SOURCRS modeltest.h)
+endif()
 add_library(modeltest STATIC ${modeltest_SOURCRS})
 
 add_unit_test(NAME testgroup SOURCES TestGroup.cpp MOCS TestGroup.h

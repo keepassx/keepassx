@@ -29,7 +29,9 @@ EntryModel::EntryModel(QObject* parent)
     : QAbstractTableModel(parent)
     , m_group(Q_NULLPTR)
 {
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
     setSupportedDragActions(Qt::MoveAction | Qt::CopyAction);
+#endif
 }
 
 Entry* EntryModel::entryFromIndex(const QModelIndex& index) const
@@ -185,7 +187,12 @@ QVariant EntryModel::headerData(int section, Qt::Orientation orientation, int ro
 
     return QVariant();
 }
-
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+Qt::DropActions EntryModel::supportedDragActions() const
+{
+    return Qt::MoveAction | Qt::CopyAction;
+}
+#endif
 Qt::DropActions EntryModel::supportedDropActions() const
 {
     return 0;

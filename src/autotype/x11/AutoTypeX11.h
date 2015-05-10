@@ -39,7 +39,9 @@ class AutoTypePlatformX11 : public QObject, public AutoTypePlatformInterface
 {
     Q_OBJECT
     Q_INTERFACES(AutoTypePlatformInterface)
-
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    Q_PLUGIN_METADATA(IID "org.keepassx.AutoTypePlatformInterface/1")
+#endif
 public:
     AutoTypePlatformX11();
     void unload() Q_DECL_OVERRIDE;
