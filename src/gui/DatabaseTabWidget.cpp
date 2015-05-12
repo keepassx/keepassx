@@ -295,6 +295,13 @@ bool DatabaseTabWidget::saveDatabaseAs(Database* db)
     QString fileName = fileDialog()->getSaveFileName(this, tr("Save database as"),
                                                      oldFileName, tr("KeePass 2 Database").append(" (*.kdbx)"));
     if (!fileName.isEmpty()) {
+        // Making sure that the DB is not locked
+        if (!m_dbList.contains(db) || m_dbList[db].dbWidget->currentMode() == DatabaseWidget::LockedMode)
+        {
+            MessageBox::critical(this, tr("Error"), tr("Looks like the DB is locked. Please unlock it and try again."));
+            return false;
+        }
+
         bool result = false;
 
         QSaveFile saveFile(fileName);
