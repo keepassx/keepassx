@@ -155,6 +155,10 @@ MainWindow::MainWindow()
             SLOT(saveDatabase()));
     connect(m_ui->actionDatabaseSaveAs, SIGNAL(triggered()), m_ui->tabWidget,
             SLOT(saveDatabaseAs()));
+    connect(m_ui->tabWidget, SIGNAL(activateInactivityTimer()), this,
+            SLOT(activateInactivityTimer()));
+    connect(m_ui->tabWidget, SIGNAL(deactivateInactivityTimer()), this,
+            SLOT(deactivateInactivityTimer()));
     connect(m_ui->actionDatabaseClose, SIGNAL(triggered()), m_ui->tabWidget,
             SLOT(closeDatabase()));
     connect(m_ui->actionChangeMasterKey, SIGNAL(triggered()), m_ui->tabWidget,
@@ -583,4 +587,14 @@ bool MainWindow::isTrayIconEnabled() const
 {
     return config()->get("GUI/ShowTrayIcon").toBool()
             && QSystemTrayIcon::isSystemTrayAvailable();
+}
+
+void MainWindow::activateInactivityTimer() {
+    if (config()->get("security/lockdatabaseidle").toBool()) {
+        m_inactivityTimer->activate();
+    }
+}
+
+void MainWindow::deactivateInactivityTimer() {
+    m_inactivityTimer->deactivate();
 }

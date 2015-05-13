@@ -77,6 +77,8 @@ Q_SIGNALS:
     void tabNameChanged();
     void databaseWithFileClosed(QString filePath);
     void activateDatabaseChanged(DatabaseWidget* dbWidget);
+    void activateInactivityTimer();
+    void deactivateInactivityTimer();
 
 private Q_SLOTS:
     void updateTabName(Database* db);
