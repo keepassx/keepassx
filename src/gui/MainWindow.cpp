@@ -64,7 +64,9 @@ MainWindow::MainWindow()
     Qt::Key globalAutoTypeKey = static_cast<Qt::Key>(config()->get("GlobalAutoTypeKey").toInt());
     Qt::KeyboardModifiers globalAutoTypeModifiers = static_cast<Qt::KeyboardModifiers>(
                 config()->get("GlobalAutoTypeModifiers").toInt());
-    if (globalAutoTypeKey > 0 && globalAutoTypeModifiers > 0) {
+    if (config()->get("DisableAutoType").toBool()) {
+        autoType()->unregisterGlobalShortcut();
+    } else if (globalAutoTypeKey > 0 && globalAutoTypeModifiers > 0) {
         autoType()->registerGlobalShortcut(globalAutoTypeKey, globalAutoTypeModifiers);
     }
 
@@ -292,7 +294,7 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
             m_ui->actionEntryCopyURL->setEnabled(singleEntrySelected && dbWidget->currentEntryHasUrl());
             m_ui->actionEntryCopyNotes->setEnabled(singleEntrySelected && dbWidget->currentEntryHasUrl());
             m_ui->menuEntryCopyAttribute->setEnabled(singleEntrySelected);
-            m_ui->actionEntryAutoType->setEnabled(singleEntrySelected);
+            m_ui->actionEntryAutoType->setEnabled(singleEntrySelected && !config()->get("DisableAutoType").toBool());
             m_ui->actionEntryOpenUrl->setEnabled(singleEntrySelected && dbWidget->currentEntryHasUrl());
             m_ui->actionGroupNew->setEnabled(groupSelected);
             m_ui->actionGroupEdit->setEnabled(groupSelected);

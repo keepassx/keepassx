@@ -274,6 +274,8 @@ void AutoType::unregisterGlobalShortcut()
 {
     if (m_plugin && m_currentGlobalKey && m_currentGlobalModifiers) {
         m_plugin->unregisterGlobalShortcut(m_currentGlobalKey, m_currentGlobalModifiers);
+        m_currentGlobalKey = static_cast<Qt::Key>(0);
+        m_currentGlobalModifiers = 0;
     }
 }
 

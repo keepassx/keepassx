@@ -70,40 +70,50 @@
     </widget>
    </item>
    <item row="7" column="0">
+    <widget class="QCheckBox" name="disableAutoTypeCheckBox">
+     <property name="toolTip">
+      <string>Disables Auto-Type both in context of an entry and globally</string>
+     </property>
+     <property name="text">
+      <string>Disable all kinds of Auto-Type</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
     <widget class="QLabel" name="autoTypeShortcutLabel">
      <property name="text">
       <string>Global Auto-Type shortcut</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="8" column="1">
     <widget class="ShortcutWidget" name="autoTypeShortcutWidget"/>
    </item>
-   <item row="8" column="0">
+   <item row="9" column="0">
     <widget class="QCheckBox" name="autoTypeEntryTitleMatchCheckBox">
      <property name="text">
       <string>Use entry title to match windows for global auto-type</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="0">
+   <item row="10" column="0">
     <widget class="QLabel" name="languageLabel">
      <property name="text">
       <string>Language</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
+   <item row="10" column="1">
     <widget class="QComboBox" name="languageComboBox"/>
    </item>
-   <item row="10" column="0">
+   <item row="11" column="0">
     <widget class="QCheckBox" name="systrayShowCheckBox">
      <property name="text">
       <string>Show a system tray icon</string>
      </property>
     </widget>
    </item>
-   <item row="11" column="0">
+   <item row="12" column="0">
     <widget class="QCheckBox" name="systrayMinimizeToTrayCheckBox">
      <property name="enabled">
       <bool>false</bool>

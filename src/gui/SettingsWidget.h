@@ -41,12 +41,15 @@ private Q_SLOTS:
     void saveSettings();
     void reject();
     void enableAutoSaveOnExit(bool checked);
+    void enableAutoType(bool checked);
 
 private:
+    void resetGlobalShortcut();
     QWidget* const m_secWidget;
     QWidget* const m_generalWidget;
     const QScopedPointer<Ui::SettingsWidgetSecurity> m_secUi;
     const QScopedPointer<Ui::SettingsWidgetGeneral> m_generalUi;
+    bool m_enableAutoType;
     Qt::Key m_globalAutoTypeKey;
     Qt::KeyboardModifiers m_globalAutoTypeModifiers;
 };

@@ -29,6 +29,7 @@ SettingsWidget::SettingsWidget(QWidget* parent)
     , m_generalWidget(new QWidget())
     , m_secUi(new Ui::SettingsWidgetSecurity())
     , m_generalUi(new Ui::SettingsWidgetGeneral())
+    , m_enableAutoType(true)
     , m_globalAutoTypeKey(static_cast<Qt::Key>(0))
     , m_globalAutoTypeModifiers(Qt::NoModifier)
 {
@@ -47,6 +48,8 @@ SettingsWidget::SettingsWidget(QWidget* parent)
 
     connect(m_generalUi->autoSaveAfterEveryChangeCheckBox, SIGNAL(toggled(bool)),
             this, SLOT(enableAutoSaveOnExit(bool)));
+    connect(m_generalUi->disableAutoTypeCheckBox, SIGNAL(toggled(bool)),
+            this, SLOT(enableAutoType(bool)));
     connect(m_generalUi->systrayShowCheckBox, SIGNAL(toggled(bool)),
             m_generalUi->systrayMinimizeToTrayCheckBox, SLOT(setEnabled(bool)));
 
@@ -70,6 +73,8 @@ void SettingsWidget::loadSettings()
     m_generalUi->autoSaveOnExitCheckBox->setChecked(config()->get("AutoSaveOnExit").toBool());
     m_generalUi->minimizeOnCopyCheckBox->setChecked(config()->get("MinimizeOnCopy").toBool());
     m_generalUi->useGroupIconOnEntryCreationCheckBox->setChecked(config()->get("UseGroupIconOnEntryCreation").toBool());
+    m_generalUi->disableAutoTypeCheckBox->setChecked(config()->get("DisableAutoType").toBool());
+    Q_ASSERT(m_enableAutoType == !config()->get("DisableAutoType").toBool());
     m_generalUi->autoTypeEntryTitleMatchCheckBox->setChecked(config()->get("AutoTypeEntryTitleMatch").toBool());
 
     m_generalUi->languageComboBox->clear();
@@ -118,6 +123,8 @@ void SettingsWidget::saveSettings()
     config()->set("MinimizeOnCopy", m_generalUi->minimizeOnCopyCheckBox->isChecked());
     config()->set("UseGroupIconOnEntryCreation",
                   m_generalUi->useGroupIconOnEntryCreationCheckBox->isChecked());
+    Q_ASSERT(m_enableAutoType == !m_generalUi->disableAutoTypeCheckBox->isChecked());
+    config()->set("DisableAutoType", !m_enableAutoType);
     config()->set("AutoTypeEntryTitleMatch",
                   m_generalUi->autoTypeEntryTitleMatchCheckBox->isChecked());
     int currentLangIndex = m_generalUi->languageComboBox->currentIndex();
@@ -144,12 +151,18 @@ void SettingsWidget::saveSettings()
     Q_EMIT editFinished(true);
 }
 
+void SettingsWidget::resetGlobalShortcut() {
+    if (!m_enableAutoType) {
+        autoType()->unregisterGlobalShortcut();
+    } else if(m_globalAutoTypeKey > 0 && m_globalAutoTypeModifiers > 0) {
+        autoType()->registerGlobalShortcut(m_globalAutoTypeKey, m_globalAutoTypeModifiers);
+    }
+}
+
 void SettingsWidget::reject()
 {
     // register the old key again as it might have changed
-    if (m_globalAutoTypeKey > 0 && m_globalAutoTypeModifiers > 0) {
-        autoType()->registerGlobalShortcut(m_globalAutoTypeKey, m_globalAutoTypeModifiers);
-    }
+    resetGlobalShortcut();
 
     Q_EMIT editFinished(false);
 }
@@ -157,4 +170,11 @@ void SettingsWidget::reject()
 void SettingsWidget::enableAutoSaveOnExit(bool checked)
 {
     m_generalUi->autoSaveOnExitCheckBox->setEnabled(!checked);
+}
+
+void SettingsWidget::enableAutoType(bool checked)
+{
+    m_enableAutoType = !checked;
+    m_generalUi->autoTypeShortcutWidget->setEnabled(m_enableAutoType);
+    resetGlobalShortcut();
 }
