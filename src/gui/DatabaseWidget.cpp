@@ -661,13 +661,10 @@ void DatabaseWidget::unlockDatabase(bool accepted)
     }
 
     // check if sender() is either the unlock widget or the unlock dialog
-    UnlockDatabaseDialog* widget = qobject_cast<UnlockDatabaseDialog*>(sender());
-    if (widget) {
-        replaceDatabase(widget->database());
-    } else {
-        DatabaseOpenWidget* widget = qobject_cast<DatabaseOpenWidget*>(sender());
-        replaceDatabase(widget->database());
-    }
+    Database *db = sender() == m_unlockDatabaseDialog ? m_unlockDatabaseDialog->database() :
+                   sender() == m_unlockDatabaseWidget ? m_unlockDatabaseWidget->database() :
+                   Q_NULLPTR;
+    replaceDatabase(db);
 
     QList<Group*> groups = m_db->rootGroup()->groupsRecursive(true);
     Q_FOREACH (Group* group, groups) {
@@ -681,6 +678,12 @@ void DatabaseWidget::unlockDatabase(bool accepted)
     setCurrentWidget(m_mainWidget);
     m_unlockDatabaseWidget->clearForms();
     Q_EMIT unlockedDatabase();
+
+    if (sender() == m_unlockDatabaseDialog) {
+        QList<Database*> dbList;
+        dbList.append(m_db);
+        autoType()->performGlobalAutoType(dbList);
+    }
 }
 
 void DatabaseWidget::entryActivationSignalReceived(Entry* entry, EntryModel::ModelColumn column)

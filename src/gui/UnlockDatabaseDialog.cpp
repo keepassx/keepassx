@@ -31,12 +31,8 @@ Database *UnlockDatabaseDialog::database()
 void UnlockDatabaseDialog::Done(bool r)
 {
     if (r) {
-        QList<Database*> dbList;
-        m_db = static_cast<DatabaseOpenWidget*>(sender())->database();
-        dbList.append(m_db);
         accept();
         Q_EMIT unlockDone(true);
-        autoType()->performGlobalAutoType(dbList);
     } else {
         reject();
     }

@@ -29,7 +29,6 @@ public Q_SLOTS:
 
 private:
     UnlockDatabaseWidget* const m_view;
-    Database *m_db;
     DatabaseManagerStruct m_dbStruct;
 };
 

@@ -26,8 +26,6 @@
 
 #include "gui/entry/EntryModel.h"
 
-//#include "gui/UnlockDatabaseDialog.h"
-
 class ChangeMasterKeyWidget;
 class DatabaseOpenWidget;
 class DatabaseSettingsWidget;
