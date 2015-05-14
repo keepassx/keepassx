@@ -11,7 +11,6 @@ UnlockDatabaseDialog::UnlockDatabaseDialog(QWidget *parent)
     , m_view(new UnlockDatabaseWidget(this))
 {
     connect(m_view, SIGNAL(editFinished(bool)), this, SLOT(Done(bool)));
-    connect(this, SIGNAL(performAutoType(QList<Database*>)), autoType(), SLOT(performGlobalAutoType(QList<Database*>)));
 }
 
 void UnlockDatabaseDialog::setDBFilename(const QString &filename)
@@ -37,7 +36,7 @@ void UnlockDatabaseDialog::Done(bool r)
         dbList.append(m_db);
         accept();
         Q_EMIT unlockDone(true);
-        Q_EMIT performAutoType(dbList);
+        autoType()->performGlobalAutoType(dbList);
     } else {
         reject();
     }

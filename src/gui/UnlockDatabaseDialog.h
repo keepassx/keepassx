@@ -23,7 +23,6 @@ public:
 
 Q_SIGNALS:
     void unlockDone(bool);
-    void performAutoType(QList<Database*>);
 
 public Q_SLOTS:
     void Done(bool r);
