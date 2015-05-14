@@ -33,6 +33,7 @@
 #include "gui/MessageBox.h"
 #include "gui/entry/EntryView.h"
 #include "gui/group/GroupView.h"
+#include "gui/UnlockDatabaseDialog.h"
 
 DatabaseManagerStruct::DatabaseManagerStruct()
     : dbWidget(Q_NULLPTR)
@@ -713,5 +714,9 @@ void DatabaseTabWidget::performGlobalAutoType()
         }
     }
 
-    autoType()->performGlobalAutoType(unlockedDatabases);
+    if (unlockedDatabases.count() == 0) {
+        indexDatabaseManagerStruct(0).dbWidget->showUnlockDialog();
+    } else {
+        autoType()->performGlobalAutoType(unlockedDatabases);
+    }
 }
