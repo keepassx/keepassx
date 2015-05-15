@@ -37,10 +37,9 @@ EditGroupWidget::EditGroupWidget(QWidget* parent)
     add(tr("Icon"), m_editGroupWidgetIcons);
     add(tr("Properties"), m_editWidgetProperties);
 
-    addTriStateItems(m_mainUi->searchComboBox);
-    addTriStateItems(m_mainUi->autotypeComboBox);
-
     connect(m_mainUi->expireCheck, SIGNAL(toggled(bool)), m_mainUi->expireDatePicker, SLOT(setEnabled(bool)));
+    connect(m_mainUi->autoTypeSequenceCustomRadio, SIGNAL(toggled(bool)),
+            m_mainUi->autoTypeSequenceCustomEdit, SLOT(setEnabled(bool)));
 
     connect(this, SIGNAL(accepted()), SLOT(save()));
     connect(this, SIGNAL(rejected()), SLOT(cancel()));
@@ -62,12 +61,28 @@ void EditGroupWidget::loadGroup(Group* group, bool create, Database* database)
         setHeadline(tr("Edit group"));
     }
 
+    if (m_group->parentGroup()) {
+        addTriStateItems(m_mainUi->searchComboBox, m_group->parentGroup()->resolveSearchingEnabled());
+        addTriStateItems(m_mainUi->autotypeComboBox, m_group->parentGroup()->resolveAutoTypeEnabled());
+    }
+    else {
+        addTriStateItems(m_mainUi->searchComboBox, true);
+        addTriStateItems(m_mainUi->autotypeComboBox, true);
+    }
+
     m_mainUi->editName->setText(m_group->name());
     m_mainUi->editNotes->setPlainText(m_group->notes());
     m_mainUi->expireCheck->setChecked(group->timeInfo().expires());
     m_mainUi->expireDatePicker->setDateTime(group->timeInfo().expiryTime().toLocalTime());
     m_mainUi->searchComboBox->setCurrentIndex(indexFromTriState(group->searchingEnabled()));
     m_mainUi->autotypeComboBox->setCurrentIndex(indexFromTriState(group->autoTypeEnabled()));
+    if (group->defaultAutoTypeSequence().isEmpty()) {
+        m_mainUi->autoTypeSequenceInherit->setChecked(true);
+    }
+    else {
+        m_mainUi->autoTypeSequenceCustomRadio->setChecked(true);
+    }
+    m_mainUi->autoTypeSequenceCustomEdit->setText(group->defaultAutoTypeSequence());
 
     IconStruct iconStruct;
     iconStruct.uuid = group->iconUuid();
@@ -91,6 +106,13 @@ void EditGroupWidget::save()
     m_group->setSearchingEnabled(triStateFromIndex(m_mainUi->searchComboBox->currentIndex()));
     m_group->setAutoTypeEnabled(triStateFromIndex(m_mainUi->autotypeComboBox->currentIndex()));
 
+    if (m_mainUi->autoTypeSequenceInherit->isChecked()) {
+        m_group->setDefaultAutoTypeSequence(QString());
+    }
+    else {
+        m_group->setDefaultAutoTypeSequence(m_mainUi->autoTypeSequenceCustomEdit->text());
+    }
+
     IconStruct iconStruct = m_editGroupWidgetIcons->save();
 
     if (iconStruct.number < 0) {
@@ -103,8 +125,7 @@ void EditGroupWidget::save()
         m_group->setIcon(iconStruct.uuid);
     }
 
-    m_group = Q_NULLPTR;
-    m_database = Q_NULLPTR;
+    clear();
     Q_EMIT editFinished(true);
 }
 
@@ -115,14 +136,28 @@ void EditGroupWidget::cancel()
         m_group->setIcon(Entry::DefaultIconNumber);
     }
 
-    m_group = Q_NULLPTR;
-    m_database = Q_NULLPTR;
+    clear();
     Q_EMIT editFinished(false);
 }
 
-void EditGroupWidget::addTriStateItems(QComboBox* comboBox)
+void EditGroupWidget::clear()
 {
-    comboBox->addItem(tr("Inherit"));
+    m_group = Q_NULLPTR;
+    m_database = Q_NULLPTR;
+}
+
+void EditGroupWidget::addTriStateItems(QComboBox* comboBox, bool inheritDefault)
+{
+    QString inheritDefaultString;
+    if (inheritDefault) {
+        inheritDefaultString = tr("Enable");
+    }
+    else {
+        inheritDefaultString = tr("Disable");
+    }
+
+    comboBox->clear();
+    comboBox->addItem(tr("Inherit from parent group (%1)").arg(inheritDefaultString));
     comboBox->addItem(tr("Enable"));
     comboBox->addItem(tr("Disable"));
 }

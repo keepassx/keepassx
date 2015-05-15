@@ -16,13 +16,13 @@
      <property name="text">
       <string>Clear clipboard after</string>
      </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
    <item row="0" column="1">
     <widget class="QSpinBox" name="clearClipboardSpinBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="suffix">
       <string> sec</string>
      </property>
@@ -34,8 +34,49 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="lockDatabaseIdleCheckBox">
+     <property name="text">
+      <string>Lock databases after inactivity of</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QSpinBox" name="lockDatabaseIdleSpinBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="suffix">
+      <string> sec</string>
+     </property>
+     <property name="minimum">
+      <number>10</number>
+     </property>
+     <property name="maximum">
+      <number>9999</number>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QCheckBox" name="passwordCleartextCheckBox">
+     <property name="text">
+      <string>Show passwords in cleartext by default</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="autoTypeAskCheckBox">
+     <property name="text">
+      <string>Always ask before performing auto-type</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>clearClipboardCheckBox</tabstop>
+  <tabstop>clearClipboardSpinBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

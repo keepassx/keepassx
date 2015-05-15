@@ -21,10 +21,12 @@
 #include <QHash>
 #include <QTabWidget>
 
+#include "core/qlockfile.h"
 #include "format/KeePass2Writer.h"
 #include "gui/DatabaseWidget.h"
 
 class DatabaseWidget;
+class DatabaseWidgetStateSync;
 class DatabaseOpenWidget;
 class QFile;
 
@@ -33,6 +35,7 @@ struct DatabaseManagerStruct
     DatabaseManagerStruct();
 
     DatabaseWidget* dbWidget;
+    QLockFile* lockFile;
     QString filePath;
     QString canonicalFilePath;
     QString fileName;
@@ -53,7 +56,7 @@ public:
     void openDatabase(const QString& fileName, const QString& pw = QString(),
                       const QString& keyFile = QString());
     DatabaseWidget* currentDatabaseWidget();
-    bool hasLockableDatabases();
+    bool hasLockableDatabases() const;
 
     static const int LastDatabasesCount;
 
@@ -61,8 +64,8 @@ public Q_SLOTS:
     void newDatabase();
     void openDatabase();
     void importKeePass1Database();
-    void saveDatabase(int index = -1);
-    void saveDatabaseAs(int index = -1);
+    bool saveDatabase(int index = -1);
+    bool saveDatabaseAs(int index = -1);
     bool closeDatabase(int index = -1);
     void closeDatabaseFromSender();
     bool closeAllDatabases();
@@ -75,6 +78,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void tabNameChanged();
     void databaseWithFileClosed(QString filePath);
+    void activateDatabaseChanged(DatabaseWidget* dbWidget);
 
 private Q_SLOTS:
     void updateTabName(Database* db);
@@ -83,10 +87,11 @@ private Q_SLOTS:
     void modified();
     void toggleTabbar();
     void changeDatabase(Database* newDb);
+    void emitActivateDatabaseChanged();
 
 private:
-    void saveDatabase(Database* db);
-    void saveDatabaseAs(Database* db);
+    bool saveDatabase(Database* db);
+    bool saveDatabaseAs(Database* db);
     bool closeDatabase(Database* db);
     void deleteDatabase(Database* db);
     int databaseIndex(Database* db);
@@ -99,6 +104,7 @@ private:
 
     KeePass2Writer m_writer;
     QHash<Database*, DatabaseManagerStruct> m_dbList;
+    DatabaseWidgetStateSync* m_dbWidgetSateSync;
 };
 
 #endif // KEEPASSX_DATABASETABWIDGET_H

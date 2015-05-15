@@ -65,6 +65,8 @@ public:
     QString defaultAutoTypeSequence() const;
     Group::TriState autoTypeEnabled() const;
     Group::TriState searchingEnabled() const;
+    bool resolveSearchingEnabled() const;
+    bool resolveAutoTypeEnabled() const;
     Entry* lastTopVisibleEntry() const;
     bool isExpired() const;
 
@@ -99,12 +101,17 @@ public:
     const QList<Entry*>& entries() const;
     QList<Entry*> entriesRecursive(bool includeHistoryItems = false) const;
     QList<const Group*> groupsRecursive(bool includeSelf) const;
+    QList<Group*> groupsRecursive(bool includeSelf);
     QSet<Uuid> customIconsRecursive() const;
-    Group* clone() const;
+    /**
+     * Creates a duplicate of this group including all child entries and groups.
+     * The exceptions are that the returned group doesn't have a parent group
+     * and all TimeInfo attributes are set to the current time.
+     * Note that you need to copy the custom icons manually when inserting the
+     * new group into another database.
+     */
+    Group* clone(Entry::CloneFlags entryFlags = Entry::CloneNewUuid | Entry::CloneResetTimeInfo) const;
     void copyDataFrom(const Group* other);
-
-    QList<Entry*> search(const QString& searchTerm, Qt::CaseSensitivity caseSensitivity,
-                         bool resolveInherit = true);
 
 Q_SIGNALS:
     void dataChanged(Group* group);
@@ -139,7 +146,6 @@ private:
     void cleanupParent();
     void recCreateDelObjects();
     void updateTimeinfo();
-    bool includeInSearch(bool resolveInherit);
 
     QPointer<Database> m_db;
     Uuid m_uuid;

@@ -27,7 +27,6 @@ set(keepassx_SOURCES
     autotype/WildcardMatcher.cpp
     autotype/WindowSelectComboBox.cpp
     autotype/test/AutoTypeTestInterface.h
-    core/ArgumentParser.cpp
     core/AutoTypeAssociations.cpp
     core/Config.cpp
     core/Database.cpp
@@ -36,31 +35,32 @@ set(keepassx_SOURCES
     core/Entry.cpp
     core/EntryAttachments.cpp
     core/EntryAttributes.cpp
+    core/EntrySearcher.cpp
     core/FilePath.cpp
     core/Global.h
     core/Group.cpp
+    core/InactivityTimer.cpp
     core/ListDeleter.h
     core/Metadata.cpp
     core/PasswordGenerator.cpp
+    core/qlockfile.cpp
     core/qsavefile.cpp
     core/qsavefile_p.h
     core/SignalMultiplexer.cpp
     core/TimeDelta.cpp
     core/TimeInfo.cpp
+    core/ToDbExporter.cpp
     core/Tools.cpp
+    core/Translator.cpp
     core/Uuid.cpp
+    core/qcommandlineoption.cpp
+    core/qcommandlineparser.cpp
     crypto/Crypto.cpp
     crypto/CryptoHash.cpp
     crypto/Random.cpp
-    crypto/salsa20/ecrypt-config.h
-    crypto/salsa20/ecrypt-machine.h
-    crypto/salsa20/ecrypt-portable.h
-    crypto/salsa20/ecrypt-sync.h
-    crypto/salsa20/salsa20.c
     crypto/SymmetricCipher.cpp
     crypto/SymmetricCipherBackend.h
     crypto/SymmetricCipherGcrypt.cpp
-    crypto/SymmetricCipherSalsa20.cpp
     format/KeePass1.h
     format/KeePass1Reader.cpp
     format/KeePass2.h
@@ -77,6 +77,7 @@ set(keepassx_SOURCES
     gui/DatabaseSettingsWidget.cpp
     gui/DatabaseTabWidget.cpp
     gui/DatabaseWidget.cpp
+    gui/DatabaseWidgetStateSync.cpp
     gui/DialogyWidget.cpp
     gui/DragTabBar.cpp
     gui/EditWidget.cpp
@@ -88,7 +89,9 @@ set(keepassx_SOURCES
     gui/LineEdit.cpp
     gui/MainWindow.cpp
     gui/MessageBox.cpp
+    gui/PasswordEdit.cpp
     gui/PasswordGeneratorWidget.cpp
+    gui/PasswordComboBox.cpp
     gui/SettingsWidget.cpp
     gui/SortFilterHideProxyModel.cpp
     gui/UnlockDatabaseWidget.cpp
@@ -116,6 +119,30 @@ set(keepassx_SOURCES
     streams/SymmetricCipherStream.cpp
 )
 
+if(NOT GCRYPT_HAS_SALSA20)
+  set(keepassx_SOURCES
+      ${keepassx_SOURCES}
+      crypto/salsa20/ecrypt-config.h
+      crypto/salsa20/ecrypt-machine.h
+      crypto/salsa20/ecrypt-portable.h
+      crypto/salsa20/ecrypt-sync.h
+      crypto/salsa20/salsa20.c
+      crypto/SymmetricCipherSalsa20.cpp
+  )
+endif()
+
+if(UNIX)
+  set(keepassx_SOURCES
+      ${keepassx_SOURCES}
+      core/qlockfile_unix.cpp
+  )
+elseif(MINGW)
+  set(keepassx_SOURCES
+      ${keepassx_SOURCES}
+      core/qlockfile_win.cpp
+  )
+endif()
+
 set(keepassx_SOURCES_MAINEXE
     main.cpp
 )
@@ -133,6 +160,7 @@ set(keepassx_MOC
     core/EntryAttachments.h
     core/EntryAttributes.h
     core/Group.h
+    core/InactivityTimer.h
     core/Metadata.h
     core/qsavefile.h
     gui/AboutDialog.h
@@ -143,6 +171,7 @@ set(keepassx_MOC
     gui/DatabaseSettingsWidget.h
     gui/DatabaseTabWidget.h
     gui/DatabaseWidget.h
+    gui/DatabaseWidgetStateSync.h
     gui/DialogyWidget.h
     gui/DragTabBar.h
     gui/EditWidget.h
@@ -152,7 +181,9 @@ set(keepassx_MOC
     gui/KeePass1OpenWidget.h
     gui/LineEdit.h
     gui/MainWindow.h
+    gui/PasswordEdit.h
     gui/PasswordGeneratorWidget.h
+    gui/PasswordComboBox.h
     gui/SettingsWidget.h
     gui/SortFilterHideProxyModel.h
     gui/UnlockDatabaseWidget.h

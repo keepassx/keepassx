@@ -41,6 +41,7 @@ public:
     ~EditGroupWidget();
 
     void loadGroup(Group* group, bool create, Database* database);
+    void clear();
 
 Q_SIGNALS:
     void editFinished(bool accepted);
@@ -50,7 +51,7 @@ private Q_SLOTS:
     void cancel();
 
 private:
-    void addTriStateItems(QComboBox* comboBox);
+    void addTriStateItems(QComboBox* comboBox, bool inheritValue);
     int indexFromTriState(Group::TriState triState);
     Group::TriState triStateFromIndex(int index);
 

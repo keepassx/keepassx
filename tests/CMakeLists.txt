@@ -13,7 +13,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/src)
 
 add_definitions(-DQT_TEST_LIB)
@@ -65,12 +64,10 @@ macro(add_unit_test)
   endif(NOT TEST_OUTPUT)
   set(TEST_OUTPUT ${TEST_OUTPUT} CACHE STRING "The output to generate when running the QTest unit tests")
 
-  get_target_property(loc ${_test_NAME} LOCATION)
-
   if(KDE4_TEST_OUTPUT STREQUAL "xml")
-    add_test(${_test_NAME} ${loc} -xml -o ${_test_NAME}.tml)
+    add_test(${_test_NAME} ${_test_NAME} -xml -o ${_test_NAME}.tml)
   else(KDE4_TEST_OUTPUT STREQUAL "xml")
-    add_test(${_test_NAME} ${loc})
+    add_test(${_test_NAME} ${_test_NAME})
   endif(KDE4_TEST_OUTPUT STREQUAL "xml")
 
   if(NOT MSVC_IDE)   #not needed for the ide
@@ -159,10 +156,16 @@ set_target_properties(testautotype PROPERTIES ENABLE_EXPORTS ON)
 add_unit_test(NAME testentry SOURCES TestEntry.cpp MOCS TestEntry.h
               LIBS ${TEST_LIBRARIES})
 
-add_unit_test(NAME testargumentparser SOURCES TestArgumentParser.cpp MOCS TestArgumentParser.h
+add_unit_test(NAME testqcommandlineparser SOURCES TestQCommandLineParser.cpp MOCS TestQCommandLineParser.h
               LIBS ${TEST_LIBRARIES})
 
 add_unit_test(NAME testrandom SOURCES TestRandom.cpp MOCS TestRandom.h
+              LIBS ${TEST_LIBRARIES})
+
+add_unit_test(NAME testentrysearcher SOURCES TestEntrySearcher.cpp MOCS TestEntrySearcher.h
+              LIBS ${TEST_LIBRARIES})
+
+add_unit_test(NAME testexporter SOURCES TestExporter.cpp MOCS TestExporter.h
               LIBS ${TEST_LIBRARIES})
 
 if(WITH_GUI_TESTS)

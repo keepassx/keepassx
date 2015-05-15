@@ -20,6 +20,7 @@
 
 #include "core/Config.h"
 #include "core/Database.h"
+#include "core/FilePath.h"
 #include "gui/FileDialog.h"
 #include "gui/MessageBox.h"
 #include "format/KeePass2Reader.h"
@@ -40,7 +41,9 @@ DatabaseOpenWidget::DatabaseOpenWidget(QWidget* parent)
 
     m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
-    connect(m_ui->buttonTogglePassword, SIGNAL(toggled(bool)), SLOT(togglePassword(bool)));
+    m_ui->buttonTogglePassword->setIcon(filePath()->onOffIcon("actions", "password-show"));
+    connect(m_ui->buttonTogglePassword, SIGNAL(toggled(bool)),
+            m_ui->editPassword, SLOT(setShowPassword(bool)));
     connect(m_ui->buttonBrowseFile, SIGNAL(clicked()), SLOT(browseKeyFile()));
 
     connect(m_ui->editPassword, SIGNAL(textChanged(QString)), SLOT(activatePassword()));
@@ -64,10 +67,12 @@ void DatabaseOpenWidget::load(const QString& filename)
 
     m_ui->labelFilename->setText(filename);
 
-    QHash<QString, QVariant> lastKeyFiles = config()->get("LastKeyFiles").toHash();
-    if (lastKeyFiles.contains(m_filename)) {
-        m_ui->checkKeyFile->setChecked(true);
-        m_ui->comboKeyFile->addItem(lastKeyFiles[m_filename].toString());
+    if (config()->get("RememberLastKeyFiles").toBool()) {
+        QHash<QString, QVariant> lastKeyFiles = config()->get("LastKeyFiles").toHash();
+        if (lastKeyFiles.contains(m_filename)) {
+            m_ui->checkKeyFile->setChecked(true);
+            m_ui->comboKeyFile->addItem(lastKeyFiles[m_filename].toString());
+        }
     }
 
     m_ui->editPassword->setFocus();
@@ -84,7 +89,7 @@ void DatabaseOpenWidget::enterKey(const QString& pw, const QString& keyFile)
         m_ui->editPassword->setText(pw);
     }
     if (!keyFile.isEmpty()) {
-        m_ui->checkKeyFile->setText(keyFile);
+        m_ui->comboKeyFile->setEditText(keyFile);
     }
 
     openDatabase();
@@ -114,8 +119,8 @@ void DatabaseOpenWidget::openDatabase()
         Q_EMIT editFinished(true);
     }
     else {
-        MessageBox::warning(this, tr("Error"), tr("Unable to open the database.\n%1")
-                            .arg(reader.errorString()));
+        MessageBox::warning(this, tr("Error"), tr("Unable to open the database.").append("\n")
+                            .append(reader.errorString()));
         m_ui->editPassword->clear();
     }
 }
@@ -135,7 +140,7 @@ CompositeKey DatabaseOpenWidget::databaseKey()
         QString keyFilename = m_ui->comboKeyFile->currentText();
         QString errorMsg;
         if (!key.load(keyFilename, &errorMsg)) {
-            MessageBox::warning(this, tr("Error"), tr("Can't open key file:\n%1").arg(errorMsg));
+            MessageBox::warning(this, tr("Error"), tr("Can't open key file").append(":\n").append(errorMsg));
             return CompositeKey();
         }
         masterKey.addKey(key);
@@ -145,7 +150,9 @@ CompositeKey DatabaseOpenWidget::databaseKey()
         lastKeyFiles.remove(m_filename);
     }
 
-    config()->set("LastKeyFiles", lastKeyFiles);
+    if (config()->get("RememberLastKeyFiles").toBool()) {
+        config()->set("LastKeyFiles", lastKeyFiles);
+    }
 
     return masterKey;
 }
@@ -153,11 +160,6 @@ CompositeKey DatabaseOpenWidget::databaseKey()
 void DatabaseOpenWidget::reject()
 {
     Q_EMIT editFinished(false);
-}
-
-void DatabaseOpenWidget::togglePassword(bool checked)
-{
-    m_ui->editPassword->setEchoMode(checked ? QLineEdit::Password : QLineEdit::Normal);
 }
 
 void DatabaseOpenWidget::activatePassword()

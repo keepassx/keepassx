@@ -13,14 +13,19 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+add_subdirectory(translations)
+
 file(GLOB DATABASE_ICONS icons/database/*.png)
 
 install(FILES ${DATABASE_ICONS} DESTINATION ${DATA_INSTALL_DIR}/icons/database)
 
 if(UNIX AND NOT APPLE)
-    install(DIRECTORY icons/application/ DESTINATION share/icons/hicolor
+    install(DIRECTORY icons/application/ DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor
             FILES_MATCHING PATTERN "keepassx.png" PATTERN "keepassx.svgz")
-    install(FILES linux/keepassx.desktop DESTINATION share/applications)
+    install(DIRECTORY icons/application/ DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor
+            FILES_MATCHING PATTERN "application-x-keepassx.png" PATTERN "application-x-keepassx.svgz")
+    install(FILES linux/keepassx.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+    install(FILES linux/keepassx.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
 endif(UNIX AND NOT APPLE)
 
 if(APPLE)

@@ -115,8 +115,14 @@ QImage Group::icon() const
         return databaseIcons()->icon(m_data.iconNumber);
     }
     else {
-        // TODO: check if m_db is 0
-        return m_db->metadata()->customIcon(m_data.customIcon);
+        Q_ASSERT(m_db);
+
+        if (m_db) {
+            return m_db->metadata()->customIcon(m_data.customIcon);
+        }
+        else {
+            return QImage();
+        }
     }
 }
 
@@ -126,9 +132,10 @@ QPixmap Group::iconPixmap() const
         return databaseIcons()->iconPixmap(m_data.iconNumber);
     }
     else {
+        Q_ASSERT(m_db);
+
         QPixmap pixmap;
-        if (!QPixmapCache::find(m_pixmapCacheKey, &pixmap)) {
-            // TODO: check if m_db is 0
+        if (m_db && !QPixmapCache::find(m_pixmapCacheKey, &pixmap)) {
             pixmap = QPixmap::fromImage(m_db->metadata()->customIcon(m_data.customIcon));
             m_pixmapCacheKey = QPixmapCache::insert(pixmap);
         }
@@ -241,9 +248,7 @@ void Group::setExpanded(bool expanded)
     if (m_data.isExpanded != expanded) {
         m_data.isExpanded = expanded;
         updateTimeinfo();
-        if (config()->get("ModifiedOnExpandedStateChanges").toBool()) {
-            Q_EMIT modified();
-        }
+        Q_EMIT modified();
     }
 }
 
@@ -429,6 +434,20 @@ QList<const Group*> Group::groupsRecursive(bool includeSelf) const
         groupList.append(this);
     }
 
+    Q_FOREACH (const Group* group, m_children) {
+        groupList.append(group->groupsRecursive(true));
+    }
+
+    return groupList;
+}
+
+QList<Group*> Group::groupsRecursive(bool includeSelf)
+{
+    QList<Group*> groupList;
+    if (includeSelf) {
+        groupList.append(this);
+    }
+
     Q_FOREACH (Group* group, m_children) {
         groupList.append(group->groupsRecursive(true));
     }
@@ -457,11 +476,8 @@ QSet<Uuid> Group::customIconsRecursive() const
     return result;
 }
 
-Group* Group::clone() const
+Group* Group::clone(Entry::CloneFlags entryFlags) const
 {
-    // TODO: what to do about custom icons?
-    // they won't be available when changing the database later
-
     Group* clonedGroup = new Group();
 
     clonedGroup->setUpdateTimeinfo(false);
@@ -470,7 +486,7 @@ Group* Group::clone() const
     clonedGroup->m_data = m_data;
 
     Q_FOREACH (Entry* entry, entries()) {
-        Entry* clonedEntry = entry->clone();
+        Entry* clonedEntry = entry->clone(entryFlags);
         clonedEntry->setGroup(clonedGroup);
     }
 
@@ -592,24 +608,7 @@ void Group::recCreateDelObjects()
     }
 }
 
-QList<Entry*> Group::search(const QString& searchTerm, Qt::CaseSensitivity caseSensitivity,
-                            bool resolveInherit)
-{
-    QList<Entry*> searchResult;
-    if (includeInSearch(resolveInherit)) {
-        Q_FOREACH (Entry* entry, m_entries) {
-            if (entry->match(searchTerm, caseSensitivity)) {
-                searchResult.append(entry);
-            }
-        }
-        Q_FOREACH (Group* group, m_children) {
-            searchResult.append(group->search(searchTerm, caseSensitivity, false));
-        }
-    }
-    return searchResult;
-}
-
-bool Group::includeInSearch(bool resolveInherit)
+bool Group::resolveSearchingEnabled() const
 {
     switch (m_data.searchingEnabled) {
     case Inherit:
@@ -617,12 +616,27 @@ bool Group::includeInSearch(bool resolveInherit)
             return true;
         }
         else {
-            if (resolveInherit) {
-                return m_parent->includeInSearch(true);
-            }
-            else {
-                return true;
-            }
+            return m_parent->resolveSearchingEnabled();
+        }
+    case Enable:
+        return true;
+    case Disable:
+        return false;
+    default:
+        Q_ASSERT(false);
+        return false;
+    }
+}
+
+bool Group::resolveAutoTypeEnabled() const
+{
+    switch (m_data.autoTypeEnabled) {
+    case Inherit:
+        if (!m_parent) {
+            return true;
+        }
+        else {
+            return m_parent->resolveAutoTypeEnabled();
         }
     case Enable:
         return true;

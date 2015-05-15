@@ -25,9 +25,12 @@
 #include <QStackedLayout>
 #include <QMenu>
 #include <QSortFilterProxyModel>
+#include <QTemporaryFile>
 
+#include "core/Config.h"
 #include "core/Database.h"
 #include "core/Entry.h"
+#include "core/FilePath.h"
 #include "core/Metadata.h"
 #include "core/TimeDelta.h"
 #include "core/Tools.h"
@@ -79,19 +82,16 @@ EditEntryWidget::~EditEntryWidget()
 {
 }
 
-const QColor EditEntryWidget::CorrectSoFarColor = QColor(255, 205, 15);
-const QColor EditEntryWidget::ErrorColor = QColor(255, 125, 125);
-
 void EditEntryWidget::setupMain()
 {
     m_mainUi->setupUi(m_mainWidget);
     add(tr("Entry"), m_mainWidget);
 
-    connect(m_mainUi->togglePasswordButton, SIGNAL(toggled(bool)), SLOT(togglePassword(bool)));
+    m_mainUi->togglePasswordButton->setIcon(filePath()->onOffIcon("actions", "password-show"));
+    connect(m_mainUi->togglePasswordButton, SIGNAL(toggled(bool)), m_mainUi->passwordEdit, SLOT(setShowPassword(bool)));
     connect(m_mainUi->tooglePasswordGeneratorButton, SIGNAL(toggled(bool)), SLOT(togglePasswordGeneratorButton(bool)));
     connect(m_mainUi->expireCheck, SIGNAL(toggled(bool)), m_mainUi->expireDatePicker, SLOT(setEnabled(bool)));
-    connect(m_mainUi->passwordEdit, SIGNAL(textEdited(QString)), SLOT(setPasswordCheckColors()));
-    connect(m_mainUi->passwordRepeatEdit, SIGNAL(textEdited(QString)), SLOT(setPasswordCheckColors()));
+    m_mainUi->passwordRepeatEdit->enableVerifyMode(m_mainUi->passwordEdit);
     connect(m_mainUi->passwordGenerator, SIGNAL(newPassword(QString)), SLOT(setGeneratedPassword(QString)));
 
     m_mainUi->expirePresets->setMenu(createPresetsMenu());
@@ -108,7 +108,11 @@ void EditEntryWidget::setupAdvanced()
 
     m_attachmentsModel->setEntryAttachments(m_entryAttachments);
     m_advancedUi->attachmentsView->setModel(m_attachmentsModel);
+    connect(m_advancedUi->attachmentsView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+            SLOT(updateAttachmentButtonsEnabled(QModelIndex)));
+    connect(m_advancedUi->attachmentsView, SIGNAL(doubleClicked(QModelIndex)), SLOT(openAttachment(QModelIndex)));
     connect(m_advancedUi->saveAttachmentButton, SIGNAL(clicked()), SLOT(saveCurrentAttachment()));
+    connect(m_advancedUi->openAttachmentButton, SIGNAL(clicked()), SLOT(openCurrentAttachment()));
     connect(m_advancedUi->addAttachmentButton, SIGNAL(clicked()), SLOT(insertAttachment()));
     connect(m_advancedUi->removeAttachmentButton, SIGNAL(clicked()), SLOT(removeCurrentAttachment()));
 
@@ -233,6 +237,15 @@ void EditEntryWidget::useExpiryPreset(QAction* action)
     m_mainUi->expireDatePicker->setDateTime(expiryDateTime);
 }
 
+void EditEntryWidget::updateAttachmentButtonsEnabled(const QModelIndex& current)
+{
+    bool enable = current.isValid();
+
+    m_advancedUi->saveAttachmentButton->setEnabled(enable);
+    m_advancedUi->openAttachmentButton->setEnabled(enable);
+    m_advancedUi->removeAttachmentButton->setEnabled(enable && !m_history);
+}
+
 QString EditEntryWidget::entryTitle() const
 {
     if (m_entry) {
@@ -264,6 +277,7 @@ void EditEntryWidget::loadEntry(Entry* entry, bool create, bool history, const Q
     }
 
     setForms(entry);
+    setReadOnly(m_history);
 
     setCurrentRow(0);
     setRowHidden(m_historyWidget, m_history);
@@ -282,7 +296,7 @@ void EditEntryWidget::setForms(const Entry* entry, bool restore)
     m_mainUi->tooglePasswordGeneratorButton->setChecked(false);
     m_mainUi->passwordGenerator->reset();
     m_advancedUi->addAttachmentButton->setEnabled(!m_history);
-    m_advancedUi->removeAttachmentButton->setEnabled(!m_history);
+    updateAttachmentButtonsEnabled(m_advancedUi->attachmentsView->currentIndex());
     m_advancedUi->addAttributeButton->setEnabled(!m_history);
     m_advancedUi->editAttributeButton->setEnabled(false);
     m_advancedUi->removeAttributeButton->setEnabled(false);
@@ -306,11 +320,10 @@ void EditEntryWidget::setForms(const Entry* entry, bool restore)
     m_mainUi->urlEdit->setText(entry->url());
     m_mainUi->passwordEdit->setText(entry->password());
     m_mainUi->passwordRepeatEdit->setText(entry->password());
-    setPasswordCheckColors();
     m_mainUi->expireCheck->setChecked(entry->timeInfo().expires());
     m_mainUi->expireDatePicker->setDateTime(entry->timeInfo().expiryTime().toLocalTime());
     m_mainUi->expirePresets->setEnabled(!m_history);
-    m_mainUi->togglePasswordButton->setChecked(true);
+    m_mainUi->togglePasswordButton->setChecked(config()->get("security/passwordscleartext").toBool());
 
     m_mainUi->notesEdit->setPlainText(entry->notes());
 
@@ -372,10 +385,7 @@ void EditEntryWidget::setForms(const Entry* entry, bool restore)
 void EditEntryWidget::saveEntry()
 {
     if (m_history) {
-        m_entry = Q_NULLPTR;
-        m_database = Q_NULLPTR;
-        m_entryAttributes->clear();
-        m_entryAttachments->clear();
+        clear();
         Q_EMIT editFinished(false);
         return;
     }
@@ -441,12 +451,7 @@ void EditEntryWidget::saveEntry()
     }
 
 
-    m_entry = Q_NULLPTR;
-    m_database = Q_NULLPTR;
-    m_entryAttributes->clear();
-    m_entryAttachments->clear();
-    m_autoTypeAssoc->clear();
-    m_historyModel->clear();
+    clear();
 
     Q_EMIT editFinished(true);
 }
@@ -454,10 +459,7 @@ void EditEntryWidget::saveEntry()
 void EditEntryWidget::cancel()
 {
     if (m_history) {
-        m_entry = Q_NULLPTR;
-        m_database = Q_NULLPTR;
-        m_entryAttributes->clear();
-        m_entryAttachments->clear();
+        clear();
         Q_EMIT editFinished(false);
         return;
     }
@@ -467,20 +469,19 @@ void EditEntryWidget::cancel()
         m_entry->setIcon(Entry::DefaultIconNumber);
     }
 
-    m_entry = 0;
-    m_database = 0;
-    m_entryAttributes->clear();
-    m_entryAttachments->clear();
-    m_autoTypeAssoc->clear();
-    m_historyModel->clear();
+    clear();
 
     Q_EMIT editFinished(false);
 }
 
-void EditEntryWidget::togglePassword(bool checked)
+void EditEntryWidget::clear()
 {
-    m_mainUi->passwordEdit->setEchoMode(checked ? QLineEdit::Password : QLineEdit::Normal);
-    m_mainUi->passwordRepeatEdit->setEchoMode(checked ? QLineEdit::Password : QLineEdit::Normal);
+    m_entry = Q_NULLPTR;
+    m_database = Q_NULLPTR;
+    m_entryAttributes->clear();
+    m_entryAttachments->clear();
+    m_autoTypeAssoc->clear();
+    m_historyModel->clear();
 }
 
 void EditEntryWidget::togglePasswordGeneratorButton(bool checked)
@@ -491,25 +492,6 @@ void EditEntryWidget::togglePasswordGeneratorButton(bool checked)
 bool EditEntryWidget::passwordsEqual()
 {
     return m_mainUi->passwordEdit->text() == m_mainUi->passwordRepeatEdit->text();
-}
-
-void EditEntryWidget::setPasswordCheckColors()
-{
-    if (passwordsEqual()) {
-        m_mainUi->passwordRepeatEdit->setStyleSheet("");
-    }
-    else {
-        QString stylesheet = "QLineEdit { background: %1; }";
-
-        if (m_mainUi->passwordEdit->text().startsWith(m_mainUi->passwordRepeatEdit->text())) {
-            stylesheet = stylesheet.arg(CorrectSoFarColor.name());
-        }
-        else {
-            stylesheet = stylesheet.arg(ErrorColor.name());
-        }
-
-        m_mainUi->passwordRepeatEdit->setStyleSheet(stylesheet);
-    }
 }
 
 void EditEntryWidget::setGeneratedPassword(const QString& password)
@@ -605,9 +587,11 @@ void EditEntryWidget::insertAttachment()
 {
     Q_ASSERT(!m_history);
 
-    // TODO: save last used dir
-    QString filename = fileDialog()->getOpenFileName(this, tr("Select file"),
-                QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation));
+    QString defaultDir = config()->get("LastAttachmentDir").toString();
+    if (defaultDir.isEmpty() || !QDir(defaultDir).exists()) {
+        defaultDir = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+    }
+    QString filename = fileDialog()->getOpenFileName(this, tr("Select file"), defaultDir);
     if (filename.isEmpty() || !QFile::exists(filename)) {
         return;
     }
@@ -615,14 +599,14 @@ void EditEntryWidget::insertAttachment()
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly)) {
         MessageBox::warning(this, tr("Error"),
-                tr("Unable to open file:\n").append(file.errorString()));
+                tr("Unable to open file").append(":\n").append(file.errorString()));
         return;
     }
 
     QByteArray data;
     if (!Tools::readAllFromDevice(&file, data)) {
         MessageBox::warning(this, tr("Error"),
-                tr("Unable to open file:\n").append(file.errorString()));
+                tr("Unable to open file").append(":\n").append(file.errorString()));
         return;
     }
 
@@ -637,8 +621,11 @@ void EditEntryWidget::saveCurrentAttachment()
     }
 
     QString filename = m_attachmentsModel->keyByIndex(index);
-    // TODO: save last used dir
-    QDir dir(QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation));
+    QString defaultDirName = config()->get("LastAttachmentDir").toString();
+    if (defaultDirName.isEmpty() || !QDir(defaultDirName).exists()) {
+        defaultDirName = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+    }
+    QDir dir(defaultDirName);
     QString savePath = fileDialog()->getSaveFileName(this, tr("Save attachment"),
                                                        dir.filePath(filename));
     if (!savePath.isEmpty()) {
@@ -656,6 +643,42 @@ void EditEntryWidget::saveCurrentAttachment()
             return;
         }
     }
+}
+
+void EditEntryWidget::openAttachment(const QModelIndex& index)
+{
+    if (!index.isValid()) {
+        Q_ASSERT(false);
+        return;
+    }
+
+    QString filename = m_attachmentsModel->keyByIndex(index);
+    QByteArray attachmentData = m_entryAttachments->value(filename);
+
+    // tmp file will be removed once the database (or the application) has been closed
+    QString tmpFileTemplate = QDir::temp().absoluteFilePath(QString("XXXXXX.").append(filename));
+    QTemporaryFile* file = new QTemporaryFile(tmpFileTemplate, this);
+
+    if (!file->open()) {
+        MessageBox::warning(this, tr("Error"),
+                tr("Unable to save the attachment:\n").append(file->errorString()));
+        return;
+    }
+
+    if (file->write(attachmentData) != attachmentData.size()) {
+        MessageBox::warning(this, tr("Error"),
+                tr("Unable to save the attachment:\n").append(file->errorString()));
+        return;
+    }
+
+    QDesktopServices::openUrl(QUrl::fromLocalFile(file->fileName()));
+}
+
+void EditEntryWidget::openCurrentAttachment()
+{
+    QModelIndex index = m_advancedUi->attachmentsView->currentIndex();
+
+    openAttachment(index);
 }
 
 void EditEntryWidget::removeCurrentAttachment()
@@ -805,13 +828,13 @@ QMenu* EditEntryWidget::createPresetsMenu()
     QMenu* expirePresetsMenu = new QMenu(this);
     expirePresetsMenu->addAction(tr("Tomorrow"))->setData(QVariant::fromValue(TimeDelta::fromDays(1)));
     expirePresetsMenu->addSeparator();
-    expirePresetsMenu->addAction(tr("1 week"))->setData(QVariant::fromValue(TimeDelta::fromDays(7)));
-    expirePresetsMenu->addAction(tr("2 weeks"))->setData(QVariant::fromValue(TimeDelta::fromDays(14)));
-    expirePresetsMenu->addAction(tr("3 weeks"))->setData(QVariant::fromValue(TimeDelta::fromDays(21)));
+    expirePresetsMenu->addAction(tr("%n week(s)", 0, 1))->setData(QVariant::fromValue(TimeDelta::fromDays(7)));
+    expirePresetsMenu->addAction(tr("%n week(s)", 0, 2))->setData(QVariant::fromValue(TimeDelta::fromDays(14)));
+    expirePresetsMenu->addAction(tr("%n week(s)", 0, 3))->setData(QVariant::fromValue(TimeDelta::fromDays(21)));
     expirePresetsMenu->addSeparator();
-    expirePresetsMenu->addAction(tr("1 month"))->setData(QVariant::fromValue(TimeDelta::fromMonths(1)));
-    expirePresetsMenu->addAction(tr("3 months"))->setData(QVariant::fromValue(TimeDelta::fromMonths(3)));
-    expirePresetsMenu->addAction(tr("6 months"))->setData(QVariant::fromValue(TimeDelta::fromMonths(6)));
+    expirePresetsMenu->addAction(tr("%n month(s)", 0, 1))->setData(QVariant::fromValue(TimeDelta::fromMonths(1)));
+    expirePresetsMenu->addAction(tr("%n month(s)", 0, 3))->setData(QVariant::fromValue(TimeDelta::fromMonths(3)));
+    expirePresetsMenu->addAction(tr("%n month(s)", 0, 6))->setData(QVariant::fromValue(TimeDelta::fromMonths(6)));
     expirePresetsMenu->addSeparator();
     expirePresetsMenu->addAction(tr("1 year"))->setData(QVariant::fromValue(TimeDelta::fromYears(1)));
     return expirePresetsMenu;

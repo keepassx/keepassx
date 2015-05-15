@@ -49,13 +49,20 @@ QString FilePath::pluginPath(const QString& name)
 
     pluginPaths << QCoreApplication::applicationDirPath();
 
-    QString systemPluginDir = KEEPASSX_PLUGIN_DIR;
-    if (systemPluginDir != ".") {
-        if (!QDir(systemPluginDir).isAbsolute()) {
-            systemPluginDir = QCoreApplication::applicationDirPath() + "/../" + systemPluginDir;
-            systemPluginDir = QDir(systemPluginDir).canonicalPath();
+    QString configuredPluginDir = KEEPASSX_PLUGIN_DIR;
+    if (configuredPluginDir != ".") {
+        if (QDir(configuredPluginDir).isAbsolute()) {
+            pluginPaths << configuredPluginDir;
         }
-        pluginPaths << systemPluginDir;
+        else {
+            QString relativePluginDir = QString("%1/../%2")
+                    .arg(QCoreApplication::applicationDirPath(), configuredPluginDir);
+            pluginPaths << QDir(relativePluginDir).canonicalPath();
+
+            QString absolutePluginDir = QString("%1/%2")
+                    .arg(KEEPASSX_PREFIX_DIR, configuredPluginDir);
+            pluginPaths << QDir(absolutePluginDir).canonicalPath();
+        }
     }
 
     QStringList dirFilter;
@@ -117,8 +124,56 @@ QIcon FilePath::icon(const QString& category, const QString& name, bool fromThem
     return icon;
 }
 
+QIcon FilePath::onOffIcon(const QString& category, const QString& name)
+{
+    QString combinedName = category + "/" + name;
+    QString cacheName = "onoff/" + combinedName;
+
+    QIcon icon = m_iconCache.value(cacheName);
+
+    if (!icon.isNull()) {
+        return icon;
+    }
+
+    for (int i = 0; i < 2; i++) {
+        QIcon::State state;
+        QString stateName;
+
+        if (i == 0) {
+            state = QIcon::Off;
+            stateName = "off";
+        }
+        else {
+            state = QIcon::On;
+            stateName = "on";
+        }
+
+        QList<int> pngSizes;
+        pngSizes << 16 << 22 << 24 << 32 << 48 << 64 << 128;
+        QString filename;
+        Q_FOREACH (int size, pngSizes) {
+            filename = QString("%1/icons/application/%2x%2/%3-%4.png").arg(m_dataPath, QString::number(size),
+                                                                           combinedName, stateName);
+            if (QFile::exists(filename)) {
+                icon.addFile(filename, QSize(size, size), QIcon::Normal, state);
+            }
+        }
+        filename = QString("%1/icons/application/scalable/%3-%4.svgz").arg(m_dataPath, combinedName, stateName);
+        if (QFile::exists(filename)) {
+            icon.addFile(filename, QSize(), QIcon::Normal, state);
+        }
+    }
+
+    m_iconCache.insert(cacheName, icon);
+
+    return icon;
+}
+
 FilePath::FilePath()
 {
+    const QString appDirPath = QCoreApplication::applicationDirPath();
+    bool isDataDirAbsolute = QDir::isAbsolutePath(KEEPASSX_DATA_DIR);
+
     if (false) {
     }
 #ifdef QT_DEBUG
@@ -126,15 +181,19 @@ FilePath::FilePath()
     }
 #endif
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
-    else if (testSetDir(QCoreApplication::applicationDirPath() + "/../share/keepassx")) {
+    else if (isDataDirAbsolute && testSetDir(KEEPASSX_DATA_DIR)) {
+    }
+    else if (!isDataDirAbsolute && testSetDir(QString("%1/../%2").arg(appDirPath, KEEPASSX_DATA_DIR))) {
+    }
+    else if (!isDataDirAbsolute && testSetDir(QString("%1/%2").arg(KEEPASSX_PREFIX_DIR, KEEPASSX_DATA_DIR))) {
     }
 #endif
 #ifdef Q_OS_MAC
-    else if (testSetDir(QCoreApplication::applicationDirPath() + "/../Resources")) {
+    else if (testSetDir(appDirPath + "/../Resources")) {
     }
 #endif
 #ifdef Q_OS_WIN
-    else if (testSetDir(QCoreApplication::applicationDirPath() + "/share")) {
+    else if (testSetDir(appDirPath + "/share")) {
     }
 #endif
 

@@ -15,7 +15,16 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item>
@@ -25,7 +34,16 @@
       </property>
       <widget class="QWidget" name="pageDatabase">
        <layout class="QVBoxLayout" name="verticalLayout_2">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -45,7 +63,16 @@
       </widget>
       <widget class="QWidget" name="pageSettings">
        <layout class="QVBoxLayout" name="verticalLayout_3">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -94,7 +121,6 @@
     <addaction name="separator"/>
     <addaction name="actionImportKeePass1"/>
     <addaction name="separator"/>
-    <addaction name="actionLockDatabases"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -114,16 +140,21 @@
      <property name="title">
       <string>Copy attribute to clipboard</string>
      </property>
+     <addaction name="actionEntryCopyTitle"/>
+     <addaction name="actionEntryCopyUsername"/>
+     <addaction name="actionEntryCopyPassword"/>
+     <addaction name="actionEntryCopyURL"/>
+     <addaction name="actionEntryCopyNotes"/>
+     <addaction name="separator"/>
     </widget>
     <addaction name="actionEntryNew"/>
     <addaction name="actionEntryClone"/>
     <addaction name="actionEntryEdit"/>
     <addaction name="actionEntryDelete"/>
-    <addaction name="actionEntryCopyUsername"/>
-    <addaction name="actionEntryCopyPassword"/>
     <addaction name="menuEntryCopyAttribute"/>
     <addaction name="actionEntryAutoType"/>
     <addaction name="actionEntryOpenUrl"/>
+    <addaction name="actionSearch"/>
    </widget>
    <widget class="QMenu" name="menuGroups">
     <property name="title">
@@ -133,10 +164,11 @@
     <addaction name="actionGroupEdit"/>
     <addaction name="actionGroupDelete"/>
    </widget>
-   <widget class="QMenu" name="menuExtras">
+   <widget class="QMenu" name="menuTools">
     <property name="title">
-     <string>Extras</string>
+     <string>Tools</string>
     </property>
+    <addaction name="actionLockDatabases"/>
     <addaction name="actionSettings"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -148,7 +180,7 @@
    <addaction name="menuEntries"/>
    <addaction name="menuGroups"/>
    <addaction name="menuView"/>
-   <addaction name="menuExtras"/>
+   <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
@@ -161,9 +193,17 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionDatabaseOpen"/>
+   <addaction name="actionDatabaseSave"/>
+   <addaction name="separator"/>
    <addaction name="actionEntryNew"/>
    <addaction name="actionEntryEdit"/>
    <addaction name="actionEntryDelete"/>
+   <addaction name="separator"/>
+   <addaction name="actionEntryCopyUsername"/>
+   <addaction name="actionEntryCopyPassword"/>
+   <addaction name="separator"/>
+   <addaction name="actionLockDatabases"/>
    <addaction name="actionSearch"/>
   </widget>
   <action name="actionQuit">
@@ -291,9 +331,6 @@
    </property>
   </action>
   <action name="actionSearch">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -306,6 +343,9 @@
     <bool>false</bool>
    </property>
    <property name="text">
+    <string>Username</string>
+   </property>
+   <property name="toolTip">
     <string>Copy username to clipboard</string>
    </property>
   </action>
@@ -314,6 +354,9 @@
     <bool>false</bool>
    </property>
    <property name="text">
+    <string>Password</string>
+   </property>
+   <property name="toolTip">
     <string>Copy password to clipboard</string>
    </property>
   </action>
@@ -344,6 +387,30 @@
    </property>
    <property name="text">
     <string>Lock databases</string>
+   </property>
+  </action>
+  <action name="actionEntryCopyTitle">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Title</string>
+   </property>
+  </action>
+  <action name="actionEntryCopyURL">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>URL</string>
+   </property>
+  </action>
+  <action name="actionEntryCopyNotes">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Notes</string>
    </property>
   </action>
  </widget>

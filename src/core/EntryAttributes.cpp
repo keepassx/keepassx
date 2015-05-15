@@ -17,8 +17,13 @@
 
 #include "EntryAttributes.h"
 
-const QStringList EntryAttributes::DefaultAttributes(QStringList() << "Title" << "UserName"
-                                                      << "Password" << "URL" << "Notes");
+const QString EntryAttributes::TitleKey = "Title";
+const QString EntryAttributes::UserNameKey = "UserName";
+const QString EntryAttributes::PasswordKey = "Password";
+const QString EntryAttributes::URLKey = "URL";
+const QString EntryAttributes::NotesKey = "Notes";
+const QStringList EntryAttributes::DefaultAttributes(QStringList() << TitleKey << UserNameKey
+                                                     << PasswordKey << URLKey << NotesKey);
 
 EntryAttributes::EntryAttributes(QObject* parent)
     : QObject(parent)
@@ -29,6 +34,11 @@ EntryAttributes::EntryAttributes(QObject* parent)
 QList<QString> EntryAttributes::keys() const
 {
     return m_attributes.keys();
+}
+
+bool EntryAttributes::hasKey(const QString& key) const
+{
+    return m_attributes.keys().contains(key);
 }
 
 QList<QString> EntryAttributes::customKeys()

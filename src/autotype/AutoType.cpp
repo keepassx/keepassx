@@ -23,12 +23,14 @@
 #include "autotype/AutoTypePlatformPlugin.h"
 #include "autotype/AutoTypeSelectDialog.h"
 #include "autotype/WildcardMatcher.h"
+#include "core/Config.h"
 #include "core/Database.h"
 #include "core/Entry.h"
 #include "core/FilePath.h"
 #include "core/Group.h"
 #include "core/ListDeleter.h"
 #include "core/Tools.h"
+#include "gui/MessageBox.h"
 
 AutoType* AutoType::m_instance = Q_NULLPTR;
 
@@ -40,6 +42,7 @@ AutoType::AutoType(QObject* parent, bool test)
     , m_pluginLoader(new QPluginLoader(this))
     , m_plugin(Q_NULLPTR)
     , m_executor(Q_NULLPTR)
+    , m_windowFromGlobal(0)
 {
     // prevent crash when the plugin has unresolved symbols
     m_pluginLoader->setLoadHints(QLibrary::ResolveAllSymbolsHint);
@@ -57,11 +60,16 @@ AutoType::AutoType(QObject* parent, bool test)
     if (!pluginPath.isEmpty()) {
         loadPlugin(pluginPath);
     }
+
+    connect(qApp, SIGNAL(aboutToQuit()), SLOT(unloadPlugin()));
 }
 
 AutoType::~AutoType()
 {
-    delete m_executor;
+    if (m_executor) {
+        delete m_executor;
+        m_executor = Q_NULLPTR;
+    }
 }
 
 void AutoType::loadPlugin(const QString& pluginPath)
@@ -140,6 +148,8 @@ void AutoType::performAutoType(const Entry* entry, QWidget* hideWindow, const QS
         window = m_plugin->activeWindow();
     }
 
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
+
     Q_FOREACH (AutoTypeAction* action, actions) {
         if (m_plugin->activeWindow() != window) {
             qWarning("Active window changed, interrupting auto-type.");
@@ -182,8 +192,12 @@ void AutoType::performGlobalAutoType(const QList<Database*>& dbList)
 
     if (entryList.isEmpty()) {
         m_inAutoType = false;
+        QString message = tr("Couldn't find an entry that matches the window title:");
+        message.append("\n\n");
+        message.append(windowTitle);
+        MessageBox::information(Q_NULLPTR, tr("Auto-Type - KeePassX"), message);
     }
-    else if (entryList.size() == 1) {
+    else if ((entryList.size() == 1) && !config()->get("security/autotypeask").toBool()) {
         m_inAutoType = false;
         performAutoType(entryList.first(), Q_NULLPTR, sequenceHash[entryList.first()]);
     }
@@ -213,6 +227,19 @@ void AutoType::resetInAutoType()
     Q_ASSERT(m_inAutoType);
 
     m_inAutoType = false;
+}
+
+void AutoType::unloadPlugin()
+{
+    if (m_executor) {
+        delete m_executor;
+        m_executor = Q_NULLPTR;
+    }
+
+    if (m_plugin) {
+        m_plugin->unload();
+        m_plugin = Q_NULLPTR;
+    }
 }
 
 bool AutoType::registerGlobalShortcut(Qt::Key key, Qt::KeyboardModifiers modifiers)
@@ -450,7 +477,15 @@ QList<AutoTypeAction*> AutoType::createActionFromTemplate(const QString& tmpl, c
     QString resolved = entry->resolvePlaceholders(placeholder);
     if (placeholder != resolved) {
         Q_FOREACH (const QChar& ch, resolved) {
-            list.append(new AutoTypeChar(ch));
+            if (ch == '\n') {
+                list.append(new AutoTypeKey(Qt::Key_Enter));
+            }
+            else if (ch == '\t') {
+                list.append(new AutoTypeKey(Qt::Key_Tab));
+            }
+            else {
+                list.append(new AutoTypeChar(ch));
+            }
         }
     }
 
@@ -478,6 +513,12 @@ QString AutoType::autoTypeSequence(const Entry* entry, const QString& windowTitl
                 match = true;
                 break;
             }
+        }
+
+        if (!match && config()->get("AutoTypeEntryTitleMatch").toBool() && !entry->title().isEmpty()
+                && windowTitle.contains(entry->title(), Qt::CaseInsensitive)) {
+            sequence = entry->defaultAutoTypeSequence();
+            match = true;
         }
 
         if (!match) {

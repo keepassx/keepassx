@@ -32,6 +32,7 @@ class EntryAttributes : public QObject
 public:
     explicit EntryAttributes(QObject* parent = Q_NULLPTR);
     QList<QString> keys() const;
+    bool hasKey(const QString& key) const;
     QList<QString> customKeys();
     QString value(const QString& key) const;
     bool isProtected(const QString& key) const;
@@ -46,6 +47,11 @@ public:
     bool operator==(const EntryAttributes& other) const;
     bool operator!=(const EntryAttributes& other) const;
 
+    static const QString TitleKey;
+    static const QString UserNameKey;
+    static const QString PasswordKey;
+    static const QString URLKey;
+    static const QString NotesKey;
     static const QStringList DefaultAttributes;
     static bool isDefaultAttribute(const QString& key);
 

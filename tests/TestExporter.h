@@ -1,5 +1,6 @@
 /*
- *  Copyright (C) 2013 Florian Geyer <blueice@fobos.de>
+ *  Copyright (C) 2014 Felix Geyer <debfx@fobos.de>
+ *  Copyright (C) 2014 Florian Geyer <blueice@fobos.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,23 +16,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSX_ARGUMENTPARSER_H
-#define KEEPASSX_ARGUMENTPARSER_H
+#ifndef KEEPASSX_TESTEXPORTER_H
+#define KEEPASSX_TESTEXPORTER_H
 
-#include "core/Global.h"
+#include <QObject>
 
-#include <QHash>
-#include <QStringList>
-
-class ArgumentParser
+class TestExporter : public QObject
 {
-public:
-    static QHash<QString, QString> parseArguments(const QStringList& args);
+    Q_OBJECT
 
-private:
-    static void parseOption(int& i, QHash<QString, QString>& argumentMap, const QStringList& args);
-
-    static const QStringList ArgumentKeys;
+private Q_SLOTS:
+    void initTestCase();
+    void testToDbExporter();
 };
 
-#endif // KEEPASSX_ARGUMENTPARSER_H
+#endif // KEEPASSX_TESTEXPORTER_H

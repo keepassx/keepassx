@@ -17,20 +17,42 @@
 
 #include "SymmetricCipher.h"
 
+#include "config-keepassx.h"
 #include "crypto/SymmetricCipherGcrypt.h"
 #include "crypto/SymmetricCipherSalsa20.h"
 
 SymmetricCipher::SymmetricCipher(SymmetricCipher::Algorithm algo, SymmetricCipher::Mode mode,
-                                 SymmetricCipher::Direction direction, const QByteArray& key, const QByteArray& iv)
+                                 SymmetricCipher::Direction direction)
     : m_backend(createBackend(algo, mode, direction))
+    , m_initialized(false)
 {
-    m_backend->init();
-    m_backend->setKey(key);
-    m_backend->setIv(iv);
 }
 
 SymmetricCipher::~SymmetricCipher()
 {
+}
+
+bool SymmetricCipher::init(const QByteArray& key, const QByteArray& iv)
+{
+    if (!m_backend->init()) {
+        return false;
+    }
+
+    if (!m_backend->setKey(key)) {
+        return false;
+    }
+
+    if (!m_backend->setIv(iv)) {
+        return false;
+    }
+
+    m_initialized = true;
+    return true;
+}
+
+bool SymmetricCipher::isInitalized() const
+{
+    return m_initialized;
 }
 
 SymmetricCipherBackend* SymmetricCipher::createBackend(SymmetricCipher::Algorithm algo, SymmetricCipher::Mode mode,
@@ -39,10 +61,15 @@ SymmetricCipherBackend* SymmetricCipher::createBackend(SymmetricCipher::Algorith
     switch (algo) {
     case SymmetricCipher::Aes256:
     case SymmetricCipher::Twofish:
+#if defined(GCRYPT_HAS_SALSA20)
+    case SymmetricCipher::Salsa20:
+#endif
         return new SymmetricCipherGcrypt(algo, mode, direction);
 
+#if !defined(GCRYPT_HAS_SALSA20)
     case SymmetricCipher::Salsa20:
         return new SymmetricCipherSalsa20(algo, mode, direction);
+#endif
 
     default:
         Q_ASSERT(false);
@@ -50,12 +77,17 @@ SymmetricCipherBackend* SymmetricCipher::createBackend(SymmetricCipher::Algorith
     }
 }
 
-void SymmetricCipher::reset()
+bool SymmetricCipher::reset()
 {
-    m_backend->reset();
+    return m_backend->reset();
 }
 
 int SymmetricCipher::blockSize() const
 {
     return m_backend->blockSize();
+}
+
+QString SymmetricCipher::errorString() const
+{
+    return m_backend->errorString();
 }

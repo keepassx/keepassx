@@ -31,9 +31,11 @@
 #include "keys/FileKey.h"
 #include "keys/PasswordKey.h"
 
+QTEST_GUILESS_MAIN(TestKeys)
+
 void TestKeys::initTestCase()
 {
-    Crypto::init();
+    QVERIFY(Crypto::init());
 }
 
 void TestKeys::testComposite()
@@ -41,6 +43,8 @@ void TestKeys::testComposite()
     CompositeKey* compositeKey1 = new CompositeKey();
     PasswordKey* passwordKey1 = new PasswordKey();
     PasswordKey* passwordKey2 = new PasswordKey("test");
+    bool ok;
+    QString errorString;
 
     // make sure that addKey() creates a copy of the keys
     compositeKey1->addKey(*passwordKey1);
@@ -48,13 +52,15 @@ void TestKeys::testComposite()
     delete passwordKey1;
     delete passwordKey2;
 
-    QByteArray transformed = compositeKey1->transform(QByteArray(32, '\0'), 1);
+    QByteArray transformed = compositeKey1->transform(QByteArray(32, '\0'), 1, &ok, &errorString);
+    QVERIFY(ok);
     QCOMPARE(transformed.size(), 32);
 
     // make sure the subkeys are copied
     CompositeKey* compositeKey2 = compositeKey1->clone();
     delete compositeKey1;
-    QCOMPARE(compositeKey2->transform(QByteArray(32, '\0'), 1), transformed);
+    QCOMPARE(compositeKey2->transform(QByteArray(32, '\0'), 1, &ok, &errorString), transformed);
+    QVERIFY(ok);
     delete compositeKey2;
 
     CompositeKey* compositeKey3 = new CompositeKey();
@@ -128,7 +134,7 @@ void TestKeys::testCreateFileKey()
     compositeKey.addKey(fileKey);
 
     Database* dbOrg = new Database();
-    dbOrg->setKey(compositeKey);
+    QVERIFY(dbOrg->setKey(compositeKey));
     dbOrg->metadata()->setName(dbName);
 
     QBuffer dbBuffer;
@@ -165,4 +171,25 @@ void TestKeys::testFileKeyError()
     errorMsg = "";
 }
 
-QTEST_GUILESS_MAIN(TestKeys)
+void TestKeys::benchmarkTransformKey()
+{
+    QByteArray env = qgetenv("BENCHMARK");
+
+    if (env.isEmpty() || env == "0" || env == "no") {
+        QSKIP("Benchmark skipped. Set env variable BENCHMARK=1 to enable.", SkipAll);
+    }
+
+    PasswordKey pwKey;
+    pwKey.setPassword("password");
+    CompositeKey compositeKey;
+    compositeKey.addKey(pwKey);
+
+    QByteArray seed(32, '\x4B');
+
+    bool ok;
+    QString errorString;
+
+    QBENCHMARK {
+        compositeKey.transform(seed, 1e6, &ok, &errorString);
+    }
+}

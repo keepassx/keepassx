@@ -58,11 +58,9 @@ public:
     void loadEntry(Entry* entry, bool create, bool history, const QString& parentName,
                    Database* database);
 
-    static const QColor CorrectSoFarColor;
-    static const QColor ErrorColor;
-
     void createPresetsMenu(QMenu* expirePresetsMenu);
     QString entryTitle() const;
+    void clear();
 
 Q_SIGNALS:
     void editFinished(bool accepted);
@@ -71,9 +69,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void saveEntry();
     void cancel();
-    void togglePassword(bool checked);
     void togglePasswordGeneratorButton(bool checked);
-    void setPasswordCheckColors();
     void setGeneratedPassword(const QString& password);
     void insertAttribute();
     void editCurrentAttribute();
@@ -81,6 +77,8 @@ private Q_SLOTS:
     void updateCurrentAttribute();
     void insertAttachment();
     void saveCurrentAttachment();
+    void openAttachment(const QModelIndex& index);
+    void openCurrentAttachment();
     void removeCurrentAttachment();
     void updateAutoTypeEnabled();
     void insertAutoTypeAssoc();
@@ -96,6 +94,7 @@ private Q_SLOTS:
     void histEntryActivated(const QModelIndex& index);
     void updateHistoryButtons(const QModelIndex& current, const QModelIndex& previous);
     void useExpiryPreset(QAction* action);
+    void updateAttachmentButtonsEnabled(const QModelIndex& current);
 
 private:
     void setupMain();

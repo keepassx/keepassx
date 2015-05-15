@@ -22,6 +22,7 @@
 #include <QStackedWidget>
 
 #include "core/Global.h"
+#include "core/Uuid.h"
 
 #include "gui/entry/EntryModel.h"
 
@@ -38,6 +39,7 @@ class GroupView;
 class KeePass1OpenWidget;
 class QFile;
 class QMenu;
+class QSplitter;
 class UnlockDatabaseWidget;
 
 namespace Ui {
@@ -59,18 +61,30 @@ public:
 
     explicit DatabaseWidget(Database* db, QWidget* parent = Q_NULLPTR);
     ~DatabaseWidget();
-    GroupView* groupView();
-    EntryView* entryView();
     Database* database();
-    bool dbHasKey();
-    bool canDeleteCurrentGoup();
-    bool isInSearchMode();
+    bool dbHasKey() const;
+    bool canDeleteCurrentGroup() const;
+    bool isInSearchMode() const;
     int addWidget(QWidget* w);
     void setCurrentIndex(int index);
     void setCurrentWidget(QWidget* widget);
-    DatabaseWidget::Mode currentMode();
+    DatabaseWidget::Mode currentMode() const;
     void lock();
     void updateFilename(const QString& filename);
+    int numberOfSelectedEntries() const;
+    QStringList customEntryAttributes() const;
+    bool isGroupSelected() const;
+    bool isInEditMode() const;
+    QList<int> splitterSizes() const;
+    void setSplitterSizes(const QList<int>& sizes);
+    QList<int> entryHeaderViewSizes() const;
+    void setEntryViewHeaderSizes(const QList<int>& sizes);
+    void clearAllWidgets();
+    bool currentEntryHasTitle();
+    bool currentEntryHasUsername();
+    bool currentEntryHasPassword();
+    bool currentEntryHasUrl();
+    bool currentEntryHasNotes();
 
 Q_SIGNALS:
     void closeRequest();
@@ -81,13 +95,22 @@ Q_SIGNALS:
     void groupContextMenuRequested(const QPoint& globalPos);
     void entryContextMenuRequested(const QPoint& globalPos);
     void unlockedDatabase();
+    void listModeAboutToActivate();
+    void listModeActivated();
+    void searchModeAboutToActivate();
+    void searchModeActivated();
+    void splitterSizesChanged();
+    void entryColumnSizesChanged();
 
 public Q_SLOTS:
     void createEntry();
     void cloneEntry();
     void deleteEntries();
+    void copyTitle();
     void copyUsername();
     void copyPassword();
+    void copyURL();
+    void copyNotes();
     void copyAttribute(QAction* action);
     void performAutoType();
     void openUrl();
@@ -101,9 +124,7 @@ public Q_SLOTS:
     void switchToOpenDatabase(const QString& fileName);
     void switchToOpenDatabase(const QString& fileName, const QString& password, const QString& keyFile);
     void switchToImportKeepass1(const QString& fileName);
-    void toggleSearch();
-    void emitGroupContextMenuRequested(const QPoint& pos);
-    void emitEntryContextMenuRequested(const QPoint& pos);
+    void openSearch();
 
 private Q_SLOTS:
     void entryActivationSignalReceived(Entry* entry, EntryModel::ModelColumn column);
@@ -113,6 +134,8 @@ private Q_SLOTS:
     void switchToEntryEdit(Entry* entry);
     void switchToEntryEdit(Entry* entry, bool create);
     void switchToGroupEdit(Group* entry, bool create);
+    void emitGroupContextMenuRequested(const QPoint& pos);
+    void emitEntryContextMenuRequested(const QPoint& pos);
     void updateMasterKey(bool accepted);
     void openDatabase(bool accepted);
     void unlockDatabase(bool accepted);
@@ -125,6 +148,10 @@ private Q_SLOTS:
     void closeSearch();
 
 private:
+    void setClipboardTextAndMinimize(const QString& text);
+    void setIconFromParent();
+    void replaceDatabase(Database* db);
+
     Database* m_db;
     const QScopedPointer<Ui::SearchWidget> m_searchUi;
     QWidget* const m_searchWidget;
@@ -137,6 +164,7 @@ private:
     DatabaseOpenWidget* m_databaseOpenWidget;
     KeePass1OpenWidget* m_keepass1OpenWidget;
     UnlockDatabaseWidget* m_unlockDatabaseWidget;
+    QSplitter* m_splitter;
     GroupView* m_groupView;
     EntryView* m_entryView;
     Group* m_newGroup;
@@ -144,8 +172,8 @@ private:
     Group* m_newParent;
     Group* m_lastGroup;
     QTimer* m_searchTimer;
-    QWidget* widgetBeforeLock;
     QString m_filename;
+    Uuid m_groupBeforeLock;
 };
 
 #endif // KEEPASSX_DATABASEWIDGET_H

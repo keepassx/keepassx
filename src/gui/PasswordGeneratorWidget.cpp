@@ -18,17 +18,35 @@
 #include "PasswordGeneratorWidget.h"
 #include "ui_PasswordGeneratorWidget.h"
 
+#include <QLineEdit>
+
+#include "core/Config.h"
+#include "core/PasswordGenerator.h"
+#include "core/FilePath.h"
+
 PasswordGeneratorWidget::PasswordGeneratorWidget(QWidget* parent)
     : QWidget(parent)
+    , m_updatingSpinBox(false)
+    , m_generator(new PasswordGenerator())
     , m_ui(new Ui::PasswordGeneratorWidget())
 {
     m_ui->setupUi(this);
 
-    connect(m_ui->editNewPassword, SIGNAL(textChanged(QString)), SLOT(updateApplyEnabled(QString)));
-    connect(m_ui->togglePasswordButton, SIGNAL(toggled(bool)), SLOT(togglePassword(bool)));
-    connect(m_ui->buttonGenerate, SIGNAL(clicked()), SLOT(generatePassword()));
-    connect(m_ui->buttonApply, SIGNAL(clicked()), SLOT(emitNewPassword()));
+    m_ui->togglePasswordButton->setIcon(filePath()->onOffIcon("actions", "password-show"));
 
+    connect(m_ui->editNewPassword->lineEdit(), SIGNAL(textChanged(QString)), SLOT(updateApplyEnabled(QString)));
+    connect(m_ui->togglePasswordButton, SIGNAL(toggled(bool)), m_ui->editNewPassword, SLOT(setEcho(bool)));
+    connect(m_ui->buttonApply, SIGNAL(clicked()), SLOT(emitNewPassword()));
+    connect(m_ui->buttonApply, SIGNAL(clicked()), SLOT(saveSettings()));
+
+    connect(m_ui->sliderLength, SIGNAL(valueChanged(int)), SLOT(sliderMoved()));
+    connect(m_ui->spinBoxLength, SIGNAL(valueChanged(int)), SLOT(spinBoxChanged()));
+
+    connect(m_ui->optionButtons, SIGNAL(buttonClicked(int)), SLOT(updateGenerator()));
+
+    m_ui->editNewPassword->setGenerator(m_generator.data());
+
+    loadSettings();
     reset();
 }
 
@@ -36,20 +54,38 @@ PasswordGeneratorWidget::~PasswordGeneratorWidget()
 {
 }
 
+void PasswordGeneratorWidget::loadSettings()
+{
+    m_ui->checkBoxLower->setChecked(config()->get("generator/LowerCase", true).toBool());
+    m_ui->checkBoxUpper->setChecked(config()->get("generator/UpperCase", true).toBool());
+    m_ui->checkBoxNumbers->setChecked(config()->get("generator/Numbers", true).toBool());
+    m_ui->checkBoxSpecialChars->setChecked(config()->get("generator/SpecialChars", false).toBool());
+
+    m_ui->checkBoxExcludeAlike->setChecked(config()->get("generator/ExcludeAlike", true).toBool());
+    m_ui->checkBoxEnsureEvery->setChecked(config()->get("generator/EnsureEvery", true).toBool());
+
+    m_ui->spinBoxLength->setValue(config()->get("generator/Length", 16).toInt());
+}
+
+void PasswordGeneratorWidget::saveSettings()
+{
+    config()->set("generator/LowerCase", m_ui->checkBoxLower->isChecked());
+    config()->set("generator/UpperCase", m_ui->checkBoxUpper->isChecked());
+    config()->set("generator/Numbers", m_ui->checkBoxNumbers->isChecked());
+    config()->set("generator/SpecialChars", m_ui->checkBoxSpecialChars->isChecked());
+
+    config()->set("generator/ExcludeAlike", m_ui->checkBoxExcludeAlike->isChecked());
+    config()->set("generator/EnsureEvery", m_ui->checkBoxEnsureEvery->isChecked());
+
+    config()->set("generator/Length", m_ui->spinBoxLength->value());
+}
+
 void PasswordGeneratorWidget::reset()
 {
-    m_ui->checkBoxLower->setChecked(true);
-    m_ui->checkBoxUpper->setChecked(true);
-    m_ui->checkBoxNumbers->setChecked(true);
-    m_ui->checkBoxSpecialChars->setChecked(false);
+    m_ui->editNewPassword->lineEdit()->setText("");
+    m_ui->togglePasswordButton->setChecked(config()->get("security/passwordscleartext").toBool());
 
-    m_ui->checkBoxExcludeAlike->setChecked(true);
-    m_ui->checkBoxEnsureEvery->setChecked(true);
-
-    m_ui->spinBoxLength->setValue(16);
-
-    m_ui->editNewPassword->setText("");
-    m_ui->togglePasswordButton->setChecked(true);
+    updateGenerator();
 }
 
 void PasswordGeneratorWidget::updateApplyEnabled(const QString& password)
@@ -57,29 +93,32 @@ void PasswordGeneratorWidget::updateApplyEnabled(const QString& password)
     m_ui->buttonApply->setEnabled(!password.isEmpty());
 }
 
-void PasswordGeneratorWidget::togglePassword(bool checked)
+void PasswordGeneratorWidget::emitNewPassword()
 {
-    m_ui->editNewPassword->setEchoMode(checked ? QLineEdit::Password : QLineEdit::Normal);
+    Q_EMIT newPassword(m_ui->editNewPassword->lineEdit()->text());
 }
 
-void PasswordGeneratorWidget::generatePassword()
+void PasswordGeneratorWidget::sliderMoved()
 {
-    int length = m_ui->spinBoxLength->value();
-    PasswordGenerator::CharClasses classes = charClasses();
-    PasswordGenerator::GeneratorFlags flags = generatorFlags();
-
-    if (!passwordGenerator()->isValidCombination(length, classes, flags)) {
-        // TODO: display error
+    if (m_updatingSpinBox) {
         return;
     }
 
-    QString password = passwordGenerator()->generatePassword(length, classes, flags);
-    m_ui->editNewPassword->setText(password);
+    m_ui->spinBoxLength->setValue(m_ui->sliderLength->value());
+
+    updateGenerator();
 }
 
-void PasswordGeneratorWidget::emitNewPassword()
+void PasswordGeneratorWidget::spinBoxChanged()
 {
-    Q_EMIT newPassword(m_ui->editNewPassword->text());
+    // Interlock so that we don't update twice - this causes issues as the spinbox can go higher than slider
+    m_updatingSpinBox = true;
+
+    m_ui->sliderLength->setValue(m_ui->spinBoxLength->value());
+
+    m_updatingSpinBox = false;
+
+    updateGenerator();
 }
 
 PasswordGenerator::CharClasses PasswordGeneratorWidget::charClasses()
@@ -118,4 +157,16 @@ PasswordGenerator::GeneratorFlags PasswordGeneratorWidget::generatorFlags()
     }
 
     return flags;
+}
+
+void PasswordGeneratorWidget::updateGenerator()
+{
+    m_generator->setLength(m_ui->spinBoxLength->value());
+    m_generator->setCharClasses(charClasses());
+    m_generator->setFlags(generatorFlags());
+
+    if (m_generator->isValid()) {
+        QString password = m_generator->generatePassword();
+        m_ui->editNewPassword->setEditText(password);
+    }
 }

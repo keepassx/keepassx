@@ -30,6 +30,7 @@ Entry::Entry()
     , m_attachments(new EntryAttachments(this))
     , m_autoTypeAssociations(new AutoTypeAssociations(this))
     , m_tmpHistoryItem(Q_NULLPTR)
+    , m_modifiedSinceBegin(false)
     , m_updateTimeinfo(true)
 {
     m_data.iconNumber = DefaultIconNumber;
@@ -94,8 +95,14 @@ QImage Entry::icon() const
         return databaseIcons()->icon(m_data.iconNumber);
     }
     else {
-        // TODO: check if database() is 0
-        return database()->metadata()->customIcon(m_data.customIcon);
+        Q_ASSERT(database());
+
+        if (database()) {
+            return database()->metadata()->customIcon(m_data.customIcon);
+        }
+        else {
+            return QImage();
+        }
     }
 }
 
@@ -105,9 +112,10 @@ QPixmap Entry::iconPixmap() const
         return databaseIcons()->iconPixmap(m_data.iconNumber);
     }
     else {
+        Q_ASSERT(database());
+
         QPixmap pixmap;
-        if (!QPixmapCache::find(m_pixmapCacheKey, &pixmap)) {
-            // TODO: check if database() is 0
+        if (database() && !QPixmapCache::find(m_pixmapCacheKey, &pixmap)) {
             pixmap = QPixmap::fromImage(database()->metadata()->customIcon(m_data.customIcon));
             m_pixmapCacheKey = QPixmapCache::insert(pixmap);
         }
@@ -178,27 +186,27 @@ const AutoTypeAssociations* Entry::autoTypeAssociations() const
 
 QString Entry::title() const
 {
-    return m_attributes->value("Title");
+    return m_attributes->value(EntryAttributes::TitleKey);
 }
 
 QString Entry::url() const
 {
-    return m_attributes->value("URL");
+    return m_attributes->value(EntryAttributes::URLKey);
 }
 
 QString Entry::username() const
 {
-    return m_attributes->value("UserName");
+    return m_attributes->value(EntryAttributes::UserNameKey);
 }
 
 QString Entry::password() const
 {
-    return m_attributes->value("Password");
+    return m_attributes->value(EntryAttributes::PasswordKey);
 }
 
 QString Entry::notes() const
 {
-    return m_attributes->value("Notes");
+    return m_attributes->value(EntryAttributes::NotesKey);
 }
 
 bool Entry::isExpired() const
@@ -304,27 +312,27 @@ void Entry::setDefaultAutoTypeSequence(const QString& sequence)
 
 void Entry::setTitle(const QString& title)
 {
-    m_attributes->set("Title", title, m_attributes->isProtected("Title"));
+    m_attributes->set(EntryAttributes::TitleKey, title, m_attributes->isProtected(EntryAttributes::TitleKey));
 }
 
 void Entry::setUrl(const QString& url)
 {
-    m_attributes->set("URL", url, m_attributes->isProtected("URL"));
+    m_attributes->set(EntryAttributes::URLKey, url, m_attributes->isProtected(EntryAttributes::URLKey));
 }
 
 void Entry::setUsername(const QString& username)
 {
-    m_attributes->set("UserName", username, m_attributes->isProtected("UserName"));
+    m_attributes->set(EntryAttributes::UserNameKey, username, m_attributes->isProtected(EntryAttributes::UserNameKey));
 }
 
 void Entry::setPassword(const QString& password)
 {
-    m_attributes->set("Password", password, m_attributes->isProtected("Password"));
+    m_attributes->set(EntryAttributes::PasswordKey, password, m_attributes->isProtected(EntryAttributes::PasswordKey));
 }
 
 void Entry::setNotes(const QString& notes)
 {
-    m_attributes->set("Notes", notes, m_attributes->isProtected("Notes"));
+    m_attributes->set(EntryAttributes::NotesKey, notes, m_attributes->isProtected(EntryAttributes::NotesKey));
 }
 
 void Entry::setExpires(const bool& value)
@@ -432,22 +440,40 @@ void Entry::truncateHistory()
     }
 }
 
-Entry* Entry::clone() const
+Entry* Entry::clone(CloneFlags flags) const
 {
     Entry* entry = new Entry();
     entry->setUpdateTimeinfo(false);
-    entry->m_uuid = Uuid::random();
+    if (flags & CloneNewUuid) {
+        entry->m_uuid = Uuid::random();
+    }
+    else {
+        entry->m_uuid = m_uuid;
+    }
     entry->m_data = m_data;
     entry->m_attributes->copyDataFrom(m_attributes);
     entry->m_attachments->copyDataFrom(m_attachments);
     entry->m_autoTypeAssociations->copyDataFrom(this->m_autoTypeAssociations);
+    if (flags & CloneIncludeHistory) {
+        Q_FOREACH (Entry* historyItem, m_history) {
+            Entry* historyItemClone = historyItem->clone(flags & ~CloneIncludeHistory & ~CloneNewUuid);
+            historyItemClone->setUpdateTimeinfo(false);
+            historyItemClone->setUuid(entry->uuid());
+            historyItemClone->setUpdateTimeinfo(true);
+            entry->addHistoryItem(historyItemClone);
+        }
+    }
     entry->setUpdateTimeinfo(true);
 
-    QDateTime now = Tools::currentDateTimeUtc();
-    entry->m_data.timeInfo.setCreationTime(now);
-    entry->m_data.timeInfo.setLastModificationTime(now);
-    entry->m_data.timeInfo.setLastAccessTime(now);
-    entry->m_data.timeInfo.setLocationChanged(now);
+    if (flags & CloneResetTimeInfo) {
+        QDateTime now = Tools::currentDateTimeUtc();
+        entry->m_data.timeInfo.setCreationTime(now);
+        entry->m_data.timeInfo.setLastModificationTime(now);
+        entry->m_data.timeInfo.setLastAccessTime(now);
+        entry->m_data.timeInfo.setLocationChanged(now);
+    }
+
+
 
     return entry;
 }
@@ -551,25 +577,6 @@ const Database* Entry::database() const
     else {
         return Q_NULLPTR;
     }
-}
-
-bool Entry::match(const QString& searchTerm, Qt::CaseSensitivity caseSensitivity)
-{
-    QStringList wordList = searchTerm.split(QRegExp("\\s"), QString::SkipEmptyParts);
-    Q_FOREACH (const QString& word, wordList) {
-        if (!wordMatch(word, caseSensitivity)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool Entry::wordMatch(const QString& word, Qt::CaseSensitivity caseSensitivity)
-{
-    return title().contains(word, caseSensitivity) ||
-            username().contains(word, caseSensitivity) ||
-            url().contains(word, caseSensitivity) ||
-            notes().contains(word, caseSensitivity);
 }
 
 QString Entry::resolvePlaceholders(const QString& str) const

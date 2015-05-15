@@ -35,6 +35,7 @@ IconStruct::IconStruct()
 EditWidgetIcons::EditWidgetIcons(QWidget* parent)
     : QWidget(parent)
     , m_ui(new Ui::EditWidgetIcons())
+    , m_database(Q_NULLPTR)
     , m_defaultIconModel(new DefaultIconModel(this))
     , m_customIconModel(new CustomIconModel(this))
 {
@@ -131,7 +132,7 @@ void EditWidgetIcons::addCustomIcon()
             QImage image(filename);
             if (!image.isNull()) {
                 Uuid uuid = Uuid::random();
-                m_database->metadata()->addCustomIcon(uuid, image.scaled(16, 16));
+                m_database->metadata()->addCustomIconScaled(uuid, image);
                 m_customIconModel->setIcons(m_database->metadata()->customIcons(),
                                             m_database->metadata()->customIconsOrder());
                 QModelIndex index = m_customIconModel->indexFromUuid(uuid);
@@ -167,7 +168,7 @@ void EditWidgetIcons::removeCustomIcon()
                 }
             }
 
-            QList<const Group*> allGroups = m_database->rootGroup()->groupsRecursive(true);
+            QList<Group*> allGroups = m_database->rootGroup()->groupsRecursive(true);
             Q_FOREACH (const Group* group, allGroups) {
                 if (iconUuid == group->iconUuid() && m_currentUuid != group->uuid()) {
                     iconUsedCount++;
@@ -193,8 +194,7 @@ void EditWidgetIcons::removeCustomIcon()
             }
             else {
                 MessageBox::information(this, tr("Can't delete icon!"),
-                                        tr("Can't delete icon. Still used by %1 items.")
-                                        .arg(iconUsedCount));
+                                        tr("Can't delete icon. Still used by %n item(s).", 0, iconUsedCount));
             }
         }
     }

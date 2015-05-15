@@ -49,6 +49,17 @@ public:
     };
     static const quint32 CompressionAlgorithmMax = CompressionGZip;
 
+    struct DatabaseData
+    {
+        Uuid cipher;
+        CompressionAlgorithm compressionAlgo;
+        QByteArray transformSeed;
+        quint64 transformRounds;
+        QByteArray transformedMasterKey;
+        CompositeKey key;
+        bool hasKey;
+    };
+
     Database();
     ~Database();
     Group* rootGroup();
@@ -58,7 +69,7 @@ public:
      * Sets group as the root group and takes ownership of it.
      * Warning: Be careful when calling this method as it doesn't
      *          emit any notifications so e.g. models aren't updated.
-     *          The caller is responsible for cleaning up the pervious
+     *          The caller is responsible for cleaning up the previous
                 root group.
      */
     void setRootGroup(Group* group);
@@ -79,18 +90,20 @@ public:
 
     void setCipher(const Uuid& cipher);
     void setCompressionAlgo(Database::CompressionAlgorithm algo);
-    void setTransformRounds(quint64 rounds);
-    void setKey(const CompositeKey& key, const QByteArray& transformSeed, bool updateChangedTime = true);
+    bool setTransformRounds(quint64 rounds);
+    bool setKey(const CompositeKey& key, const QByteArray& transformSeed,
+                bool updateChangedTime = true);
 
     /**
      * Sets the database key and generates a random transform seed.
      */
-    void setKey(const CompositeKey& key);
+    bool setKey(const CompositeKey& key);
     bool hasKey() const;
     bool verifyKey(const CompositeKey& key) const;
     void recycleEntry(Entry* entry);
     void recycleGroup(Group* group);
     void setEmitModified(bool value);
+    void copyAttributesFrom(const Database* other);
 
     /**
      * Returns a unique id that is only valid as long as the Database exists.
@@ -124,15 +137,7 @@ private:
     Group* m_rootGroup;
     QList<DeletedObject> m_deletedObjects;
     QTimer* m_timer;
-
-    Uuid m_cipher;
-    CompressionAlgorithm m_compressionAlgo;
-    QByteArray m_transformSeed;
-    quint64 m_transformRounds;
-    QByteArray m_transformedMasterKey;
-
-    CompositeKey m_key;
-    bool m_hasKey;
+    DatabaseData m_data;
     bool m_emitModified;
 
     Uuid m_uuid;
