@@ -174,6 +174,37 @@ QString Entry::defaultAutoTypeSequence() const
     return m_data.defaultAutoTypeSequence;
 }
 
+QString Entry::effectiveAutoTypeSequence() const
+{
+    QString sequence;
+    if (!m_data.defaultAutoTypeSequence.isEmpty()) {
+        return m_data.defaultAutoTypeSequence;
+    }
+    const Group* grp = group();
+    do {
+        if (grp->autoTypeEnabled() == Group::Disable) {
+            return QString();
+        }
+
+        sequence = grp->defaultAutoTypeSequence();
+        grp = grp->parentGroup();
+    } while (grp && sequence.isEmpty());
+
+    if (sequence.isEmpty() && (!username().isEmpty() || !password().isEmpty())) {
+        if (username().isEmpty()) {
+            sequence = "{PASSWORD}{ENTER}";
+        }
+        else if (password().isEmpty()) {
+            sequence = "{USERNAME}{ENTER}";
+        }
+        else {
+            sequence = "{USERNAME}{TAB}{PASSWORD}{ENTER}";
+        }
+    }
+
+    return sequence;
+}
+
 AutoTypeAssociations* Entry::autoTypeAssociations()
 {
     return m_autoTypeAssociations;
