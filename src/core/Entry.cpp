@@ -176,19 +176,10 @@ QString Entry::defaultAutoTypeSequence() const
 
 QString Entry::effectiveAutoTypeSequence() const
 {
-    QString sequence;
     if (!m_data.defaultAutoTypeSequence.isEmpty()) {
         return m_data.defaultAutoTypeSequence;
     }
-    const Group* grp = group();
-    do {
-        if (grp->autoTypeEnabled() == Group::Disable) {
-            return QString();
-        }
-
-        sequence = grp->defaultAutoTypeSequence();
-        grp = grp->parentGroup();
-    } while (grp && sequence.isEmpty());
+    QString sequence = group()->effectiveAutoTypeSequence();
 
     if (sequence.isEmpty() && (!username().isEmpty() || !password().isEmpty())) {
         if (username().isEmpty()) {
