@@ -195,7 +195,7 @@ MainWindow::MainWindow()
             SLOT(createGroup()));
     m_actionMultiplexer.connect(m_ui->actionGroupEdit, SIGNAL(triggered()),
             SLOT(switchToGroupEdit()));
-    m_actionMultiplexer.connect(m_ui->actionGroupDelete, SIGNAL(triggered()),
+    connect(m_ui->actionGroupDelete, SIGNAL(triggered()),
             SLOT(deleteGroup()));
 
     connect(m_ui->actionSettings, SIGNAL(triggered()), SLOT(switchToSettings()));
@@ -297,6 +297,7 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
             m_ui->actionGroupNew->setEnabled(groupSelected);
             m_ui->actionGroupEdit->setEnabled(groupSelected);
             m_ui->actionGroupDelete->setEnabled(groupSelected && dbWidget->canDeleteCurrentGroup());
+            updateDeleteGroupMenu();
             // TODO: get checked state from db widget
             m_ui->actionSearch->setEnabled(true);
             m_ui->actionChangeMasterKey->setEnabled(true);
@@ -363,6 +364,28 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
     m_ui->actionImportKeePass1->setEnabled(inDatabaseTabWidgetOrWelcomeWidget);
 
     m_ui->actionLockDatabases->setEnabled(m_ui->tabWidget->hasLockableDatabases());
+}
+
+void MainWindow::updateDeleteGroupMenu()
+{
+    DatabaseWidget* dbWidget = m_ui->tabWidget->currentDatabaseWidget();
+    if (dbWidget->recycleBinSelected()) {
+        if (dbWidget->recycleBinEmpty()) {
+            m_ui->actionGroupDelete->setText(tr("Remove recycle bin"));
+        }
+        else {
+            m_ui->actionGroupDelete->setText(tr("Empty recycle bin"));
+        }
+    }
+    else {
+        m_ui->actionGroupDelete->setText(tr("Delete group"));
+    }
+}
+
+void MainWindow::deleteGroup()
+{
+    m_ui->tabWidget->currentDatabaseWidget()->deleteGroup();
+    updateDeleteGroupMenu();
 }
 
 void MainWindow::updateWindowTitle()

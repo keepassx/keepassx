@@ -478,6 +478,28 @@ void DatabaseWidget::deleteGroup()
         return;
     }
 
+    if (recycleBinSelected()) {
+        if (recycleBinEmpty()) {
+            delete currentGroup;
+            return;
+        }
+
+        QMessageBox::StandardButton result = MessageBox::question(
+            this, tr("Empty recycle bin?"),
+            tr("Do you really want to empty the recycle bin? This action cannot be reverted.")
+            .arg(currentGroup->name()),
+            QMessageBox::Yes | QMessageBox::No);
+        if (result == QMessageBox::Yes) {
+            Q_FOREACH (Group* group, currentGroup->children()) {
+                delete group;
+            }            
+            Q_FOREACH (Entry* entry, currentGroup->entries()) {
+                delete entry;
+            }
+        }
+        return;
+    }
+
     bool inRecylceBin = Tools::hasChild(m_db->metadata()->recycleBin(), currentGroup);
     if (inRecylceBin || !m_db->metadata()->recycleBinEnabled()) {
         QMessageBox::StandardButton result = MessageBox::question(
@@ -857,8 +879,7 @@ bool DatabaseWidget::dbHasKey() const
 bool DatabaseWidget::canDeleteCurrentGroup() const
 {
     bool isRootGroup = m_db->rootGroup() == m_groupView->currentGroup();
-    bool isRecycleBin = m_db->metadata()->recycleBin() == m_groupView->currentGroup();
-    return !isRootGroup && !isRecycleBin;
+    return !isRootGroup;
 }
 
 bool DatabaseWidget::isInSearchMode() const
@@ -910,6 +931,17 @@ QStringList DatabaseWidget::customEntryAttributes() const
 bool DatabaseWidget::isGroupSelected() const
 {
     return m_groupView->currentGroup() != Q_NULLPTR;
+}
+
+bool DatabaseWidget::recycleBinSelected() const
+{
+    return m_groupView->currentGroup() == m_db->metadata()->recycleBin();
+}
+
+bool DatabaseWidget::recycleBinEmpty() const
+{
+    Group* recycleBin = m_db->metadata()->recycleBin();
+    return recycleBin->children().isEmpty() && recycleBin->entries().isEmpty();
 }
 
 bool DatabaseWidget::currentEntryHasTitle()

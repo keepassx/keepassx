@@ -65,12 +65,14 @@ private Q_SLOTS:
     void applySettingsChanges();
     void trayIconTriggered(QSystemTrayIcon::ActivationReason reason);
     void toggleWindow();
+    void deleteGroup();
 
 private:
     static void setShortcut(QAction* action, QKeySequence::StandardKey standard, int fallback = 0);
 
     static const QString BaseWindowTitle;
 
+    void updateDeleteGroupMenu();
     void saveWindowInformation();
     bool saveLastDatabases();
     void updateTrayIcon();
