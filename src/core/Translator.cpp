@@ -66,9 +66,13 @@ QList<QPair<QString, QString> > Translator::availableLanguages()
                 if (langcode == "en_plurals") {
                     langcode = "en";
                 }
-
-                languages.append(QPair<QString, QString>(langcode,
+				if (langcode == "zh_CN") {
+					languages.append(QPair<QString, QString>(langcode, QString::fromUtf8("简体中文")));
+				} else {
+					languages.append(QPair<QString, QString>(langcode,
                                                          QLocale::languageToString(QLocale(langcode).language())));
+				}
+                
             }
         }
     }
