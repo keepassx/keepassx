@@ -33,7 +33,7 @@
     </message>
     <message>
         <source>Default sequence</source>
-        <translation>预设的序列</translation>
+        <translation>默认顺序</translation>
     </message>
 </context>
 <context>
