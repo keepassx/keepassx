@@ -80,6 +80,7 @@ public:
     QList<int> entryHeaderViewSizes() const;
     void setEntryViewHeaderSizes(const QList<int>& sizes);
     void clearAllWidgets();
+    void forceSaveEntry();
 
 Q_SIGNALS:
     void closeRequest();
@@ -96,6 +97,7 @@ Q_SIGNALS:
     void searchModeActivated();
     void splitterSizesChanged();
     void entryColumnSizesChanged();
+    void saveEntryForced();
 
 public Q_SLOTS:
     void createEntry();

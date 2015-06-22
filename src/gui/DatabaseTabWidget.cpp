@@ -197,10 +197,13 @@ bool DatabaseTabWidget::closeDatabase(Database* db)
         QMessageBox::StandardButton result =
             MessageBox::question(
             this, tr("Close?"),
-            tr("\"%1\" is in edit mode.\nDiscard changes and close anyway?").arg(dbName),
-            QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Cancel);
+            tr("\"%1\" is in edit mode.\nSave or Discard changes and close anyway?").arg(dbName),
+            QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Cancel);
         if (result == QMessageBox::Cancel) {
             return false;
+        } else if (result == QMessageBox::Save) {
+            dbStruct.dbWidget->forceSaveEntry();
+            saveDatabase(db);
         }
     }
     if (dbStruct.modified) {
@@ -212,8 +215,8 @@ bool DatabaseTabWidget::closeDatabase(Database* db)
                 MessageBox::question(
                 this, tr("Save changes?"),
                 tr("\"%1\" was modified.\nSave changes?").arg(dbName),
-                QMessageBox::Yes | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Yes);
-            if (result == QMessageBox::Yes) {
+                QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+            if (result == QMessageBox::Save) {
                 saveDatabase(db);
             }
             else if (result == QMessageBox::Cancel) {

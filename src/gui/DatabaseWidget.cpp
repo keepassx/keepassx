@@ -145,6 +145,7 @@ DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     connect(m_entryView, SIGNAL(entryActivated(Entry*, EntryModel::ModelColumn)),
             SLOT(entryActivationSignalReceived(Entry*, EntryModel::ModelColumn)));
     connect(m_entryView, SIGNAL(entrySelectionChanged()), SIGNAL(entrySelectionChanged()));
+    connect(this, SIGNAL(saveEntryForced()), m_editEntryWidget, SIGNAL(saveEntryForced()));
     connect(m_editEntryWidget, SIGNAL(editFinished(bool)), SLOT(switchToView(bool)));
     connect(m_editEntryWidget, SIGNAL(historyEntryActivated(Entry*)), SLOT(switchToHistoryView(Entry*)));
     connect(m_historyEditEntryWidget, SIGNAL(editFinished(bool)), SLOT(switchBackToEntryEdit()));
@@ -905,4 +906,9 @@ QStringList DatabaseWidget::customEntryAttributes() const
 bool DatabaseWidget::isGroupSelected() const
 {
     return m_groupView->currentGroup() != Q_NULLPTR;
+}
+
+void DatabaseWidget::forceSaveEntry() {
+    Q_ASSERT(isInEditMode());
+    Q_EMIT saveEntryForced();
 }

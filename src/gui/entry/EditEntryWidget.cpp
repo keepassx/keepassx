@@ -75,6 +75,7 @@ EditEntryWidget::EditEntryWidget(QWidget* parent)
     setupHistory();
 
     connect(this, SIGNAL(accepted()), SLOT(saveEntry()));
+    connect(this, SIGNAL(saveEntryForced()), SLOT(saveEntry()));
     connect(this, SIGNAL(rejected()), SLOT(cancel()));
 }
 

@@ -65,6 +65,7 @@ public:
 Q_SIGNALS:
     void editFinished(bool accepted);
     void historyEntryActivated(Entry* entry);
+    void saveEntryForced();
 
 private Q_SLOTS:
     void saveEntry();
