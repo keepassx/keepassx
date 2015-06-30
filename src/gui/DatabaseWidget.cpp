@@ -725,7 +725,6 @@ void DatabaseWidget::switchToOpenDatabase(const QString& fileName)
 void DatabaseWidget::switchToOpenDatabase(const QString& fileName, const QString& password,
                                           const QString& keyFile)
 {
-    updateFilename(fileName);
     switchToOpenDatabase(fileName);
     m_databaseOpenWidget->enterKey(password, keyFile);
 }
