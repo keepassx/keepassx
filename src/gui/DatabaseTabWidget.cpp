@@ -131,12 +131,15 @@ void DatabaseTabWidget::openDatabase(const QString& fileName, const QString& pw,
     // test if we can read/write or read the file
     // TODO: error handling
     if (!fileInfo.isReadable() && !fileInfo.isWritable()) {
-        // can't open
-        // TODO: error message
-        return;
-    }
-    if (!fileInfo.isWritable()) {
-        dbStruct.readOnly = true;
+        if (fileInfo.isReadable()) {
+            // can only open read-only
+            dbStruct.readOnly = true;
+        }
+        else {
+            // can't open
+            // TODO: error message
+            return;
+        }
     }
 
     QLockFile* lockFile = new QLockFile(QString("%1/.%2.lock").arg(canonicalFilePath, fileInfo.fileName()));
