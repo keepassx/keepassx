@@ -141,7 +141,7 @@ void DatabaseTabWidget::openDatabase(const QString& fileName, const QString& pw,
         }
     }
 
-    QLockFile* lockFile = new QLockFile(QString("%1/.%2.lock").arg(canonicalFilePath, fileInfo.fileName()));
+    QLockFile* lockFile = new QLockFile(QString("%1/.%2.lock").arg(fileInfo.canonicalPath(), fileInfo.fileName()));
     lockFile->setStaleLockTime(0);
 
     if (!dbStruct.readOnly && !lockFile->tryLock()) {
