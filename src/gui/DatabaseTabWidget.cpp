@@ -129,22 +129,17 @@ void DatabaseTabWidget::openDatabase(const QString& fileName, const QString& pw,
     DatabaseManagerStruct dbStruct;
 
     // test if we can read/write or read the file
-    QFile file(fileName);
     // TODO: error handling
-    if (!file.open(QIODevice::ReadWrite)) {
-        if (!file.open(QIODevice::ReadOnly)) {
-            // can't open
-            // TODO: error message
-            return;
-        }
-        else {
-            // can only open read-only
-            dbStruct.readOnly = true;
-        }
+    if (!fileInfo.isReadable() && !fileInfo.isWritable()) {
+        // can't open
+        // TODO: error message
+        return;
     }
-    file.close();
+    if (!fileInfo.isWritable()) {
+        dbStruct.readOnly = true;
+    }
 
-    QLockFile* lockFile = new QLockFile(QString("%1/.%2.lock").arg(fileInfo.canonicalPath(), fileInfo.fileName()));
+    QLockFile* lockFile = new QLockFile(QString("%1/.%2.lock").arg(canonicalFilePath, fileInfo.fileName()));
     lockFile->setStaleLockTime(0);
 
     if (!dbStruct.readOnly && !lockFile->tryLock()) {
@@ -156,16 +151,16 @@ void DatabaseTabWidget::openDatabase(const QString& fileName, const QString& pw,
                    "Do you want to open it anyway? Alternatively the database is opened read-only."),
                 QMessageBox::Yes | QMessageBox::No);
 
-            if (result == QMessageBox::No) {
-                dbStruct.readOnly = true;
-                delete lockFile;
-                lockFile = Q_NULLPTR;
-            }
-            else {
+            if (result == QMessageBox::Yes) {
                 // take over the lock file if possible
                 if (lockFile->removeStaleLockFile()) {
                     lockFile->tryLock();
                 }
+            }
+            else {
+                dbStruct.readOnly = true;
+                delete lockFile;
+                lockFile = Q_NULLPTR;
             }
         }
     }
