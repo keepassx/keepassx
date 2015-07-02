@@ -527,10 +527,9 @@ void DatabaseTabWidget::insertDatabase(Database* db, const DatabaseManagerStruct
 {
     m_dbList.insert(db, dbStruct);
 
-    addTab(dbStruct.dbWidget, "");
+    int index = addTab(dbStruct.dbWidget, "");
     toggleTabbar();
     updateTabName(db);
-    int index = databaseIndex(db);
     setCurrentIndex(index);
     connectDatabase(db);
     connect(dbStruct.dbWidget, SIGNAL(closeRequest()), SLOT(closeDatabaseFromSender()));
