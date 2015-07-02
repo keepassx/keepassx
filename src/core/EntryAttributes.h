@@ -35,6 +35,7 @@ public:
     bool hasKey(const QString& key) const;
     QList<QString> customKeys();
     QString value(const QString& key) const;
+    bool contains(const QString& key) const;
     bool isProtected(const QString& key) const;
     void set(const QString& key, const QString& value, bool protect = false);
     void remove(const QString& key);
