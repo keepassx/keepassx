@@ -25,7 +25,6 @@
 #include "core/Config.h"
 #include "core/FilePath.h"
 #include "core/InactivityTimer.h"
-#include "core/Metadata.h"
 #include "gui/AboutDialog.h"
 #include "gui/DatabaseWidget.h"
 
