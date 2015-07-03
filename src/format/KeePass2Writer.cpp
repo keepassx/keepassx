@@ -157,16 +157,6 @@ bool KeePass2Writer::writeHeaderField(KeePass2::HeaderFieldID fieldId, const QBy
     return true;
 }
 
-void KeePass2Writer::writeDatabase(const QString& filename, Database* db)
-{
-    QFile file(filename);
-    if (!file.open(QIODevice::WriteOnly|QIODevice::Truncate)) {
-        raiseError(file.errorString());
-        return;
-    }
-    writeDatabase(&file, db);
-}
-
 bool KeePass2Writer::hasError()
 {
     return m_error;
