@@ -246,6 +246,9 @@ target_link_libraries(${PROGNAME}
                       ${QT_QTGUI_LIBRARY}
                       ${GCRYPT_LIBRARIES}
                       ${ZLIB_LIBRARIES})
+if (WITH_TOTP)
+  target_link_libraries(${PROGNAME} ${OATH_LIBRARIES})
+endif()
 
 if(UNIX AND NOT APPLE)
   target_link_libraries(${PROGNAME} ${QT_QTDBUS_LIBRARY})

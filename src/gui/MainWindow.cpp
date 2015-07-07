@@ -88,6 +88,9 @@ MainWindow::MainWindow()
     m_ui->actionEntryClone->setShortcut(Qt::CTRL + Qt::Key_K);
     m_ui->actionEntryCopyUsername->setShortcut(Qt::CTRL + Qt::Key_B);
     m_ui->actionEntryCopyPassword->setShortcut(Qt::CTRL + Qt::Key_C);
+#ifdef WITH_TOTP
+    m_ui->actionEntryCopyTOTP->setShortcut(Qt::CTRL + Qt::Key_T);
+#endif
     setShortcut(m_ui->actionEntryAutoType, QKeySequence::Paste, Qt::CTRL + Qt::Key_V);
     m_ui->actionEntryOpenUrl->setShortcut(Qt::CTRL + Qt::Key_U);
 
@@ -112,6 +115,9 @@ MainWindow::MainWindow()
     m_ui->actionEntryAutoType->setIcon(filePath()->icon("actions", "auto-type", false));
     m_ui->actionEntryCopyUsername->setIcon(filePath()->icon("actions", "username-copy", false));
     m_ui->actionEntryCopyPassword->setIcon(filePath()->icon("actions", "password-copy", false));
+#ifdef WITH_TOTP
+    m_ui->actionEntryCopyTOTP->setIcon(filePath()->icon("actions", "totp-copy", false));
+#endif
 
     m_ui->actionGroupNew->setIcon(filePath()->icon("actions", "group-new", false));
     m_ui->actionGroupEdit->setIcon(filePath()->icon("actions", "group-edit", false));
@@ -182,6 +188,10 @@ MainWindow::MainWindow()
             SLOT(copyUsername()));
     m_actionMultiplexer.connect(m_ui->actionEntryCopyPassword, SIGNAL(triggered()),
             SLOT(copyPassword()));
+#ifdef WITH_TOTP
+    m_actionMultiplexer.connect(m_ui->actionEntryCopyTOTP, SIGNAL(triggered()),
+            SLOT(copyTOTP()));
+#endif
     m_actionMultiplexer.connect(m_ui->actionEntryCopyURL, SIGNAL(triggered()),
             SLOT(copyURL()));
     m_actionMultiplexer.connect(m_ui->actionEntryCopyNotes, SIGNAL(triggered()),
@@ -204,6 +214,11 @@ MainWindow::MainWindow()
 
     m_actionMultiplexer.connect(m_ui->actionSearch, SIGNAL(triggered()),
                                 SLOT(openSearch()));
+
+#ifndef WITH_TOTP
+    m_ui->actionEntryCopyTOTP->setEnabled(false);
+    m_ui->actionEntryCopyTOTP->setVisible(false);
+#endif
 
     updateTrayIcon();
 }
@@ -289,6 +304,9 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
             m_ui->actionEntryCopyTitle->setEnabled(singleEntrySelected && dbWidget->currentEntryHasTitle());
             m_ui->actionEntryCopyUsername->setEnabled(singleEntrySelected && dbWidget->currentEntryHasUsername());
             m_ui->actionEntryCopyPassword->setEnabled(singleEntrySelected && dbWidget->currentEntryHasPassword());
+#ifdef WITH_TOTP
+            m_ui->actionEntryCopyTOTP->setEnabled(singleEntrySelected && dbWidget->currentEntryHasTOTP());
+#endif
             m_ui->actionEntryCopyURL->setEnabled(singleEntrySelected && dbWidget->currentEntryHasUrl());
             m_ui->actionEntryCopyNotes->setEnabled(singleEntrySelected && dbWidget->currentEntryHasNotes());
             m_ui->menuEntryCopyAttribute->setEnabled(singleEntrySelected);
@@ -317,6 +335,9 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
             m_ui->actionEntryCopyTitle->setEnabled(false);
             m_ui->actionEntryCopyUsername->setEnabled(false);
             m_ui->actionEntryCopyPassword->setEnabled(false);
+#ifdef WITH_TOTP
+            m_ui->actionEntryCopyTOTP->setEnabled(false);
+#endif
             m_ui->actionEntryCopyURL->setEnabled(false);
             m_ui->actionEntryCopyNotes->setEnabled(false);
             m_ui->menuEntryCopyAttribute->setEnabled(false);
@@ -343,6 +364,7 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
         m_ui->actionEntryCopyTitle->setEnabled(false);
         m_ui->actionEntryCopyUsername->setEnabled(false);
         m_ui->actionEntryCopyPassword->setEnabled(false);
+        m_ui->actionEntryCopyTOTP->setEnabled(false);
         m_ui->actionEntryCopyURL->setEnabled(false);
         m_ui->actionEntryCopyNotes->setEnabled(false);
         m_ui->menuEntryCopyAttribute->setEnabled(false);
