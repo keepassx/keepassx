@@ -71,8 +71,6 @@ MainWindow::MainWindow()
     : m_ui(new Ui::MainWindow())
     , m_trayIcon(Q_NULLPTR)
 {
-    appExitCalled = false;
-
     m_ui->setupUi(this);
 
     m_countDefaultAttributes = m_ui->menuEntryCopyAttribute->actions().size();
@@ -204,7 +202,7 @@ MainWindow::MainWindow()
             SLOT(importKeePass1Database()));
     connect(m_ui->actionLockDatabases, SIGNAL(triggered()), m_ui->tabWidget,
             SLOT(lockDatabases()));
-    connect(m_ui->actionQuit, SIGNAL(triggered()), SLOT(appExit()));
+    connect(m_ui->actionQuit, SIGNAL(triggered()), SLOT(close()));
 
     m_actionMultiplexer.connect(m_ui->actionEntryNew, SIGNAL(triggered()),
             SLOT(createEntry()));
@@ -249,12 +247,6 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-}
-
-void MainWindow::appExit()
-{
-    appExitCalled = true;
-    close();
 }
 
 void MainWindow::updateLastDatabasesMenu()
@@ -470,13 +462,6 @@ void MainWindow::databaseTabChanged(int tabIndex)
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
-    if (config()->get("GUI/MinimizeOnClose").toBool() && !appExitCalled)
-    {
-        event->ignore();
-        hide();
-        return;
-    }
-
     bool accept = saveLastDatabases();
 
     if (accept) {
