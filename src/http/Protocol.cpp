@@ -352,7 +352,7 @@ QVariant Response::getEntries() const
     QList<QVariant> res;
     res.reserve(m_entries.size());
     Q_FOREACH (const Entry &entry, m_entries)
-  res.append(QJson::QObjectHelper::qobject2qvariant(&entry));
+	res.append(QJson::QObjectHelper::qobject2qvariant(&entry));
     return res;
 }
 
@@ -490,7 +490,7 @@ QVariant Entry::getStringFields() const
     QList<QVariant> res;
     res.reserve(m_stringFields.size());
     Q_FOREACH (const StringField &stringfield, m_stringFields)
-  res.append(QJson::QObjectHelper::qobject2qvariant(&stringfield));
+    res.append(QJson::QObjectHelper::qobject2qvariant(&stringfield));
     return res;
 }
 

@@ -25,7 +25,7 @@ class AccessControlDialog;
 class AccessControlDialog : public QDialog
 {
     Q_OBJECT
-    
+
 public:
     explicit AccessControlDialog(QWidget *parent = 0);
     ~AccessControlDialog();
@@ -34,7 +34,7 @@ public:
     void setItems(const QList<Entry *> & items);
     bool remember() const;
     void setRemember(bool r);
-    
+
 private:
     Ui::AccessControlDialog *ui;
 };
