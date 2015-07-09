@@ -128,9 +128,9 @@ void HttpSettings::setSupportKphFields(bool supportKphFields)
 
 int  HttpSettings::httpPort()
 {
-    static const int PORT = 19455;
+    static const int port = 19455;
 
-    return config()->get("Http/Port", PORT).toInt();
+    return config()->get("Http/Port", port).toInt();
 }
 
 void HttpSettings::setHttpPort(int port)
