@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QCoreApplication::translate("main", "KeePassX - cross-platform password manager"));
-    parser.addPositionalArgument("filename", QCoreApplication::translate("main", "filename(s) of the password database(s) to open (*.kdbx)"), "[filename(s)]");
+    parser.addPositionalArgument("filename", QCoreApplication::translate("main", "filename of the password database to open (*.kdbx)"), "[filename]");
 
     QCommandLineOption configOption("config",
                                     QCoreApplication::translate("main", "path to a custom config file"),
@@ -89,8 +89,8 @@ int main(int argc, char** argv)
 
     QObject::connect(&app, SIGNAL(openFile(QString)), &mainWindow, SLOT(openDatabase(QString)));
 
-    for (int ii=0; ii < args.length(); ii++) {
-        QString filename = args[ii];
+    if (!args.isEmpty()) {
+        QString filename = args[0];
         if (!filename.isEmpty() && QFile::exists(filename)) {
             mainWindow.openDatabase(filename, parser.value(passwordOption), parser.value(keyfileOption));
         }
