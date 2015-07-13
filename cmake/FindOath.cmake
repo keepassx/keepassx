@@ -20,3 +20,4 @@ find_library(OATH_LIBRARIES oath)
 mark_as_advanced(OATH_LIBRARIES OATH_INCLUDE_DIR)
 
 include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Oath DEFAULT_MSG OATH_LIBRARIES OATH_INCLUDE_DIR)
