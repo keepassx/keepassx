@@ -324,6 +324,10 @@ bool DatabaseTabWidget::saveDatabaseAs(Database* db)
     QString fileName = fileDialog()->getSaveFileName(this, tr("Save database as"),
                                                      oldFileName, tr("KeePass 2 Database").append(" (*.kdbx)"));
     if (!fileName.isEmpty()) {
+        // As a result of "Q_EMIT deactivateInactivityTimer();", the DB should not be locked.
+        Q_ASSERT(m_dbList.contains(db));
+        Q_ASSERT(m_dbList[db].dbWidget->currentMode() != DatabaseWidget::LockedMode);
+
         bool result = false;
 
         QSaveFile saveFile(fileName);
@@ -392,11 +396,14 @@ bool DatabaseTabWidget::saveDatabase(int index)
 
 bool DatabaseTabWidget::saveDatabaseAs(int index)
 {
+    Q_EMIT deactivateInactivityTimer();
     if (index == -1) {
         index = currentIndex();
     }
 
-    return saveDatabaseAs(indexDatabase(index));
+    bool result = saveDatabaseAs(indexDatabase(index));
+    Q_EMIT activateInactivityTimer();
+    return result;
 }
 
 void DatabaseTabWidget::changeMasterKey()
