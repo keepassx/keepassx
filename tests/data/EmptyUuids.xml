@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<KeePassFile>
+	<Meta>
+		<CustomIcons>
+			<Icon>
+				<UUID>++vyI+daLk6omox4a6kQGB==</UUID>
+				<Data>iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAACZJREFUOE9jbGBo+M9ACQAZQAlmoEQz2PWjBoyGwWg6AGdCivMCAKxN4SAQ+6S+AAAAAElFTkSuQmCC</Data>
+			</Icon>
+		</CustomIcons>
+	</Meta>
+	<Root>
+		<Group>
+			<UUID>lmU+9n0aeESKZvcEze+bRc==</UUID>
+			<Name>Empty UUIDs</Name>
+			<Entry>
+				<UUID>+wSUOv6qf0OzW8/ZHAs2sD==</UUID>
+				<String>
+					<Key>Title</Key>
+					<Value>Wrong UUID Length</Value>
+				</String>
+			</Entry>
+			<Entry>
+				<UUID>+wSUOv6qf0OzW8/ZHAs2sE==</UUID>
+				<String>
+					<Key>Title</Key>
+					<Value>No UUID</Value>
+				</String>
+			</Entry>
+		</Group>
+	</Root>
+</KeePassFile>
