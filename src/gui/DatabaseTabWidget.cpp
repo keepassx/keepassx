@@ -129,18 +129,22 @@ void DatabaseTabWidget::openDatabase(const QString& fileName, const QString& pw,
     DatabaseManagerStruct dbStruct;
 
     // test if we can read/write or read the file
-    // TODO: error handling
-    if (!fileInfo.isReadable() && !fileInfo.isWritable()) {
-        if (fileInfo.isReadable()) {
+    QFile file(fileName);
+    // We already have the fileInfo, so might want try to fail fast:
+    // if (!fileInfo.isReadable() || !fileInfo.isWritable() || !file.open(QIODevice::ReadWrite)) {
+    if (!file.open(QIODevice::ReadWrite)) {
+        if (!file.open(QIODevice::ReadOnly)) {
+            MessageBox::critical(this, tr("Failed to open the database file"),
+                                 tr("Failed to open %1 (even as ReadOnly): %2")
+                                 .arg(fileName).arg(file.errorString()));
+            return;
+        }
+        else {
             // can only open read-only
             dbStruct.readOnly = true;
         }
-        else {
-            // can't open
-            // TODO: error message
-            return;
-        }
     }
+    file.close();
 
     QLockFile* lockFile = new QLockFile(QString("%1/.%2.lock").arg(fileInfo.canonicalPath(), fileInfo.fileName()));
     lockFile->setStaleLockTime(0);
