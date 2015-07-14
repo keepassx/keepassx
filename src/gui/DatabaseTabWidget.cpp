@@ -717,15 +717,7 @@ void DatabaseTabWidget::performGlobalAutoType()
 
     if (unlockedDatabases.size() > 0) {
         autoType()->performGlobalAutoType(unlockedDatabases);
-    } else {
-        // The order of m_dbList isn't the same as the order of the tab widgets.
-        // This way we get the first tab if there is any.
-        for (int i = 0; i < this->count(); i++) {
-            DatabaseManagerStruct dbStruct = indexDatabaseManagerStruct(i);
-            if (dbStruct.dbWidget->currentMode() == DatabaseWidget::LockedMode) {
-                dbStruct.dbWidget->showUnlockDialog();
-                break;
-            }
-        }
+    } else if (m_dbList.size() > 0){
+        indexDatabaseManagerStruct(0).dbWidget->showUnlockDialog();
     }
 }
