@@ -3,14 +3,13 @@
 
 #include "autotype/AutoType.h"
 #include <core/Database.h>
-#include <gui/DatabaseTabWidget.h>
 
 
 UnlockDatabaseDialog::UnlockDatabaseDialog(QWidget *parent)
     : QDialog(parent)
     , m_view(new UnlockDatabaseWidget(this))
 {
-    connect(m_view, SIGNAL(editFinished(bool)), this, SLOT(Done(bool)));
+    connect(m_view, SIGNAL(editFinished(bool)), this, SLOT(complete(bool)));
 }
 
 void UnlockDatabaseDialog::setDBFilename(const QString &filename)
@@ -28,7 +27,7 @@ Database *UnlockDatabaseDialog::database()
     return m_view->database();
 }
 
-void UnlockDatabaseDialog::Done(bool r)
+void UnlockDatabaseDialog::complete(bool r)
 {
     if (r) {
         accept();

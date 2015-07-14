@@ -87,6 +87,7 @@ public:
     bool currentEntryHasUrl();
     bool currentEntryHasNotes();
     void showUnlockDialog();
+    void closeUnlockDialog();
 
 Q_SIGNALS:
     void closeRequest();

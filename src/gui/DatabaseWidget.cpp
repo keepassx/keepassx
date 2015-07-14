@@ -661,9 +661,13 @@ void DatabaseWidget::unlockDatabase(bool accepted)
     }
 
     // check if sender() is either the unlock widget or the unlock dialog
-    Database *db = sender() == m_unlockDatabaseDialog ? m_unlockDatabaseDialog->database() :
-                   sender() == m_unlockDatabaseWidget ? m_unlockDatabaseWidget->database() :
-                   Q_NULLPTR;
+    Database *db = Q_NULLPTR;
+    if (sender() == m_unlockDatabaseDialog) {
+        db = m_unlockDatabaseDialog->database();
+    } else if (sender() == m_unlockDatabaseWidget) {
+        db = m_unlockDatabaseWidget->database();
+    }
+
     replaceDatabase(db);
 
     QList<Group*> groups = m_db->rootGroup()->groupsRecursive(true);
@@ -995,4 +999,9 @@ void DatabaseWidget::showUnlockDialog()
     m_unlockDatabaseDialog->setDBFilename(m_filename);
     m_unlockDatabaseDialog->show();
     m_unlockDatabaseDialog->activateWindow();
+}
+
+void DatabaseWidget::closeUnlockDialog()
+{
+    m_unlockDatabaseDialog->close();
 }

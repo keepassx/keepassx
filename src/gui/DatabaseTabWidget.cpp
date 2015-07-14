@@ -218,6 +218,7 @@ bool DatabaseTabWidget::closeDatabase(Database* db)
     int index = databaseIndex(db);
     Q_ASSERT(index != -1);
 
+    dbStruct.dbWidget->closeUnlockDialog();
     QString dbName = tabText(index);
     if (dbName.right(1) == "*") {
         dbName.chop(1);
@@ -704,19 +705,27 @@ void DatabaseTabWidget::performGlobalAutoType()
 {
     QList<Database*> unlockedDatabases;
 
-    QHashIterator<Database*, DatabaseManagerStruct> i(m_dbList);
-    while (i.hasNext()) {
-        i.next();
-        DatabaseWidget::Mode mode = i.value().dbWidget->currentMode();
+    QHashIterator<Database*, DatabaseManagerStruct> db_iter(m_dbList);
+    while (db_iter.hasNext()) {
+        db_iter.next();
+        DatabaseWidget::Mode mode = db_iter.value().dbWidget->currentMode();
 
         if (mode != DatabaseWidget::LockedMode) {
-            unlockedDatabases.append(i.key());
+            unlockedDatabases.append(db_iter.key());
         }
     }
 
-    if (unlockedDatabases.count() == 0) {
-        indexDatabaseManagerStruct(0).dbWidget->showUnlockDialog();
-    } else {
+    if (unlockedDatabases.size() > 0) {
         autoType()->performGlobalAutoType(unlockedDatabases);
+    } else {
+        // The order of m_dbList isn't the same as the order of the tab widgets.
+        // This way we get the first tab if there is any.
+        for (int i = 0; i < this->count(); i++) {
+            DatabaseManagerStruct dbStruct = indexDatabaseManagerStruct(i);
+            if (dbStruct.dbWidget->currentMode() == DatabaseWidget::LockedMode) {
+                dbStruct.dbWidget->showUnlockDialog();
+                break;
+            }
+        }
     }
 }

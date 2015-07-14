@@ -1,7 +1,6 @@
 #ifndef KEEPASSX_AUTOTYPEUNLOCKDIALOG_H
 #define KEEPASSX_AUTOTYPEUNLOCKDIALOG_H
 
-#include <QAbstractItemModel>
 #include <QObject>
 #include <QDialog>
 
@@ -25,11 +24,10 @@ Q_SIGNALS:
     void unlockDone(bool);
 
 public Q_SLOTS:
-    void Done(bool r);
+    void complete(bool r);
 
 private:
     UnlockDatabaseWidget* const m_view;
-    DatabaseManagerStruct m_dbStruct;
 };
 
 #endif // KEEPASSX_AUTOTYPEUNLOCKDIALOG_H
