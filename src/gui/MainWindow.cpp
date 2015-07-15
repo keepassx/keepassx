@@ -369,8 +369,8 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
 void MainWindow::updateDeleteGroupMenu()
 {
     DatabaseWidget* dbWidget = m_ui->tabWidget->currentDatabaseWidget();
-    if (dbWidget->recycleBinSelected()) {
-        if (dbWidget->recycleBinEmpty()) {
+    if (dbWidget->isRecycleBinSelected()) {
+        if (dbWidget->isRecycleBinEmpty()) {
             m_ui->actionGroupDelete->setText(tr("Remove recycle bin"));
         }
         else {

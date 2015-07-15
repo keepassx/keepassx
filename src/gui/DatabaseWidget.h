@@ -74,8 +74,8 @@ public:
     int numberOfSelectedEntries() const;
     QStringList customEntryAttributes() const;
     bool isGroupSelected() const;
-    bool recycleBinSelected() const;
-    bool recycleBinEmpty() const;
+    bool isRecycleBinSelected() const;
+    bool isRecycleBinEmpty() const;
     bool isInEditMode() const;
     QList<int> splitterSizes() const;
     void setSplitterSizes(const QList<int>& sizes);
