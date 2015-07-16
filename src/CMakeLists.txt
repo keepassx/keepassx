@@ -248,7 +248,7 @@ target_link_libraries(${PROGNAME}
                       ${GCRYPT_LIBRARIES}
                       ${ZLIB_LIBRARIES})
 
-if(UNIX AND NOT APPLE)
+if(UNIX AND NOT APPLE AND NOT DISABLE_BUS)
   target_link_libraries(${PROGNAME} ${QT_QTDBUS_LIBRARY})
 endif()
 

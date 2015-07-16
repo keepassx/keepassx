@@ -21,7 +21,7 @@
 #include <QClipboard>
 #include <QTimer>
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC) && !defined(DISABLE_DBUS)
 #include <QDBusConnection>
 #include <QDBusMessage>
 #endif
@@ -75,7 +75,7 @@ void Clipboard::clearClipboard()
         clipboard->clear(QClipboard::Selection);
     }
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC) && !defined(DISABLE_DBUS)
     QDBusMessage message = QDBusMessage::createMethodCall("org.kde.klipper", "/klipper", "", "clearClipboardHistory");
     QDBusConnection::sessionBus().send(message);
 #endif
