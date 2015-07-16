@@ -234,7 +234,7 @@ if(MINGW)
 endif()
 
 qt4_wrap_ui(keepassx_SOURCES ${keepassx_FORMS})
-qt4_wrap_cpp(keepassx_SOURCES ${keepassx_MOC})
+qt4_wrap_cpp(keepassx_SOURCES ${keepassx_MOC} OPTIONS ${def_totp})
 
 add_library(keepassx_core STATIC ${keepassx_SOURCES})
 set_target_properties(keepassx_core PROPERTIES COMPILE_DEFINITIONS KEEPASSX_BUILDING_CORE)

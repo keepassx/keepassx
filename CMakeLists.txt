@@ -178,7 +178,9 @@ endif()
 
 if (WITH_TOTP)
   find_package(Oath REQUIRED)
-  add_gcc_compiler_flags("-DWITH_TOTP")
+  # Used later for moc
+  set(def_totp "-DWITH_TOTP")
+  add_gcc_compiler_flags(${def_totp})
 endif()
 
 find_package(ZLIB REQUIRED)
