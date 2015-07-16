@@ -364,7 +364,9 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
         m_ui->actionEntryCopyTitle->setEnabled(false);
         m_ui->actionEntryCopyUsername->setEnabled(false);
         m_ui->actionEntryCopyPassword->setEnabled(false);
+#ifdef WITH_TOTP
         m_ui->actionEntryCopyTOTP->setEnabled(false);
+#endif
         m_ui->actionEntryCopyURL->setEnabled(false);
         m_ui->actionEntryCopyNotes->setEnabled(false);
         m_ui->menuEntryCopyAttribute->setEnabled(false);
