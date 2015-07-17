@@ -61,6 +61,7 @@ set(keepassx_SOURCES
     crypto/SymmetricCipher.cpp
     crypto/SymmetricCipherBackend.h
     crypto/SymmetricCipherGcrypt.cpp
+    format/CsvExporter.cpp
     format/KeePass1.h
     format/KeePass1Reader.cpp
     format/KeePass2.h
@@ -248,10 +249,6 @@ target_link_libraries(${PROGNAME}
                       ${QT_QTGUI_LIBRARY}
                       ${GCRYPT_LIBRARIES}
                       ${ZLIB_LIBRARIES})
-
-if(UNIX AND NOT APPLE)
-  target_link_libraries(${PROGNAME} ${QT_QTDBUS_LIBRARY})
-endif()
 
 set_target_properties(${PROGNAME} PROPERTIES ENABLE_EXPORTS ON)
 

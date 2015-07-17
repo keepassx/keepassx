@@ -93,10 +93,6 @@ set(TEST_LIBRARIES
     ${ZLIB_LIBRARIES}
 )
 
-if(UNIX AND NOT APPLE)
-  set(TEST_LIBRARIES ${TEST_LIBRARIES} ${QT_QTDBUS_LIBRARY})
-endif()
-
 set(modeltest_SOURCRS modeltest.cpp)
 qt4_wrap_cpp(modeltest_SOURCRS modeltest.h)
 add_library(modeltest STATIC ${modeltest_SOURCRS})
@@ -166,6 +162,9 @@ add_unit_test(NAME testentrysearcher SOURCES TestEntrySearcher.cpp MOCS TestEntr
               LIBS ${TEST_LIBRARIES})
 
 add_unit_test(NAME testexporter SOURCES TestExporter.cpp MOCS TestExporter.h
+              LIBS ${TEST_LIBRARIES})
+
+add_unit_test(NAME testcsvexporter SOURCES TestCsvExporter.cpp MOCS TestCsvExporter.h
               LIBS ${TEST_LIBRARIES})
 
 if(WITH_GUI_TESTS)

@@ -469,9 +469,9 @@ void DatabaseWidget::openUrlForEntry(Entry* entry)
         }
     }
     else {
-        QDesktopServices::openUrl(urlString);
+        QUrl url = QUrl::fromUserInput(urlString);
+        QDesktopServices::openUrl(url);
     }
-
 }
 
 void DatabaseWidget::createGroup()
