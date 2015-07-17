@@ -49,7 +49,7 @@ private:
     QWidget* const m_generalWidget;
     const QScopedPointer<Ui::SettingsWidgetSecurity> m_secUi;
     const QScopedPointer<Ui::SettingsWidgetGeneral> m_generalUi;
-    bool m_enableAutoType;
+    bool m_disableAutoType;
     Qt::Key m_globalAutoTypeKey;
     Qt::KeyboardModifiers m_globalAutoTypeModifiers;
 };

@@ -29,7 +29,7 @@ SettingsWidget::SettingsWidget(QWidget* parent)
     , m_generalWidget(new QWidget())
     , m_secUi(new Ui::SettingsWidgetSecurity())
     , m_generalUi(new Ui::SettingsWidgetGeneral())
-    , m_enableAutoType(true)
+    , m_disableAutoType(false)
     , m_globalAutoTypeKey(static_cast<Qt::Key>(0))
     , m_globalAutoTypeModifiers(Qt::NoModifier)
 {
@@ -74,7 +74,7 @@ void SettingsWidget::loadSettings()
     m_generalUi->minimizeOnCopyCheckBox->setChecked(config()->get("MinimizeOnCopy").toBool());
     m_generalUi->useGroupIconOnEntryCreationCheckBox->setChecked(config()->get("UseGroupIconOnEntryCreation").toBool());
     m_generalUi->disableAutoTypeCheckBox->setChecked(config()->get("DisableAutoType").toBool());
-    Q_ASSERT(m_enableAutoType == !config()->get("DisableAutoType").toBool());
+    Q_ASSERT(m_disableAutoType == config()->get("DisableAutoType").toBool());
     m_generalUi->autoTypeEntryTitleMatchCheckBox->setChecked(config()->get("AutoTypeEntryTitleMatch").toBool());
 
     m_generalUi->languageComboBox->clear();
@@ -123,8 +123,8 @@ void SettingsWidget::saveSettings()
     config()->set("MinimizeOnCopy", m_generalUi->minimizeOnCopyCheckBox->isChecked());
     config()->set("UseGroupIconOnEntryCreation",
                   m_generalUi->useGroupIconOnEntryCreationCheckBox->isChecked());
-    Q_ASSERT(m_enableAutoType == !m_generalUi->disableAutoTypeCheckBox->isChecked());
-    config()->set("DisableAutoType", !m_enableAutoType);
+    Q_ASSERT(m_disableAutoType == m_generalUi->disableAutoTypeCheckBox->isChecked());
+    config()->set("DisableAutoType", m_disableAutoType);
     config()->set("AutoTypeEntryTitleMatch",
                   m_generalUi->autoTypeEntryTitleMatchCheckBox->isChecked());
     int currentLangIndex = m_generalUi->languageComboBox->currentIndex();
@@ -152,7 +152,7 @@ void SettingsWidget::saveSettings()
 }
 
 void SettingsWidget::resetGlobalShortcut() {
-    if (!m_enableAutoType) {
+    if (m_disableAutoType) {
         autoType()->unregisterGlobalShortcut();
     } else if(m_globalAutoTypeKey > 0 && m_globalAutoTypeModifiers > 0) {
         autoType()->registerGlobalShortcut(m_globalAutoTypeKey, m_globalAutoTypeModifiers);
@@ -174,7 +174,7 @@ void SettingsWidget::enableAutoSaveOnExit(bool checked)
 
 void SettingsWidget::enableAutoType(bool checked)
 {
-    m_enableAutoType = !checked;
-    m_generalUi->autoTypeShortcutWidget->setEnabled(m_enableAutoType);
+    m_disableAutoType = checked;
+    m_generalUi->autoTypeShortcutWidget->setEnabled(!m_disableAutoType);
     resetGlobalShortcut();
 }
