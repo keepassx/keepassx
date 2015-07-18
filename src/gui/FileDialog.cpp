@@ -62,7 +62,7 @@ QString FileDialog::getSaveFileName(QWidget* parent, const QString& caption, QSt
     }
     else {
         if (dir.isEmpty()) {
-            dir = config()->get("LastDir").toString();
+            dir = config()->get("LastDir").toString().append("/NewDatabase.kdbx");
         }
 
         QString result = QFileDialog::getSaveFileName(parent, caption, dir, filter,
