@@ -46,6 +46,12 @@
 #include <QFileInfo>
 #include <QTemporaryFile>
 
+#ifdef Q_OS_WIN
+#  include <windows.h>
+#else
+#  include <unistd.h>
+#endif
+
 QSaveFilePrivate::QSaveFilePrivate()
     : tempFile(0), error(QFile::NoError)
 {
@@ -279,8 +285,19 @@ bool QSaveFile::commit()
     Q_D(QSaveFile);
     if (!d->tempFile)
         return false;
-    Q_ASSERT(isOpen());
-    QIODevice::close(); // flush and close
+    if (!isOpen()) {
+        qWarning("QSaveFile::commit: File (%s) is not open", qPrintable(fileName()));
+        return false;
+    }
+    flush();
+#ifdef Q_OS_WIN
+    FlushFileBuffers(reinterpret_cast<HANDLE>(handle()));
+#elif defined(_POSIX_SYNCHRONIZED_IO) && _POSIX_SYNCHRONIZED_IO > 0
+    fdatasync(d->tempFile->handle());
+#else
+    fsync(d->tempFile->handle());
+#endif
+    QIODevice::close();
     if (d->error != QFile::NoError) {
         d->tempFile->remove();
         unsetError();
