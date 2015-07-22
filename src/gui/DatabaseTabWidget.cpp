@@ -322,10 +322,11 @@ bool DatabaseTabWidget::saveDatabase(Database* db)
 bool DatabaseTabWidget::saveDatabaseAs(Database* db)
 {
     DatabaseManagerStruct& dbStruct = m_dbList[db];
-    QString oldFileName;
+    QString oldFileName = "NewDatabase.kdbx";
     if (dbStruct.saveToFilename) {
         oldFileName = dbStruct.filePath;
     }
+
     QString fileName = fileDialog()->getSaveFileName(this, tr("Save database as"),
                                                      oldFileName, tr("KeePass 2 Database").append(" (*.kdbx)"));
     if (!fileName.isEmpty()) {
