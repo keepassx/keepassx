@@ -60,11 +60,14 @@ int main(int argc, char** argv)
     QCommandLineOption keyfileOption("keyfile",
                                      QCoreApplication::translate("main", "key file of the database"),
                                      "keyfile");
+    QCommandLineOption minimizeOption("minimize",
+                                      QCoreApplication::translate("main", "start application minimized"));
 
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOption(configOption);
     parser.addOption(keyfileOption);
+    parser.addOption(minimizeOption);
 
     parser.process(app);
     const QStringList args = parser.positionalArguments();
@@ -81,7 +84,12 @@ int main(int argc, char** argv)
 #endif
 
     MainWindow mainWindow;
-    mainWindow.show();
+    if (parser.isSet(minimizeOption)) {
+        mainWindow.showMinimized();
+    }
+    else {
+        mainWindow.show();
+    }
 
     QObject::connect(&app, SIGNAL(openFile(QString)), &mainWindow, SLOT(openDatabase(QString)));
 
