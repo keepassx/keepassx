@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>456</width>
-    <height>313</height>
+    <height>331</height>
    </rect>
   </property>
   <layout class="QFormLayout" name="formLayout">
@@ -103,13 +103,20 @@
      </property>
     </widget>
    </item>
-   <item row="11" column="0">
+   <item row="12" column="0">
     <widget class="QCheckBox" name="systrayMinimizeToTrayCheckBox">
      <property name="enabled">
       <bool>false</bool>
      </property>
      <property name="text">
       <string>Hide window to system tray when minimized</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0">
+    <widget class="QCheckBox" name="mirrorPasswordFieldsCheckBox">
+     <property name="text">
+      <string>Mirror password fields when text is visible</string>
      </property>
     </widget>
    </item>

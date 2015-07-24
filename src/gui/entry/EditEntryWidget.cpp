@@ -250,7 +250,8 @@ void EditEntryWidget::updateAttachmentButtonsEnabled(const QModelIndex& current)
 
 void EditEntryWidget::setPasswordRepeat(const QString &password)
 {
-  if (m_mainUi->passwordEdit->echoMode() == QLineEdit::Normal){
+  bool mirror = config()->get("MirrorPasswordFields").toBool();
+  if (m_mainUi->passwordEdit->echoMode() == QLineEdit::Normal && mirror){
     QString temp(password);
     temp.chop(1);
 
