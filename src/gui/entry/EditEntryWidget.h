@@ -96,6 +96,7 @@ private Q_SLOTS:
     void useExpiryPreset(QAction* action);
     void updateAttachmentButtonsEnabled(const QModelIndex& current);
     void setPasswordRepeat(const QString& password);
+    void togglePasswordRepeatEnabled(bool show);
 
 private:
     void setupMain();
@@ -114,6 +115,7 @@ private:
 
     bool m_create;
     bool m_history;
+    bool m_mirrorPasswords;
     const QScopedPointer<Ui::EditEntryWidgetMain> m_mainUi;
     const QScopedPointer<Ui::EditEntryWidgetAdvanced> m_advancedUi;
     const QScopedPointer<Ui::EditEntryWidgetAutoType> m_autoTypeUi;

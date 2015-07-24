@@ -98,6 +98,8 @@ void EditEntryWidget::setupMain()
     connect(m_mainUi->expirePresets->menu(), SIGNAL(triggered(QAction*)), this, SLOT(useExpiryPreset(QAction*)));
 
     connect(m_mainUi->passwordEdit, SIGNAL(textChanged(QString)), this, SLOT(setPasswordRepeat(QString)));
+    connect(m_mainUi->togglePasswordButton, SIGNAL(toggled(bool)), this, SLOT(togglePasswordRepeatEnabled(bool)));
+    m_mirrorPasswords = config()->get("MirrorPasswordFields").toBool();
 
     m_mainUi->passwordGenerator->hide();
     m_mainUi->passwordGenerator->reset();
@@ -250,15 +252,17 @@ void EditEntryWidget::updateAttachmentButtonsEnabled(const QModelIndex& current)
 
 void EditEntryWidget::setPasswordRepeat(const QString &password)
 {
-  bool mirror = config()->get("MirrorPasswordFields").toBool();
-  if (m_mainUi->passwordEdit->echoMode() == QLineEdit::Normal && mirror){
-    QString temp(password);
-    temp.chop(1);
-
-    if (m_mainUi->passwordRepeatEdit->text() == temp){
-      m_mainUi->passwordRepeatEdit->setText(password);
+    if (m_mainUi->passwordEdit->echoMode() == QLineEdit::Normal && m_mirrorPasswords){
+        m_mainUi->passwordRepeatEdit->setText(password);
     }
-  }
+}
+
+void EditEntryWidget::togglePasswordRepeatEnabled(bool show)
+{
+    if (m_mirrorPasswords) {
+        m_mainUi->passwordRepeatEdit->setEnabled(!show);
+        m_mainUi->passwordRepeatEdit->setText(m_mainUi->passwordEdit->text());
+    }
 }
 
 QString EditEntryWidget::entryTitle() const
