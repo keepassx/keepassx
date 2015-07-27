@@ -34,8 +34,8 @@ option(WITH_GUI_TESTS "Enable building of GUI tests" OFF)
 option(WITH_LTO "Enable Link Time Optimization (LTO)" OFF)
 option(WITH_CXX11 "Build with the C++ 11 standard" ON)
 
-set(KEEPASSX_VERSION "2.0 alpha 6")
-set(KEEPASSX_VERSION_NUM "1.9.85")
+set(KEEPASSX_VERSION "2.0 beta 1")
+set(KEEPASSX_VERSION_NUM "1.9.91")
 
 if("${CMAKE_C_COMPILER}" MATCHES "clang$" OR "${CMAKE_C_COMPILER_ID}" STREQUAL "Clang")
   set(CMAKE_COMPILER_IS_CLANG 1)
@@ -159,9 +159,6 @@ if(WITH_TESTS)
 endif(WITH_TESTS)
 
 set(QT_REQUIRED_MODULES QtCore QtGui QtTest)
-if(UNIX AND NOT APPLE)
-  set(QT_REQUIRED_MODULES ${QT_REQUIRED_MODULES} QtDBus)
-endif()
 
 find_package(Qt4 4.6.0 REQUIRED ${QT_REQUIRED_MODULES})
 include(${QT_USE_FILE})
