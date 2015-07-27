@@ -93,13 +93,9 @@ set(TEST_LIBRARIES
     ${ZLIB_LIBRARIES}
 )
 
-if(UNIX AND NOT APPLE)
-  set(TEST_LIBRARIES ${TEST_LIBRARIES} ${QT_QTDBUS_LIBRARY})
-endif()
-
-set(modeltest_SOURCRS modeltest.cpp)
-qt4_wrap_cpp(modeltest_SOURCRS modeltest.h)
-add_library(modeltest STATIC ${modeltest_SOURCRS})
+set(testsupport_SOURCES modeltest.cpp FailDevice.cpp)
+qt4_wrap_cpp(testsupport_SOURCES modeltest.h FailDevice.h)
+add_library(testsupport STATIC ${testsupport_SOURCES})
 
 add_unit_test(NAME testgroup SOURCES TestGroup.cpp MOCS TestGroup.h
               LIBS ${TEST_LIBRARIES})
@@ -114,13 +110,13 @@ add_unit_test(NAME testkeepass2reader SOURCES TestKeePass2Reader.cpp MOCS TestKe
               LIBS ${TEST_LIBRARIES})
 
 add_unit_test(NAME testkeepass2writer SOURCES TestKeePass2Writer.cpp MOCS TestKeePass2Writer.h
-              LIBS ${TEST_LIBRARIES})
+              LIBS testsupport ${TEST_LIBRARIES})
 
 add_unit_test(NAME testgroupmodel SOURCES TestGroupModel.cpp MOCS TestGroupModel.h
-              LIBS modeltest ${TEST_LIBRARIES})
+              LIBS testsupport ${TEST_LIBRARIES})
 
 add_unit_test(NAME testentrymodel SOURCES TestEntryModel.cpp MOCS TestEntryModel.h
-              LIBS modeltest ${TEST_LIBRARIES})
+              LIBS testsupport ${TEST_LIBRARIES})
 
 add_unit_test(NAME testcryptohash SOURCES TestCryptoHash.cpp MOCS TestCryptoHash.h
               LIBS ${TEST_LIBRARIES})
@@ -129,7 +125,7 @@ add_unit_test(NAME testsymmetriccipher SOURCES TestSymmetricCipher.cpp MOCS Test
               LIBS ${TEST_LIBRARIES})
 
 add_unit_test(NAME testhashedblockstream SOURCES TestHashedBlockStream.cpp MOCS TestHashedBlockStream.h
-              LIBS ${TEST_LIBRARIES})
+              LIBS testsupport ${TEST_LIBRARIES})
 
 add_unit_test(NAME testkeepass2randomstream SOURCES TestKeePass2RandomStream.cpp MOCS TestKeePass2RandomStream.h
               LIBS ${TEST_LIBRARIES})
@@ -166,6 +162,9 @@ add_unit_test(NAME testentrysearcher SOURCES TestEntrySearcher.cpp MOCS TestEntr
               LIBS ${TEST_LIBRARIES})
 
 add_unit_test(NAME testexporter SOURCES TestExporter.cpp MOCS TestExporter.h
+              LIBS ${TEST_LIBRARIES})
+
+add_unit_test(NAME testcsvexporter SOURCES TestCsvExporter.cpp MOCS TestCsvExporter.h
               LIBS ${TEST_LIBRARIES})
 
 if(WITH_GUI_TESTS)

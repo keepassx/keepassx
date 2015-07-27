@@ -25,6 +25,7 @@
 #include <QLineEdit>
 #include <QSplitter>
 #include <QTimer>
+#include <QProcess>
 
 #include "autotype/AutoType.h"
 #include "core/Config.h"
@@ -452,8 +453,19 @@ void DatabaseWidget::openUrl()
 
 void DatabaseWidget::openUrlForEntry(Entry* entry)
 {
-    if (!entry->url().isEmpty()) {
-        QDesktopServices::openUrl(entry->url());
+    QString urlString = entry->resolvePlaceholders(entry->url());
+    if (urlString.isEmpty()) {
+        return;
+    }
+
+    if (urlString.startsWith("cmd://")) {
+        if (urlString.length() > 6) {
+            QProcess::startDetached(urlString.mid(6));
+        }
+    }
+    else {
+        QUrl url = QUrl::fromUserInput(urlString);
+        QDesktopServices::openUrl(url);
     }
 }
 
@@ -898,8 +910,17 @@ void DatabaseWidget::clearLastGroup(Group* group)
 void DatabaseWidget::lock()
 {
     Q_ASSERT(currentMode() != DatabaseWidget::LockedMode);
+    if (isInSearchMode()) {
+        closeSearch();
+    }
 
-    m_groupBeforeLock = m_groupView->currentGroup()->uuid();
+    if (m_groupView->currentGroup()) {
+        m_groupBeforeLock = m_groupView->currentGroup()->uuid();
+    }
+    else {
+        m_groupBeforeLock = m_db->rootGroup()->uuid();
+    }
+
     clearAllWidgets();
     m_unlockDatabaseWidget->load(m_filename);
     setCurrentWidget(m_unlockDatabaseWidget);
