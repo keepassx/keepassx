@@ -113,6 +113,7 @@ MainWindow::MainWindow()
     m_ui->actionEntryAutoType->setIcon(filePath()->icon("actions", "auto-type", false));
     m_ui->actionEntryCopyUsername->setIcon(filePath()->icon("actions", "username-copy", false));
     m_ui->actionEntryCopyPassword->setIcon(filePath()->icon("actions", "password-copy", false));
+    m_ui->actionEntryCopyURL->setIcon(filePath()->icon("actions", "URL-copy", false));
 
     m_ui->actionGroupNew->setIcon(filePath()->icon("actions", "group-new", false));
     m_ui->actionGroupEdit->setIcon(filePath()->icon("actions", "group-edit", false));

@@ -97,7 +97,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -201,6 +201,7 @@
    <addaction name="actionEntryEdit"/>
    <addaction name="actionEntryDelete"/>
    <addaction name="separator"/>
+   <addaction name="actionEntryCopyURL"/>
    <addaction name="actionEntryCopyUsername"/>
    <addaction name="actionEntryCopyPassword"/>
    <addaction name="separator"/>
@@ -404,6 +405,12 @@
    </property>
    <property name="text">
     <string>URL</string>
+   </property>
+   <property name="iconText">
+    <string>Copy URL</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy URL to clipboard</string>
    </property>
   </action>
   <action name="actionEntryCopyNotes">
