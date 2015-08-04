@@ -24,6 +24,7 @@
 
 #include "core/Global.h"
 #include "crypto/SymmetricCipherBackend.h"
+#include "format/KeePass2.h"
 
 class SymmetricCipher
 {
@@ -71,6 +72,9 @@ public:
     bool reset();
     int blockSize() const;
     QString errorString() const;
+
+    static SymmetricCipher::Algorithm cipherToAlgorithm(Uuid cipher);
+    static Uuid algorithmToCipher(SymmetricCipher::Algorithm algo);
 
 private:
     static SymmetricCipherBackend* createBackend(SymmetricCipher::Algorithm algo, SymmetricCipher::Mode mode,
