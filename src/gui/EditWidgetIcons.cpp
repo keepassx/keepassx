@@ -142,14 +142,6 @@ void EditWidgetIcons::downloadFavicon()
 {
     // We do not want to send any user information to google
     Q_ASSERT(m_url.userInfo().isEmpty());
-    m_progress = new QProgressDialog(this);
-    connect(m_progress, SIGNAL(canceled()), this, SLOT(abortFaviconDownload()));
-    m_progress->setWindowModality(Qt::WindowModal);
-    m_progress->setAutoClose(true);
-    m_progress->setLabelText("Downloading Favicons...");
-    m_progress->setMaximum(10);
-    m_progress->setValue(0);
-    m_progress->show();
 
     const QStringList schemes = QStringList() << "http" << "https";
     const QStringList extensions = QStringList() << "ico" << "png" << "gif" << "jpg";
@@ -174,8 +166,14 @@ void EditWidgetIcons::downloadFavicon()
         lastDot = domain.lastIndexOf( '.' );
         domain.remove( 0, firstDot + 1 );
     } while (( firstDot != -1 ) && ( lastDot != -1 ) && ( firstDot != lastDot ));
+    m_progress = new QProgressDialog(this);
+    connect(m_progress, SIGNAL(canceled()), this, SLOT(abortFaviconDownload()));
+    m_progress->setWindowModality(Qt::WindowModal);
+    m_progress->setAutoClose(true);
+    m_progress->setLabelText("Downloading Favicons...");
     m_progress->setMaximum(m_networkOperations.count());
     m_progress->setValue(m_progress->maximum() - m_networkOperations.count());
+    m_progress->show();
 }
 
 void EditWidgetIcons::abortFaviconDownload()
