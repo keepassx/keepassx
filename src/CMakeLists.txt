@@ -119,6 +119,14 @@ set(keepassx_SOURCES
     gui/group/EditGroupWidget.cpp
     gui/group/GroupModel.cpp
     gui/group/GroupView.cpp
+    http/AccessControlDialog.cpp
+    http/EntryConfig.cpp
+    http/HttpPasswordGeneratorWidget.cpp
+    http/HttpSettings.cpp
+    http/OptionDialog.cpp
+    http/Protocol.cpp
+    http/Server.cpp
+    http/Service.cpp
     keys/CompositeKey.cpp
     keys/CompositeKey_p.h
     keys/FileKey.cpp
@@ -210,6 +218,13 @@ set(keepassx_MOC
     gui/group/EditGroupWidget.h
     gui/group/GroupModel.h
     gui/group/GroupView.h
+    http/AccessControlDialog.h
+    http/EntryConfig.h
+    http/HttpPasswordGeneratorWidget.h
+    http/OptionDialog.h
+    http/Protocol.h
+    http/Server.h
+    http/Service.h
     keys/CompositeKey_p.h
     streams/HashedBlockStream.h
     streams/LayeredStream.h
@@ -237,6 +252,9 @@ set(keepassx_FORMS
     gui/entry/EditEntryWidgetHistory.ui
     gui/entry/EditEntryWidgetMain.ui
     gui/group/EditGroupWidgetMain.ui
+    http/AccessControlDialog.ui
+    http/HttpPasswordGeneratorWidget.ui
+    http/OptionDialog.ui
 )
 
 if(MINGW)
@@ -254,8 +272,11 @@ set_target_properties(keepassx_core PROPERTIES COMPILE_DEFINITIONS KEEPASSX_BUIL
 add_executable(${PROGNAME} WIN32 MACOSX_BUNDLE ${keepassx_SOURCES_MAINEXE})
 target_link_libraries(${PROGNAME}
                       keepassx_core
+                      ${QJSON_LIBRARIES}
+                      ${MHD_LIBRARIES}
                       ${QT_QTCORE_LIBRARY}
                       ${QT_QTGUI_LIBRARY}
+                      ${QT_QTNETWORK_LIBRARY}
                       ${GCRYPT_LIBRARIES}
                       ${ZLIB_LIBRARIES})
 

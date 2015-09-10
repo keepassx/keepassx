@@ -15,6 +15,12 @@ The complete database is always encrypted with the AES (aka Rijndael) encryption
 Therefore the saved information can be considered as quite safe. KeePassX uses a database format that is compatible with [KeePass Password Safe](http://keepass.info/).
 This makes the use of that application even more favorable.
 
+KeePassX support integration with browser by mimicking KeePassHttp plugin. KeePassHttp implementation based on work of [typz](https://gitorious.org/keepassx/keepassx-http), [jdachtera](https://github.com/jdachtera/keepassx) and [Ivan0xFF](https://github.com/Ivan0xFF/keepassx).
+
+Plugins for Browsers can be found at:
+* Mozilla Firefox [PassIFox]  (https://addons.mozilla.org/en-us/firefox/addon/passifox).
+* Google Chrome [chromeIPass] (https://chrome.google.com/webstore/detail/chromeipass/ompiailgknfdndiefoaoiligalphfdae).
+
 ## Install
 
 KeePassX can be downloaded and installed using an assortment of installers available on the main [KeePassX website](http://www.keepassx.org).
@@ -57,6 +63,8 @@ The following libraries are required:
 * Qt 4 (>= 4.6)
 * libgcrypt
 * zlib
+* libmicrohttpd
+* QJSON
 * libxtst (optional for auto-type on X11)
 
 On Debian you can install them with:

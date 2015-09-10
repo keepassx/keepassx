@@ -86,6 +86,8 @@ endmacro(add_unit_test)
 
 set(TEST_LIBRARIES
     keepassx_core
+    ${QJSON_LIBRARIES}
+    ${MHD_LIBRARIES}
     ${QT_QTCORE_LIBRARY}
     ${QT_QTGUI_LIBRARY}
     ${QT_QTTEST_LIBRARY}
