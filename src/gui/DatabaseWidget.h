@@ -41,6 +41,7 @@ class QFile;
 class QMenu;
 class QSplitter;
 class UnlockDatabaseWidget;
+class UnlockDatabaseDialog;
 
 namespace Ui {
     class SearchWidget;
@@ -85,6 +86,8 @@ public:
     bool currentEntryHasPassword();
     bool currentEntryHasUrl();
     bool currentEntryHasNotes();
+    void showUnlockDialog();
+    void closeUnlockDialog();
 
 Q_SIGNALS:
     void closeRequest();
@@ -164,6 +167,7 @@ private:
     DatabaseOpenWidget* m_databaseOpenWidget;
     KeePass1OpenWidget* m_keepass1OpenWidget;
     UnlockDatabaseWidget* m_unlockDatabaseWidget;
+    UnlockDatabaseDialog* m_unlockDatabaseDialog;
     QSplitter* m_splitter;
     GroupView* m_groupView;
     EntryView* m_entryView;
