@@ -152,6 +152,7 @@
     <addaction name="actionEntryDelete"/>
     <addaction name="actionEntryCopyUsername"/>
     <addaction name="actionEntryCopyPassword"/>
+    <addaction name="actionEntryCopyTOTP"/>
     <addaction name="menuEntryCopyAttribute"/>
     <addaction name="actionEntryAutoType"/>
     <addaction name="actionEntryOpenUrl"/>
@@ -203,6 +204,7 @@
    <addaction name="separator"/>
    <addaction name="actionEntryCopyUsername"/>
    <addaction name="actionEntryCopyPassword"/>
+   <addaction name="actionEntryCopyTOTP"/>
    <addaction name="separator"/>
    <addaction name="actionLockDatabases"/>
    <addaction name="actionSearch"/>
@@ -359,6 +361,17 @@
    </property>
    <property name="toolTip">
     <string>Copy password to clipboard</string>
+   </property>
+  </action>
+  <action name="actionEntryCopyTOTP">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Copy TOTP</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy one-time password to clipboard</string>
    </property>
   </action>
   <action name="actionSettings">

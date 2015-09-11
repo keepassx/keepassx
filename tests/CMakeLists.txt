@@ -92,6 +92,9 @@ set(TEST_LIBRARIES
     ${GCRYPT_LIBRARIES}
     ${ZLIB_LIBRARIES}
 )
+if (WITH_TOTP)
+  set(TEST_LIBRARIES ${TEST_LIBRARIES} ${OATH_LIBRARIES})
+endif()
 
 set(testsupport_SOURCES modeltest.cpp FailDevice.cpp)
 qt4_wrap_cpp(testsupport_SOURCES modeltest.h FailDevice.h)
