@@ -24,20 +24,21 @@
 #include <QVBoxLayout>
 
 #include "autotype/AutoTypeSelectView.h"
+#include "core/AutoTypeMatch.h"
 #include "core/FilePath.h"
-#include "gui/entry/EntryModel.h"
+#include "gui/entry/AutoTypeMatchModel.h"
 
 AutoTypeSelectDialog::AutoTypeSelectDialog(QWidget* parent)
     : QDialog(parent)
     , m_view(new AutoTypeSelectView(this))
-    , m_entryActivatedEmitted(false)
+    , m_matchActivatedEmitted(false)
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
     setWindowTitle(tr("Auto-Type - KeePassX"));
     setWindowIcon(filePath()->applicationIcon());
 
-    QSize size(400, 250);
+    QSize size(600, 250);
     resize(size);
 
     // move dialog to the center of the screen
@@ -49,9 +50,8 @@ AutoTypeSelectDialog::AutoTypeSelectDialog(QWidget* parent)
     QLabel* descriptionLabel = new QLabel(tr("Select entry to Auto-Type:"), this);
     layout->addWidget(descriptionLabel);
 
-    connect(m_view, SIGNAL(activated(QModelIndex)), SLOT(emitEntryActivated(QModelIndex)));
-    connect(m_view, SIGNAL(clicked(QModelIndex)), SLOT(emitEntryActivated(QModelIndex)));
-    connect(m_view->model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(entryRemoved()));
+    connect(m_view, SIGNAL(activated(QModelIndex)), SLOT(emitMatchActivated(QModelIndex)));
+    connect(m_view, SIGNAL(clicked(QModelIndex)), SLOT(emitMatchActivated(QModelIndex)));
     layout->addWidget(m_view);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel, Qt::Horizontal, this);
@@ -59,28 +59,20 @@ AutoTypeSelectDialog::AutoTypeSelectDialog(QWidget* parent)
     layout->addWidget(buttonBox);
 }
 
-void AutoTypeSelectDialog::setEntries(const QList<Entry*>& entries, const QHash<Entry*, QString>& sequences)
+void AutoTypeSelectDialog::setMatchList(const QList<AutoTypeMatch>& matchList)
 {
-    m_sequences = sequences;
-    m_view->setEntryList(entries);
+    m_view->setMatchList(matchList);
 }
 
-void AutoTypeSelectDialog::emitEntryActivated(const QModelIndex& index)
+void AutoTypeSelectDialog::emitMatchActivated(const QModelIndex& index)
 {
     // make sure we don't emit the signal twice when both activated() and clicked() are triggered
-    if (m_entryActivatedEmitted) {
+    if (m_matchActivatedEmitted) {
         return;
     }
-    m_entryActivatedEmitted = true;
+    m_matchActivatedEmitted = true;
 
-    Entry* entry = m_view->entryFromIndex(index);
+    AutoTypeMatch match = m_view->matchFromIndex(index);
     accept();
-    Q_EMIT entryActivated(entry, m_sequences[entry]);
-}
-
-void AutoTypeSelectDialog::entryRemoved()
-{
-    if (m_view->model()->rowCount() == 0) {
-        reject();
-    }
+    Q_EMIT matchActivated(match);
 }

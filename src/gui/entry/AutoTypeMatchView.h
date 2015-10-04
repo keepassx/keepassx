@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 Felix Geyer <debfx@fobos.de>
+ *  Copyright (C) 2010 Felix Geyer <debfx@fobos.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,35 +15,44 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSX_AUTOTYPESELECTDIALOG_H
-#define KEEPASSX_AUTOTYPESELECTDIALOG_H
+#ifndef KEEPASSX_AUTOTYPEMATCHVIEW_H
+#define KEEPASSX_AUTOTYPEMATCHVIEW_H
 
-#include <QAbstractItemModel>
-#include <QDialog>
-#include <QHash>
+#include <QTreeView>
 
 #include "core/Global.h"
 #include "core/AutoTypeMatch.h"
 
-class AutoTypeSelectView;
+#include "gui/entry/AutoTypeMatchModel.h"
 
-class AutoTypeSelectDialog : public QDialog
+class SortFilterHideProxyModel;
+
+class AutoTypeMatchView : public QTreeView
 {
     Q_OBJECT
 
 public:
-    explicit AutoTypeSelectDialog(QWidget* parent = Q_NULLPTR);
-    void setMatchList(const QList<AutoTypeMatch>& matchList);
+    explicit AutoTypeMatchView(QWidget* parent = Q_NULLPTR);
+    void setModel(QAbstractItemModel* model) Q_DECL_OVERRIDE;
+    AutoTypeMatch currentMatch();
+    void setCurrentMatch(AutoTypeMatch match);
+    AutoTypeMatch matchFromIndex(const QModelIndex& index);
+    void setMatchList(const QList<AutoTypeMatch>& matches);
+    void setFirstMatchActive();
 
 Q_SIGNALS:
     void matchActivated(AutoTypeMatch match);
+    void matchSelectionChanged();
+
+protected:
+    void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void emitMatchActivated(const QModelIndex& index);
 
 private:
-    AutoTypeSelectView* const m_view;
-    bool m_matchActivatedEmitted;
+    AutoTypeMatchModel* const m_model;
+    SortFilterHideProxyModel* const m_sortModel;
 };
 
-#endif // KEEPASSX_AUTOTYPESELECTDIALOG_H
+#endif // KEEPASSX_AUTOTYPEMATCHVIEW_H

@@ -15,35 +15,24 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSX_AUTOTYPESELECTDIALOG_H
-#define KEEPASSX_AUTOTYPESELECTDIALOG_H
+#include "AutoTypeMatch.h"
 
-#include <QAbstractItemModel>
-#include <QDialog>
-#include <QHash>
+AutoTypeMatch::AutoTypeMatch()
+  : entry(Q_NULLPTR),
+    sequence()
+{}
 
-#include "core/Global.h"
-#include "core/AutoTypeMatch.h"
+AutoTypeMatch::AutoTypeMatch(Entry* entry, QString sequence)
+  : entry(entry),
+    sequence(sequence)
+{}
 
-class AutoTypeSelectView;
-
-class AutoTypeSelectDialog : public QDialog
+bool AutoTypeMatch::operator==(const AutoTypeMatch& other) const
 {
-    Q_OBJECT
+    return entry == other.entry && sequence == other.sequence;
+}
 
-public:
-    explicit AutoTypeSelectDialog(QWidget* parent = Q_NULLPTR);
-    void setMatchList(const QList<AutoTypeMatch>& matchList);
-
-Q_SIGNALS:
-    void matchActivated(AutoTypeMatch match);
-
-private Q_SLOTS:
-    void emitMatchActivated(const QModelIndex& index);
-
-private:
-    AutoTypeSelectView* const m_view;
-    bool m_matchActivatedEmitted;
-};
-
-#endif // KEEPASSX_AUTOTYPESELECTDIALOG_H
+bool AutoTypeMatch::operator!=(const AutoTypeMatch& other) const
+{
+    return entry != other.entry || sequence != other.sequence;
+}

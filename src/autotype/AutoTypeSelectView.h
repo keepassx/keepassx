@@ -19,11 +19,10 @@
 #define KEEPASSX_AUTOTYPESELECTVIEW_H
 
 #include "core/Global.h"
-#include "gui/entry/EntryView.h"
+#include "core/AutoTypeMatch.h"
+#include "gui/entry/AutoTypeMatchView.h"
 
-class Entry;
-
-class AutoTypeSelectView : public EntryView
+class AutoTypeSelectView : public AutoTypeMatchView
 {
     Q_OBJECT
 
@@ -34,7 +33,7 @@ protected:
     void mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
-    void selectFirstEntry();
+    void selectFirstMatch();
 };
 
 #endif // KEEPASSX_AUTOTYPESELECTVIEW_H

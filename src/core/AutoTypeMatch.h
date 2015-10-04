@@ -15,35 +15,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSX_AUTOTYPESELECTDIALOG_H
-#define KEEPASSX_AUTOTYPESELECTDIALOG_H
+#ifndef KEEPASSX_AUTOTYPEMATCH_H
+#define KEEPASSX_AUTOTYPEMATCH_H
 
-#include <QAbstractItemModel>
-#include <QDialog>
-#include <QHash>
+#include <QObject>
+#include <QString>
 
 #include "core/Global.h"
-#include "core/AutoTypeMatch.h"
 
-class AutoTypeSelectView;
+class Entry;
 
-class AutoTypeSelectDialog : public QDialog
+struct AutoTypeMatch
 {
-    Q_OBJECT
+    Entry* entry;
+    QString sequence;
 
-public:
-    explicit AutoTypeSelectDialog(QWidget* parent = Q_NULLPTR);
-    void setMatchList(const QList<AutoTypeMatch>& matchList);
+    AutoTypeMatch();
+    AutoTypeMatch(Entry* entry, QString sequence);
 
-Q_SIGNALS:
-    void matchActivated(AutoTypeMatch match);
-
-private Q_SLOTS:
-    void emitMatchActivated(const QModelIndex& index);
-
-private:
-    AutoTypeSelectView* const m_view;
-    bool m_matchActivatedEmitted;
+    bool operator==(const AutoTypeMatch& other) const;
+    bool operator!=(const AutoTypeMatch& other) const;
 };
 
-#endif // KEEPASSX_AUTOTYPESELECTDIALOG_H
+Q_DECLARE_TYPEINFO(AutoTypeMatch, Q_MOVABLE_TYPE);
+
+#endif // KEEPASSX_AUTOTYPEMATCH_H
