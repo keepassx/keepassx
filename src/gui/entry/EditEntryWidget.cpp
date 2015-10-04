@@ -23,6 +23,7 @@
 
 #include <QDesktopServices>
 #include <QStackedLayout>
+#include <QStandardPaths>
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QTemporaryFile>
@@ -45,7 +46,7 @@
 
 EditEntryWidget::EditEntryWidget(QWidget* parent)
     : EditWidget(parent)
-    , m_entry(Q_NULLPTR)
+    , m_entry(nullptr)
     , m_mainUi(new Ui::EditEntryWidgetMain())
     , m_advancedUi(new Ui::EditEntryWidgetAdvanced())
     , m_autoTypeUi(new Ui::EditEntryWidgetAutoType())
@@ -232,7 +233,7 @@ void EditEntryWidget::useExpiryPreset(QAction* action)
 {
     m_mainUi->expireCheck->setChecked(true);
     TimeDelta delta = action->data().value<TimeDelta>();
-    QDateTime now = Tools::currentDateTimeUtc().toLocalTime();
+    QDateTime now = QDateTime::currentDateTime();
     QDateTime expiryDateTime = now + delta;
     m_mainUi->expireDatePicker->setDateTime(expiryDateTime);
 }
@@ -476,8 +477,8 @@ void EditEntryWidget::cancel()
 
 void EditEntryWidget::clear()
 {
-    m_entry = Q_NULLPTR;
-    m_database = Q_NULLPTR;
+    m_entry = nullptr;
+    m_database = nullptr;
     m_entryAttributes->clear();
     m_entryAttachments->clear();
     m_autoTypeAssoc->clear();
@@ -589,7 +590,7 @@ void EditEntryWidget::insertAttachment()
 
     QString defaultDir = config()->get("LastAttachmentDir").toString();
     if (defaultDir.isEmpty() || !QDir(defaultDir).exists()) {
-        defaultDir = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+        defaultDir = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).value(0);
     }
     QString filename = fileDialog()->getOpenFileName(this, tr("Select file"), defaultDir);
     if (filename.isEmpty() || !QFile::exists(filename)) {
@@ -623,7 +624,7 @@ void EditEntryWidget::saveCurrentAttachment()
     QString filename = m_attachmentsModel->keyByIndex(index);
     QString defaultDirName = config()->get("LastAttachmentDir").toString();
     if (defaultDirName.isEmpty() || !QDir(defaultDirName).exists()) {
-        defaultDirName = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+        defaultDirName = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
     }
     QDir dir(defaultDirName);
     QString savePath = fileDialog()->getSaveFileName(this, tr("Save attachment"),

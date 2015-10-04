@@ -16,25 +16,27 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "AutoTypeX11.h"
+#include "AutoTypeXCB.h"
 #include "KeySymMap.h"
 
 #include <time.h>
+#include <xcb/xcb.h>
 
 bool AutoTypePlatformX11::m_catchXErrors = false;
 bool AutoTypePlatformX11::m_xErrorOccured = false;
-int (*AutoTypePlatformX11::m_oldXErrorHandler)(Display*, XErrorEvent*) = Q_NULLPTR;
+int (*AutoTypePlatformX11::m_oldXErrorHandler)(Display*, XErrorEvent*) = nullptr;
 
 AutoTypePlatformX11::AutoTypePlatformX11()
 {
     m_dpy = QX11Info::display();
     m_rootWindow = QX11Info::appRootWindow();
 
-    m_atomWmState = XInternAtom(m_dpy, "WM_STATE", true);
-    m_atomWmName = XInternAtom(m_dpy, "WM_NAME", true);
-    m_atomNetWmName = XInternAtom(m_dpy, "_NET_WM_NAME", true);
-    m_atomString = XInternAtom(m_dpy, "STRING", true);
-    m_atomUtf8String = XInternAtom(m_dpy, "UTF8_STRING", true);
+    m_atomWmState = XInternAtom(m_dpy, "WM_STATE", True);
+    m_atomWmName = XInternAtom(m_dpy, "WM_NAME", True);
+    m_atomNetWmName = XInternAtom(m_dpy, "_NET_WM_NAME", True);
+    m_atomString = XInternAtom(m_dpy, "STRING", True);
+    m_atomUtf8String = XInternAtom(m_dpy, "UTF8_STRING", True);
+    m_atomNetActiveWindow = XInternAtom(m_dpy, "_NET_ACTIVE_WINDOW", True);
 
     m_classBlacklist << "desktop_window" << "gnome-panel"; // Gnome
     m_classBlacklist << "kdesktop" << "kicker"; // KDE 3
@@ -45,8 +47,8 @@ AutoTypePlatformX11::AutoTypePlatformX11()
     m_currentGlobalKey = static_cast<Qt::Key>(0);
     m_currentGlobalModifiers = 0;
 
-    m_keysymTable = Q_NULLPTR;
-    m_xkb = Q_NULLPTR;
+    m_keysymTable = nullptr;
+    m_xkb = nullptr;
     m_remapKeycode = 0;
     m_currentRemapKeysym = NoSymbol;
     m_modifierMask = ControlMask | ShiftMask | Mod1Mask | Mod4Mask;
@@ -93,7 +95,7 @@ WId AutoTypePlatformX11::activeWindow()
 
         Window root;
         Window parent;
-        Window* children = Q_NULLPTR;
+        Window* children = nullptr;
         unsigned int numChildren;
         tree = XQueryTree(m_dpy, window, &root, &parent, &children, &numChildren);
         window = parent;
@@ -116,12 +118,12 @@ bool AutoTypePlatformX11::registerGlobalShortcut(Qt::Key key, Qt::KeyboardModifi
     uint nativeModifiers = qtToNativeModifiers(modifiers);
 
     startCatchXErrors();
-    XGrabKey(m_dpy, keycode, nativeModifiers, m_rootWindow, true, GrabModeAsync, GrabModeAsync);
-    XGrabKey(m_dpy, keycode, nativeModifiers | Mod2Mask, m_rootWindow, true, GrabModeAsync,
+    XGrabKey(m_dpy, keycode, nativeModifiers, m_rootWindow, True, GrabModeAsync, GrabModeAsync);
+    XGrabKey(m_dpy, keycode, nativeModifiers | Mod2Mask, m_rootWindow, True, GrabModeAsync,
              GrabModeAsync);
-    XGrabKey(m_dpy, keycode, nativeModifiers | LockMask, m_rootWindow, true, GrabModeAsync,
+    XGrabKey(m_dpy, keycode, nativeModifiers | LockMask, m_rootWindow, True, GrabModeAsync,
              GrabModeAsync);
-    XGrabKey(m_dpy, keycode, nativeModifiers | Mod2Mask | LockMask, m_rootWindow, true,
+    XGrabKey(m_dpy, keycode, nativeModifiers | Mod2Mask | LockMask, m_rootWindow, True,
              GrabModeAsync, GrabModeAsync);
     stopCatchXErrors();
 
@@ -176,22 +178,42 @@ void AutoTypePlatformX11::unregisterGlobalShortcut(Qt::Key key, Qt::KeyboardModi
 
 int AutoTypePlatformX11::platformEventFilter(void* event)
 {
-    XEvent* xevent = static_cast<XEvent*>(event);
+    xcb_generic_event_t* genericEvent = static_cast<xcb_generic_event_t*>(event);
+    quint8 type = genericEvent->response_type & 0x7f;
 
-    if ((xevent->type == KeyPress || xevent->type == KeyRelease)
-            && m_currentGlobalKey
-            && xevent->xkey.keycode == m_currentGlobalKeycode
-            && (xevent->xkey.state & m_modifierMask) == m_currentGlobalNativeModifiers
-            && !QApplication::focusWidget()
-            && m_loaded) {
-        if (xevent->type == KeyPress) {
-            Q_EMIT globalShortcutTriggered();
+    if (type == XCB_KEY_PRESS || type == XCB_KEY_RELEASE) {
+        xcb_key_press_event_t* keyPressEvent = static_cast<xcb_key_press_event_t*>(event);
+        if (keyPressEvent->detail == m_currentGlobalKeycode
+                && (keyPressEvent->state & m_modifierMask) == m_currentGlobalNativeModifiers
+                && !QApplication::focusWidget()
+                && m_loaded) {
+            if (type == XCB_KEY_PRESS) {
+                Q_EMIT globalShortcutTriggered();
+            }
+
+            return 1;
         }
-        return 1;
     }
-    if (xevent->type == MappingNotify && m_loaded) {
-        XRefreshKeyboardMapping(reinterpret_cast<XMappingEvent*>(xevent));
-        updateKeymap();
+    else if (type == XCB_MAPPING_NOTIFY) {
+        xcb_mapping_notify_event_t* mappingNotifyEvent = static_cast<xcb_mapping_notify_event_t*>(event);
+        if (mappingNotifyEvent->request == XCB_MAPPING_KEYBOARD
+                || mappingNotifyEvent->request == XCB_MAPPING_MODIFIER)
+        {
+            XMappingEvent xMappingEvent;
+            memset(&xMappingEvent, 0, sizeof(xMappingEvent));
+            xMappingEvent.type = MappingNotify;
+            xMappingEvent.display = m_dpy;
+            if (mappingNotifyEvent->request == XCB_MAPPING_KEYBOARD) {
+                xMappingEvent.request = MappingKeyboard;
+            }
+            else {
+                xMappingEvent.request = MappingModifier;
+            }
+            xMappingEvent.first_keycode = mappingNotifyEvent->first_keycode;
+            xMappingEvent.count = mappingNotifyEvent->count;
+            XRefreshKeyboardMapping(&xMappingEvent);
+            updateKeymap();
+        }
     }
 
     return -1;
@@ -210,11 +232,11 @@ QString AutoTypePlatformX11::windowTitle(Window window, bool useBlacklist)
     int format;
     unsigned long nitems;
     unsigned long after;
-    unsigned char* data = Q_NULLPTR;
+    unsigned char* data = nullptr;
 
     // the window manager spec says we should read _NET_WM_NAME first, then fall back to WM_NAME
 
-    int retVal = XGetWindowProperty(m_dpy, window, m_atomNetWmName, 0, 1000, false, m_atomUtf8String,
+    int retVal = XGetWindowProperty(m_dpy, window, m_atomNetWmName, 0, 1000, False, m_atomUtf8String,
                                     &type, &format, &nitems, &after, &data);
 
     if ((retVal == 0) && data) {
@@ -224,7 +246,7 @@ QString AutoTypePlatformX11::windowTitle(Window window, bool useBlacklist)
         XTextProperty textProp;
         retVal = XGetTextProperty(m_dpy, window, &textProp, m_atomWmName);
         if ((retVal != 0) && textProp.value) {
-            char** textList = Q_NULLPTR;
+            char** textList = nullptr;
             int count;
 
             if (textProp.encoding == m_atomUtf8String) {
@@ -276,8 +298,8 @@ QString AutoTypePlatformX11::windowClassName(Window window)
     QString className;
 
     XClassHint wmClass;
-    wmClass.res_name = Q_NULLPTR;
-    wmClass.res_class = Q_NULLPTR;
+    wmClass.res_name = nullptr;
+    wmClass.res_class = nullptr;
 
     if (XGetClassHint(m_dpy, window, &wmClass) && wmClass.res_name) {
         className = QString::fromLocal8Bit(wmClass.res_name);
@@ -316,7 +338,7 @@ QStringList AutoTypePlatformX11::windowTitlesRecursive(Window window)
 
     Window root;
     Window parent;
-    Window* children = Q_NULLPTR;
+    Window* children = nullptr;
     unsigned int numChildren;
     if (XQueryTree(m_dpy, window, &root, &parent, &children, &numChildren) && children) {
         for (uint i = 0; i < numChildren; i++) {
@@ -336,8 +358,8 @@ bool AutoTypePlatformX11::isTopLevelWindow(Window window)
     int format;
     unsigned long nitems;
     unsigned long after;
-    unsigned char* data = Q_NULLPTR;
-    int retVal = XGetWindowProperty(m_dpy, window, m_atomWmState, 0, 0, false, AnyPropertyType, &type, &format,
+    unsigned char* data = nullptr;
+    int retVal = XGetWindowProperty(m_dpy, window, m_atomWmState, 0, 0, False, AnyPropertyType, &type, &format,
                                     &nitems, &after, &data);
     if (data) {
         XFree(data);
@@ -491,7 +513,7 @@ void AutoTypePlatformX11::updateKeymap()
     timespec ts;
     ts.tv_sec = 0;
     ts.tv_nsec = 30 * 1000 * 1000;
-    nanosleep(&ts, Q_NULLPTR);
+    nanosleep(&ts, nullptr);
 }
 
 bool AutoTypePlatformX11::isRemapKeycodeValid()
@@ -519,7 +541,7 @@ void AutoTypePlatformX11::stopCatchXErrors()
 {
     Q_ASSERT(m_catchXErrors);
 
-    XSync(m_dpy, false);
+    XSync(m_dpy, False);
     XSetErrorHandler(m_oldXErrorHandler);
     m_catchXErrors = false;
 }
@@ -568,11 +590,18 @@ int AutoTypePlatformX11::AddKeysym(KeySym keysym)
  */
 void AutoTypePlatformX11::SendEvent(XKeyEvent* event, int event_type)
 {
-    XSync(event->display, FALSE);
+    XSync(event->display, False);
     int (*oldHandler) (Display*, XErrorEvent*) = XSetErrorHandler(MyErrorHandler);
 
     event->type = event_type;
-    XTestFakeKeyEvent(event->display, event->keycode, event->type == KeyPress, 0);
+    Bool press;
+    if (event->type == KeyPress) {
+        press = True;
+    }
+    else {
+        press = False;
+    }
+    XTestFakeKeyEvent(event->display, event->keycode, press, 0);
     XFlush(event->display);
 
     XSetErrorHandler(oldHandler);
@@ -670,7 +699,7 @@ void AutoTypePlatformX11::SendKeyPressedEvent(KeySym keysym)
     event.y = 1;
     event.x_root = 1;
     event.y_root = 1;
-    event.same_screen = TRUE;
+    event.same_screen = True;
 
     Window root, child;
     int root_x, root_y, x, y;
@@ -770,4 +799,36 @@ int AutoTypePlatformX11::initialTimeout()
     return 500;
 }
 
-Q_EXPORT_PLUGIN2(keepassx-autotype-x11, AutoTypePlatformX11)
+bool AutoTypePlatformX11::raiseWindow(WId window)
+{
+    if (m_atomNetActiveWindow == None) {
+        return false;
+    }
+
+    XRaiseWindow(m_dpy, window);
+
+    XEvent event;
+    event.xclient.type = ClientMessage;
+    event.xclient.serial = 0;
+    event.xclient.send_event = True;
+    event.xclient.window = window;
+    event.xclient.message_type = m_atomNetActiveWindow;
+    event.xclient.format = 32;
+    event.xclient.data.l[0] = 1; // FromApplication
+    event.xclient.data.l[1] = QX11Info::appUserTime();
+    QWidget* activeWindow = QApplication::activeWindow();
+    if (activeWindow) {
+        event.xclient.data.l[2] = activeWindow->internalWinId();
+    }
+    else {
+        event.xclient.data.l[2] = 0;
+    }
+    event.xclient.data.l[3] = 0;
+    event.xclient.data.l[4] = 0;
+    XSendEvent(m_dpy, m_rootWindow, False,
+               SubstructureRedirectMask | SubstructureNotifyMask,
+               &event);
+    XFlush(m_dpy);
+
+    return true;
+}

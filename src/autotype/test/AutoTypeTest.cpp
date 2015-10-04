@@ -103,6 +103,13 @@ int AutoTypePlatformTest::initialTimeout()
     return 0;
 }
 
+bool AutoTypePlatformTest::raiseWindow(WId window)
+{
+    Q_UNUSED(window);
+
+    return false;
+}
+
 AutoTypeExecturorTest::AutoTypeExecturorTest(AutoTypePlatformTest* platform)
     : m_platform(platform)
 {
@@ -117,5 +124,3 @@ void AutoTypeExecturorTest::execKey(AutoTypeKey* action)
 {
     m_platform->addActionKey(action);
 }
-
-Q_EXPORT_PLUGIN2(keepassx-autotype-test, AutoTypePlatformTest)

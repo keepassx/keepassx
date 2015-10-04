@@ -18,7 +18,7 @@
 #include "AutoTypeMatch.h"
 
 AutoTypeMatch::AutoTypeMatch()
-  : entry(Q_NULLPTR),
+  : entry(nullptr),
     sequence()
 {}
 

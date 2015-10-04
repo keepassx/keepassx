@@ -18,8 +18,8 @@
 #include "CompositeKey.h"
 #include "CompositeKey_p.h"
 
-#include <QtConcurrentRun>
-#include <QTime>
+#include <QtConcurrent>
+#include <QElapsedTimer>
 
 #include "crypto/CryptoHash.h"
 #include "crypto/SymmetricCipher.h"
@@ -182,7 +182,7 @@ void TransformKeyBenchmarkThread::run()
                            SymmetricCipher::Encrypt);
     cipher.init(seed, iv);
 
-    QTime t;
+    QElapsedTimer t;
     t.start();
 
     do {
@@ -191,5 +191,5 @@ void TransformKeyBenchmarkThread::run()
             return;
         }
         m_rounds += 10000;
-    } while (t.elapsed() < m_msec);
+    } while (!t.hasExpired(m_msec));
 }

@@ -18,8 +18,7 @@
 #ifndef KEEPASSX_AUTOTYPESELECTVIEW_H
 #define KEEPASSX_AUTOTYPESELECTVIEW_H
 
-#include "core/Global.h"
-#include "core/AutoTypeMatch.h"
+#include "gui/entry/EntryView.h"
 #include "gui/entry/AutoTypeMatchView.h"
 
 class AutoTypeSelectView : public AutoTypeMatchView
@@ -27,10 +26,10 @@ class AutoTypeSelectView : public AutoTypeMatchView
     Q_OBJECT
 
 public:
-    explicit AutoTypeSelectView(QWidget* parent = Q_NULLPTR);
+    explicit AutoTypeSelectView(QWidget* parent = nullptr);
 
 protected:
-    void mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
+    void mouseMoveEvent(QMouseEvent* event) override;
 
 private Q_SLOTS:
     void selectFirstMatch();

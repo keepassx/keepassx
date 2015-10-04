@@ -21,8 +21,6 @@
 #include <QObject>
 #include <QString>
 
-#include "core/Global.h"
-
 class Entry;
 
 struct AutoTypeMatch

@@ -22,7 +22,6 @@
 #include <QDialog>
 #include <QHash>
 
-#include "core/Global.h"
 #include "core/AutoTypeMatch.h"
 
 class AutoTypeSelectView;
@@ -32,7 +31,7 @@ class AutoTypeSelectDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AutoTypeSelectDialog(QWidget* parent = Q_NULLPTR);
+    explicit AutoTypeSelectDialog(QWidget* parent = nullptr);
     void setMatchList(const QList<AutoTypeMatch>& matchList);
 
 Q_SIGNALS:
