@@ -70,8 +70,8 @@ sudo apt-get install build-essential cmake qtbase5-dev libqt5x11extras5-dev qtto
 To compile from source:
 
 ```bash
-mkdir build
-cd build
+git clone https://github.com/keepassx/keepassx.git
+cd keepassx/build
 cmake ..
 make [-jX]
 ```
