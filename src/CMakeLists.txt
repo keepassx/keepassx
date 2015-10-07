@@ -159,7 +159,7 @@ set(keepassx_FORMS
     gui/group/EditGroupWidgetMain.ui
     http/AccessControlDialog.ui
     http/HttpPasswordGeneratorWidget.ui
-    http/OptionDialog.ui
+    githttp/OptionDialog.ui
 )
 
 if(MINGW)
