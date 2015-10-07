@@ -11,6 +11,10 @@
         <source>KeePassX is distributed under the term of the GNU General Public License (GPL) version 2 or (at your option) version 3.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Revision</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AutoType</name>
@@ -246,11 +250,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&quot;%1&quot; is in edit mode.
-Close anyway?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Save changes?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -302,6 +301,28 @@ You can save the database or stop locking it.</source>
         <source>This database has been modified.
 Do you want to save the database before locking it?
 Otherwise your changes are lost.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot; is in edit mode.
+Discard changes and close anyway?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export database to CSV file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CSV file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Writing the CSV file failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The database you are trying to save as is locked by another instance of KeePassX.
+Do you want to save it anyway?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -927,15 +948,7 @@ Otherwise your changes are lost.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Username</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Copy username to clipboard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -984,6 +997,18 @@ Otherwise your changes are lost.</source>
     </message>
     <message>
         <source>Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy username</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export to CSV file</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1256,10 +1281,6 @@ Otherwise your changes are lost.</source>
     </message>
     <message>
         <source>path to a custom config file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>password of the database (DANGEROUS!)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

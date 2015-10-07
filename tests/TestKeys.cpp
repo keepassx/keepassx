@@ -21,7 +21,6 @@
 #include <QTest>
 
 #include "config-keepassx-tests.h"
-#include "tests.h"
 #include "core/Database.h"
 #include "core/Metadata.h"
 #include "crypto/Crypto.h"
@@ -176,7 +175,7 @@ void TestKeys::benchmarkTransformKey()
     QByteArray env = qgetenv("BENCHMARK");
 
     if (env.isEmpty() || env == "0" || env == "no") {
-        QSKIP("Benchmark skipped. Set env variable BENCHMARK=1 to enable.", SkipAll);
+        QSKIP("Benchmark skipped. Set env variable BENCHMARK=1 to enable.");
     }
 
     PasswordKey pwKey;

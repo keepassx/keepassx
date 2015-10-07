@@ -15,11 +15,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QCommandLineParser>
 #include <QFile>
 
 #include "config-keepassx.h"
 #include "core/Config.h"
-#include "core/qcommandlineparser.h"
 #include "core/Tools.h"
 #include "core/Translator.h"
 #include "crypto/Crypto.h"
@@ -37,7 +37,7 @@ int main(int argc, char** argv)
     Application::setApplicationName("keepassx");
     Application::setApplicationVersion(KEEPASSX_VERSION);
     // don't set organizationName as that changes the return value of
-    // QDesktopServices::storageLocation(QDesktopServices::DataLocation)
+    // QStandardPaths::writableLocation(QDesktopServices::DataLocation)
 
     QApplication::setQuitOnLastWindowClosed(false);
 
@@ -46,7 +46,7 @@ int main(int argc, char** argv)
                                                     "Fatal error while testing the cryptographic functions.");
         error.append("\n");
         error.append(Crypto::errorString());
-        MessageBox::critical(Q_NULLPTR, QCoreApplication::translate("Main", "KeePassX - Error"), error);
+        MessageBox::critical(nullptr, QCoreApplication::translate("Main", "KeePassX - Error"), error);
         return 1;
     }
 
@@ -57,9 +57,6 @@ int main(int argc, char** argv)
     QCommandLineOption configOption("config",
                                     QCoreApplication::translate("main", "path to a custom config file"),
                                     "config");
-    QCommandLineOption passwordOption("password",
-                                      QCoreApplication::translate("main", "password of the database (DANGEROUS!)"),
-                                      "password");
     QCommandLineOption keyfileOption("keyfile",
                                      QCoreApplication::translate("main", "key file of the database"),
                                      "keyfile");
@@ -67,7 +64,6 @@ int main(int argc, char** argv)
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOption(configOption);
-    parser.addOption(passwordOption);
     parser.addOption(keyfileOption);
 
     parser.process(app);
@@ -92,7 +88,7 @@ int main(int argc, char** argv)
     for (int ii=0; ii < args.length(); ii++) {
         QString filename = args[ii];
         if (!filename.isEmpty() && QFile::exists(filename)) {
-            mainWindow.openDatabase(filename, parser.value(passwordOption), parser.value(keyfileOption));
+            mainWindow.openDatabase(filename, QString(), parser.value(keyfileOption));
         }
     }
 

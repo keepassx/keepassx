@@ -20,7 +20,6 @@
 #include <QFile>
 #include <QTest>
 
-#include "tests.h"
 #include "core/Database.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
@@ -98,12 +97,12 @@ void TestKeePass2XmlReader::testMetadata()
     QCOMPARE(m_db->metadata()->protectUrl(), true);
     QCOMPARE(m_db->metadata()->protectNotes(), false);
     QCOMPARE(m_db->metadata()->recycleBinEnabled(), true);
-    QVERIFY(m_db->metadata()->recycleBin() != Q_NULLPTR);
+    QVERIFY(m_db->metadata()->recycleBin() != nullptr);
     QCOMPARE(m_db->metadata()->recycleBin()->name(), QString("Recycle Bin"));
     QCOMPARE(m_db->metadata()->recycleBinChanged(), genDT(2010, 8, 25, 16, 12, 57));
-    QVERIFY(m_db->metadata()->entryTemplatesGroup() == Q_NULLPTR);
+    QVERIFY(m_db->metadata()->entryTemplatesGroup() == nullptr);
     QCOMPARE(m_db->metadata()->entryTemplatesGroupChanged(), genDT(2010, 8, 8, 17, 24, 19));
-    QVERIFY(m_db->metadata()->lastSelectedGroup() != Q_NULLPTR);
+    QVERIFY(m_db->metadata()->lastSelectedGroup() != nullptr);
     QCOMPARE(m_db->metadata()->lastSelectedGroup()->name(), QString("NewDatabase"));
     QVERIFY(m_db->metadata()->lastTopVisibleGroup() == m_db->metadata()->lastSelectedGroup());
     QCOMPARE(m_db->metadata()->historyMaxItems(), -1);
@@ -315,7 +314,7 @@ void TestKeePass2XmlReader::testEntry2()
 
 void TestKeePass2XmlReader::testEntryHistory()
 {
-    const Entry* entryMain = m_db->rootGroup()->entries().first();
+    const Entry* entryMain = m_db->rootGroup()->entries().at(0);
     QCOMPARE(entryMain->historyItems().size(), 2);
 
     {
@@ -393,6 +392,19 @@ void TestKeePass2XmlReader::testBroken_data()
     QTest::newRow("BrokenGroupReference (not strict)") << "BrokenGroupReference" << false << false;
     QTest::newRow("BrokenDeletedObjects     (strict)") << "BrokenDeletedObjects" << true  << true;
     QTest::newRow("BrokenDeletedObjects (not strict)") << "BrokenDeletedObjects" << false << false;
+}
+
+void TestKeePass2XmlReader::testEmptyUuids()
+{
+    KeePass2XmlReader reader;
+    reader.setStrictMode(true);
+    QString xmlFile = QString("%1/%2.xml").arg(KEEPASSX_TEST_DATA_DIR, "EmptyUuids");
+    QVERIFY(QFile::exists(xmlFile));
+    QScopedPointer<Database> db(reader.readDatabase(xmlFile));
+    if (reader.hasError()) {
+        qWarning("Reader error: %s", qPrintable(reader.errorString()));
+    }
+    QVERIFY(!reader.hasError());
 }
 
 void TestKeePass2XmlReader::cleanupTestCase()

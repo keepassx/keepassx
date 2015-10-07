@@ -18,7 +18,7 @@ GNU General Public License (GPL) versione 2 o, a tua scelta, della versione 3.</
         <translation>Auto-Type - KeePassX</translation>
     </message>
     <message>
-        <source>Couldn&apos;t find an entry that matches the window title.</source>
+        <source>Couldn&apos;t find an entry that matches the window title:</source>
         <translation>Impossibile trovare una voce che corrisponda al titolo della finestra</translation>
     </message>
 </context>
@@ -109,6 +109,15 @@ GNU General Public License (GPL) versione 2 o, a tua scelta, della versione 3.</
     <message>
         <source>Different passwords supplied.</source>
         <translation>Sono state fornite password differenti.</translation>
+    </message>
+    <message>
+        <source>Failed to set key file</source>
+        <translation>Impossibile impostare il file della chiave</translation>
+    </message>
+    <message>
+        <source>Failed to set %1 as the Key file:
+%2</source>
+        <translation>Impossibile impostare %1 come file della Chiave: %2</translation>
     </message>
 </context>
 <context>
@@ -236,12 +245,6 @@ GNU General Public License (GPL) versione 2 o, a tua scelta, della versione 3.</
         <translation>Chiudere?</translation>
     </message>
     <message>
-        <source>&quot;%1&quot; is in edit mode.
-Close anyway?</source>
-        <translation>&quot;%1&quot; è in modalità modifica.
-Chiudere comunque?</translation>
-    </message>
-    <message>
         <source>Save changes?</source>
         <translation>Salvare modifiche?</translation>
     </message>
@@ -270,6 +273,53 @@ Salvare le modifiche?</translation>
     <message>
         <source>locked</source>
         <translation>bloccato</translation>
+    </message>
+    <message>
+        <source>The database you are trying to open is locked by another instance of KeePassX.
+Do you want to open it anyway? Alternatively the database is opened read-only.</source>
+        <translation>Il Database che stai tentando di aprire è bloccato da un&apos;altra esecuzione di KeePassX.
+Vuoi aprire comunque il database? In alternativa, il database è aperto in sola lettura.</translation>
+    </message>
+    <message>
+        <source>Lock database</source>
+        <translation>Bloccare database</translation>
+    </message>
+    <message>
+        <source>Can't lock the database as you are currently editing it.
+Please press cancel to finish your changes or discard them.</source>
+        <translation>Non è possibile bloccare il database ne modo in cui lo stai modificando.
+Premere annulla per terminare le modifiche o scartarle .</translation>
+    </message>
+    <message>
+        <source>This database has never been saved.
+You can save the database or stop locking it.</source>
+        <translation>Questo database non è ancora stato salvato.
+È possibile salvare il database o interrompere bloccandolo.</translation>
+    </message>
+    <message>
+        <source>This database has been modified.
+Do you want to save the database before locking it?
+Otherwise your changes are lost.</source>
+        <translation>Questo database è stato modificato.
+Vuoi salvare il database prima di bloccarlo?
+Altrimenti le modifiche verranno perse.</translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot; is in edit mode.
+Discard changes and close anyway?</source>
+        <translation>&quot;%1&quot; è in modalità modifica. Annullare le modifiche e chiudere comunque?</translation>
+    </message>
+    <message>
+        <source>Export database to CSV file</source>
+        <translation>Esporta il database come file CSV</translation>
+    </message>
+    <message>
+        <source>CSV file</source>
+        <translation>file CSV</translation>
+    </message>
+    <message>
+        <source>Writing the CSV file failed.</source>
+        <translation>Scrittura del file CSV fallita.</translation>
     </message>
 </context>
 <context>
@@ -313,6 +363,14 @@ Salvare le modifiche?</translation>
     <message>
         <source>Current group</source>
         <translation>Gruppo corrente</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Errore</translation>
+    </message>
+    <message>
+        <source>Unable to calculate master key</source>
+        <translation>Impossibile calcolare la chiave master</translation>
     </message>
 </context>
 <context>
@@ -425,6 +483,10 @@ Salvare le modifiche?</translation>
     <message>
         <source>Save</source>
         <translation>Salvare</translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation>Apri</translation>
     </message>
 </context>
 <context>
@@ -577,6 +639,14 @@ Salvare le modifiche?</translation>
         <source>Auto-type</source>
         <translation>Auto-Type</translation>
     </message>
+    <message>
+        <source>Use default auto-type sequence of parent group</source>
+        <translation>Ereditare la sequenza predefinita di auto-type dal gruppo</translation>
+    </message>
+    <message>
+        <source>Set default auto-type sequence</source>
+        <translation>Usare sequenza predefinita</translation>
+    </message>
 </context>
 <context>
     <name>EditWidgetIcons</name>
@@ -725,6 +795,10 @@ Salvare le modifiche?</translation>
         <source>Root</source>
         <translation>Root (KeePass1Reader)</translation>
     </message>
+    <message>
+        <source>Unable to calculate master key</source>
+        <translation>Impossibile calcolare la chiave master</translation>
+    </message>
 </context>
 <context>
     <name>KeePass2Reader</name>
@@ -739,6 +813,21 @@ Salvare le modifiche?</translation>
     <message>
         <source>Wrong key or database file is corrupt.</source>
         <translation>Password errata o database corrotto.</translation>
+    </message>
+    <message>
+        <source>Unable to calculate master key</source>
+        <translation>Impossibile calcolare la chiave master</translation>
+    </message>
+</context>
+<context>
+    <name>Main</name>
+    <message>
+        <source>Fatal error while testing the cryptographic functions.</source>
+        <translation>Errore fatale durante il test delle funzioni di crittografia.</translation>
+    </message>
+    <message>
+        <source>KeePassX - Error</source>
+        <translation>KeePassx - Errore</translation>
     </message>
 </context>
 <context>
@@ -766,10 +855,6 @@ Salvare le modifiche?</translation>
     <message>
         <source>Groups</source>
         <translation>Gruppi</translation>
-    </message>
-    <message>
-        <source>Extras</source>
-        <translation>Extra</translation>
     </message>
     <message>
         <source>View</source>
@@ -848,16 +933,8 @@ Salvare le modifiche?</translation>
         <translation>Trovare</translation>
     </message>
     <message>
-        <source>Username</source>
-        <translation>Nome Utente</translation>
-    </message>
-    <message>
         <source>Copy username to clipboard</source>
         <translation>Copiare nome utente negli appunti</translation>
-    </message>
-    <message>
-        <source>Password</source>
-        <translation>Password</translation>
     </message>
     <message>
         <source>Copy password to clipboard</source>
@@ -898,6 +975,26 @@ Salvare le modifiche?</translation>
     <message>
         <source>read-only</source>
         <translation>sola lettura</translation>
+    </message>
+    <message>
+        <source>Toggle window</source>
+        <translation>Cambia finestra</translation>
+    </message>
+    <message>
+        <source>Tools</source>
+        <translation>Strumenti</translation>
+    </message>
+    <message>
+        <source>Copy username</source>
+        <translation>Copia nome utente</translation>
+    </message>
+    <message>
+        <source>Copy password</source>
+        <translation>Copia password</translation>
+    </message>
+    <message>
+        <source>Export to CSV file</source>
+        <translation>Esporta in un file CSV</translation>
     </message>
 </context>
 <context>
@@ -1080,10 +1177,6 @@ Salvare le modifiche?</translation>
         <translation>Aprire precedente database all&apos;avvio</translation>
     </message>
     <message>
-        <source>Mark as modified on expanded state changes</source>
-        <translation>Marcare come modificata quando la voce viene espansa</translation>
-    </message>
-    <message>
         <source>Automatically save on exit</source>
         <translation>Salvare automaticamente all&apos;uscita</translation>
     </message>
@@ -1106,6 +1199,22 @@ Salvare le modifiche?</translation>
     <message>
         <source>Use entry title to match windows for global auto-type</source>
         <translation>Utilizzare il titolo della voce per abbinare la finestra per auto-type globale</translation>
+    </message>
+    <message>
+        <source>Language</source>
+        <translation>Lingua</translation>
+    </message>
+    <message>
+        <source>Show a system tray icon</source>
+        <translation>Mostra un&apos;icona nell&apos;area di notifica del sistema</translation>
+    </message>
+    <message>
+        <source>Hide window to system tray when minimized</source>
+        <translation>Nascondi la finestra nell&apos;area di notifica del sistema quando viene minimizzatala finestra</translation>
+    </message>
+    <message>
+        <source>Remember last key files</source>
+        <translation>Ricorda gli ultimi files di chiave</translation>
     </message>
 </context>
 <context>
@@ -1137,27 +1246,19 @@ Salvare le modifiche?</translation>
         <source>Unlock database</source>
         <translation>Sbloccare database</translation>
     </message>
-    <message>
-        <source>Error</source>
-        <translation>Errore</translation>
-    </message>
-    <message>
-        <source>Wrong key.</source>
-        <translation>Password errata.</translation>
-    </message>
 </context>
 <context>
     <name>WelcomeWidget</name>
     <message>
         <source>Welcome!</source>
-        <translation>Benvenuto/a!</translation>
+        <translation>Benvenuto!</translation>
     </message>
 </context>
 <context>
     <name>main</name>
     <message>
         <source>KeePassX - cross-platform password manager</source>
-        <translation>KeePassX - gestore di password cross-platform</translation>
+        <translation>KeePassX - gestore di password multipiattafroma</translation>
     </message>
     <message>
         <source>filename of the password database to open (*.kdbx)</source>

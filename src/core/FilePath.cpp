@@ -23,7 +23,7 @@
 
 #include "config-keepassx.h"
 
-FilePath* FilePath::m_instance(Q_NULLPTR);
+FilePath* FilePath::m_instance(nullptr);
 
 QString FilePath::dataPath(const QString& name)
 {
@@ -173,6 +173,7 @@ FilePath::FilePath()
 {
     const QString appDirPath = QCoreApplication::applicationDirPath();
     bool isDataDirAbsolute = QDir::isAbsolutePath(KEEPASSX_DATA_DIR);
+    Q_UNUSED(isDataDirAbsolute);
 
     if (false) {
     }

@@ -25,6 +25,7 @@
 #include <QLineEdit>
 #include <QSplitter>
 #include <QTimer>
+#include <QProcess>
 
 #include "autotype/AutoType.h"
 #include "core/Config.h"
@@ -50,9 +51,9 @@ DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     , m_db(db)
     , m_searchUi(new Ui::SearchWidget())
     , m_searchWidget(new QWidget())
-    , m_newGroup(Q_NULLPTR)
-    , m_newEntry(Q_NULLPTR)
-    , m_newParent(Q_NULLPTR)
+    , m_newGroup(nullptr)
+    , m_newEntry(nullptr)
+    , m_newParent(nullptr)
 {
     m_searchUi->setupUi(m_searchWidget);
 
@@ -172,7 +173,7 @@ DatabaseWidget::~DatabaseWidget()
 
 DatabaseWidget::Mode DatabaseWidget::currentMode() const
 {
-    if (currentWidget() == Q_NULLPTR) {
+    if (currentWidget() == nullptr) {
         return DatabaseWidget::None;
     }
     else if (currentWidget() == m_mainWidget) {
@@ -452,8 +453,19 @@ void DatabaseWidget::openUrl()
 
 void DatabaseWidget::openUrlForEntry(Entry* entry)
 {
-    if (!entry->url().isEmpty()) {
-        QDesktopServices::openUrl(entry->url());
+    QString urlString = entry->resolvePlaceholders(entry->url());
+    if (urlString.isEmpty()) {
+        return;
+    }
+
+    if (urlString.startsWith("cmd://")) {
+        if (urlString.length() > 6) {
+            QProcess::startDetached(urlString.mid(6));
+        }
+    }
+    else {
+        QUrl url = QUrl::fromUserInput(urlString);
+        QDesktopServices::openUrl(url);
     }
 }
 
@@ -540,8 +552,8 @@ void DatabaseWidget::switchToView(bool accepted)
             delete m_newGroup;
         }
 
-        m_newGroup = Q_NULLPTR;
-        m_newParent = Q_NULLPTR;
+        m_newGroup = nullptr;
+        m_newParent = nullptr;
     }
     else if (m_newEntry) {
         if (accepted) {
@@ -553,8 +565,8 @@ void DatabaseWidget::switchToView(bool accepted)
             delete m_newEntry;
         }
 
-        m_newEntry = Q_NULLPTR;
-        m_newParent = Q_NULLPTR;
+        m_newEntry = nullptr;
+        m_newParent = nullptr;
     }
 
     setCurrentWidget(m_mainWidget);
@@ -624,9 +636,9 @@ void DatabaseWidget::openDatabase(bool accepted)
         // We won't need those anymore and KeePass1OpenWidget closes
         // the file in its dtor.
         delete m_databaseOpenWidget;
-        m_databaseOpenWidget = Q_NULLPTR;
+        m_databaseOpenWidget = nullptr;
         delete m_keepass1OpenWidget;
-        m_keepass1OpenWidget = Q_NULLPTR;
+        m_keepass1OpenWidget = nullptr;
     }
     else {
         if (m_databaseOpenWidget->database()) {
@@ -869,7 +881,7 @@ bool DatabaseWidget::isInSearchMode() const
 void DatabaseWidget::clearLastGroup(Group* group)
 {
     if (group) {
-        m_lastGroup = Q_NULLPTR;
+        m_lastGroup = nullptr;
         m_searchWidget->hide();
     }
 }
@@ -877,8 +889,17 @@ void DatabaseWidget::clearLastGroup(Group* group)
 void DatabaseWidget::lock()
 {
     Q_ASSERT(currentMode() != DatabaseWidget::LockedMode);
+    if (isInSearchMode()) {
+        closeSearch();
+    }
 
-    m_groupBeforeLock = m_groupView->currentGroup()->uuid();
+    if (m_groupView->currentGroup()) {
+        m_groupBeforeLock = m_groupView->currentGroup()->uuid();
+    }
+    else {
+        m_groupBeforeLock = m_db->rootGroup()->uuid();
+    }
+
     clearAllWidgets();
     m_unlockDatabaseWidget->load(m_filename);
     setCurrentWidget(m_unlockDatabaseWidget);
@@ -909,7 +930,7 @@ QStringList DatabaseWidget::customEntryAttributes() const
 
 bool DatabaseWidget::isGroupSelected() const
 {
-    return m_groupView->currentGroup() != Q_NULLPTR;
+    return m_groupView->currentGroup() != nullptr;
 }
 
 bool DatabaseWidget::currentEntryHasTitle()
