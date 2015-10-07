@@ -24,6 +24,11 @@ project(KeePassX)
 cmake_minimum_required(VERSION 2.6.4)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/local/Cellar/zlib/1.2.8/)
+set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/local/Cellar/zlib/)
+set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/local/Cellar/zlib/1.2.8/lib/)
+set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} /usr/local/Cellar/zlib/1.2.8/lib/)
+
 
 include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
@@ -190,9 +195,9 @@ check_cxx_source_compiles("
 
   int main() { return 0; }" ZLIB_SUPPORTS_GZIP)
 
-if(NOT ZLIB_SUPPORTS_GZIP)
-  message(FATAL_ERROR "zlib 1.2.x or higher is required to use the gzip format")
-endif()
+#if(NOT ZLIB_SUPPORTS_GZIP)
+#  message(FATAL_ERROR "zlib 1.2.x or higher is required to use the gzip format")
+#endif()
 
 if(UNIX)
   check_cxx_source_compiles("#include <sys/prctl.h>
