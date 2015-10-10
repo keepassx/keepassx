@@ -167,6 +167,8 @@ MainWindow::MainWindow()
             SLOT(changeDatabaseSettings()));
     connect(m_ui->actionImportKeePass1, SIGNAL(triggered()), m_ui->tabWidget,
             SLOT(importKeePass1Database()));
+    connect(m_ui->actionImportCsv, SIGNAL(triggered()), m_ui->tabWidget,
+            SLOT(importFromCsv()));
     connect(m_ui->actionRepairDatabase, SIGNAL(triggered()), this,
             SLOT(repairDatabase()));
     connect(m_ui->actionExportCsv, SIGNAL(triggered()), m_ui->tabWidget,
@@ -380,6 +382,7 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
     m_ui->menuRecentDatabases->setEnabled(inDatabaseTabWidgetOrWelcomeWidget);
     m_ui->actionImportKeePass1->setEnabled(inDatabaseTabWidgetOrWelcomeWidget);
     m_ui->actionRepairDatabase->setEnabled(inDatabaseTabWidgetOrWelcomeWidget);
+    m_ui->actionImportCsv->setEnabled(inDatabaseTabWidget);
 
     m_ui->actionLockDatabases->setEnabled(m_ui->tabWidget->hasLockableDatabases());
 }

@@ -120,6 +120,7 @@
     <addaction name="actionChangeDatabaseSettings"/>
     <addaction name="separator"/>
     <addaction name="actionImportKeePass1"/>
+    <addaction name="actionImportCsv"/>
     <addaction name="actionExportCsv"/>
     <addaction name="actionRepairDatabase"/>
     <addaction name="separator"/>
@@ -413,6 +414,14 @@
    </property>
    <property name="text">
     <string>Notes</string>
+   </property>
+  </action>
+  <action name="actionImportCsv">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Import from CSV file</string>
    </property>
   </action>
   <action name="actionExportCsv">

@@ -27,6 +27,7 @@
 #include "core/Database.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
+#include "format/CsvReader.h"
 #include "format/CsvExporter.h"
 #include "gui/Clipboard.h"
 #include "gui/DatabaseWidget.h"
@@ -449,6 +450,36 @@ bool DatabaseTabWidget::saveDatabaseAs(int index)
     }
 
     return saveDatabaseAs(indexDatabase(index));
+}
+
+void DatabaseTabWidget::importFromCsv()
+{
+    Database* db = indexDatabase(currentIndex());
+    if (!db) {
+        Q_ASSERT(false);
+        return;
+    }
+
+    QString filter = QString("%1 (*.csv);;%2 (*)").arg(tr("CSV file"), tr("All files"));
+    QString fileName = fileDialog()->getOpenFileName(this, tr("Import database from CSV file"), QString(),
+                                                     filter);
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    CsvReader csvReader;
+    QFile file(fileName);
+    if (file.open(QFile::ReadOnly)) {
+        csvReader.readDatabase(&file, db);
+        if (csvReader.hasError()) {
+            MessageBox::critical(this, tr("Error"), tr("Reading the CSV file failed.") + "\n\n"
+                                 + csvReader.errorString());
+        }
+        file.close();
+    }
+    else {
+        MessageBox::critical(this, tr("Error"), tr("Failed to open CSV file."));
+    }
 }
 
 void DatabaseTabWidget::exportToCsv()

@@ -68,6 +68,7 @@ set(keepassx_SOURCES
     crypto/SymmetricCipherBackend.h
     crypto/SymmetricCipherGcrypt.cpp
     format/CsvExporter.cpp
+    format/CsvReader.cpp
     format/KeePass1.h
     format/KeePass1Reader.cpp
     format/KeePass2.h
