@@ -20,7 +20,6 @@
 
 #include <QAbstractTableModel>
 
-#include "core/Global.h"
 #include "core/AutoTypeMatch.h"
 
 class Entry;
@@ -39,7 +38,7 @@ public:
         Sequence = 3
     };
 
-    explicit AutoTypeMatchModel(QObject* parent = Q_NULLPTR);
+    explicit AutoTypeMatchModel(QObject* parent = nullptr);
     AutoTypeMatch matchFromIndex(const QModelIndex& index) const;
     QModelIndex indexFromMatch(AutoTypeMatch match) const;
 

@@ -19,7 +19,7 @@
 
 #include "core/Config.h"
 
-FileDialog* FileDialog::m_instance(Q_NULLPTR);
+FileDialog* FileDialog::m_instance(nullptr);
 
 QString FileDialog::getOpenFileName(QWidget* parent, const QString& caption, QString dir,
                                     const QString& filter, QString* selectedFilter,
@@ -67,6 +67,7 @@ QString FileDialog::getSaveFileName(QWidget* parent, const QString& caption, QSt
 
         QString result;
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+        Q_UNUSED(defaultExtension);
         // the native dialogs on these platforms already append the file extension
         result = QFileDialog::getSaveFileName(parent, caption, dir, filter,
                                               selectedFilter, options);

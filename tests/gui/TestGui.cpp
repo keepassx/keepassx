@@ -21,6 +21,7 @@
 #include <QApplication>
 #include <QDialogButtonBox>
 #include <QLineEdit>
+#include <QMimeData>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTemporaryFile>
@@ -29,7 +30,6 @@
 #include <QToolButton>
 
 #include "config-keepassx-tests.h"
-#include "tests.h"
 #include "core/Config.h"
 #include "core/Database.h"
 #include "core/Entry.h"
@@ -56,6 +56,7 @@ void TestGui::initTestCase()
     m_mainWindow = new MainWindow();
     m_tabWidget = m_mainWindow->findChild<DatabaseTabWidget*>("tabWidget");
     m_mainWindow->show();
+    m_mainWindow->activateWindow();
     Tools::wait(50);
 
     QByteArray tmpData;
@@ -435,8 +436,8 @@ void TestGui::testDatabaseLocking()
 
     triggerAction("actionLockDatabases");
 
-    QCOMPARE(m_tabWidget->tabText(0), QString("Save [locked]"));
-    QCOMPARE(m_tabWidget->tabText(1), QString("basic [New database]*"));
+    QCOMPARE(m_tabWidget->tabText(0).remove('&'), QString("Save [locked]"));
+    QCOMPARE(m_tabWidget->tabText(1).remove('&'), QString("basic [New database]*"));
 
     QWidget* dbWidget = m_tabWidget->currentDatabaseWidget();
     QWidget* unlockDatabaseWidget = dbWidget->findChild<QWidget*>("unlockDatabaseWidget");
@@ -446,7 +447,7 @@ void TestGui::testDatabaseLocking()
     QTest::keyClicks(editPassword, "masterpw");
     QTest::keyClick(editPassword, Qt::Key_Enter);
 
-    QCOMPARE(m_tabWidget->tabText(m_tabWidget->currentIndex()), QString("basic [New database]*"));
+    QCOMPARE(m_tabWidget->tabText(m_tabWidget->currentIndex()).remove('&'), QString("basic [New database]*"));
 }
 
 void TestGui::cleanupTestCase()

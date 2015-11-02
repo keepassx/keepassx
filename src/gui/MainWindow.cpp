@@ -33,7 +33,7 @@ const QString MainWindow::BaseWindowTitle = "KeePassX";
 
 MainWindow::MainWindow()
     : m_ui(new Ui::MainWindow())
-    , m_trayIcon(Q_NULLPTR)
+    , m_trayIcon(nullptr)
 {
     m_ui->setupUi(this);
 
@@ -92,9 +92,7 @@ MainWindow::MainWindow()
     m_ui->actionEntryOpenUrl->setShortcut(Qt::CTRL + Qt::Key_U);
     m_ui->actionEntryCopyURL->setShortcut(Qt::CTRL + Qt::ALT + Qt::Key_U);
 
-#ifdef Q_OS_MAC
     new QShortcut(Qt::CTRL + Qt::Key_M, this, SLOT(showMinimized()));
-#endif
 
     m_ui->actionDatabaseNew->setIcon(filePath()->icon("actions", "document-new"));
     m_ui->actionDatabaseOpen->setIcon(filePath()->icon("actions", "document-open"));
@@ -222,6 +220,7 @@ void MainWindow::updateLastDatabasesMenu()
     QStringList lastDatabases = config()->get("LastDatabases", QVariant()).toStringList();
     Q_FOREACH (const QString& database, lastDatabases) {
         QAction* action = m_ui->menuRecentDatabases->addAction(database);
+        action->setData(database);
         m_lastDatabasesActions->addAction(action);
     }
     m_ui->menuRecentDatabases->addSeparator();
@@ -252,7 +251,7 @@ void MainWindow::updateCopyAttributesMenu()
 
 void MainWindow::openRecentDatabase(QAction* action)
 {
-    openDatabase(action->text());
+    openDatabase(action->data().toString());
 }
 
 void MainWindow::clearLastDatabases()
@@ -514,7 +513,7 @@ void MainWindow::updateTrayIcon()
         if (m_trayIcon) {
             m_trayIcon->hide();
             delete m_trayIcon;
-            m_trayIcon = Q_NULLPTR;
+            m_trayIcon = nullptr;
         }
     }
 }

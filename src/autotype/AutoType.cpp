@@ -33,7 +33,7 @@
 #include "core/Tools.h"
 #include "gui/MessageBox.h"
 
-AutoType* AutoType::m_instance = Q_NULLPTR;
+AutoType* AutoType::m_instance = nullptr;
 
 AutoType::AutoType(QObject* parent, bool test)
     : QObject(parent)
@@ -41,8 +41,8 @@ AutoType::AutoType(QObject* parent, bool test)
     , m_currentGlobalKey(static_cast<Qt::Key>(0))
     , m_currentGlobalModifiers(0)
     , m_pluginLoader(new QPluginLoader(this))
-    , m_plugin(Q_NULLPTR)
-    , m_executor(Q_NULLPTR)
+    , m_plugin(nullptr)
+    , m_executor(nullptr)
     , m_windowFromGlobal(0)
 {
     // prevent crash when the plugin has unresolved symbols
@@ -50,7 +50,7 @@ AutoType::AutoType(QObject* parent, bool test)
 
     QString pluginName = "keepassx-autotype-";
     if (!test) {
-        pluginName += Tools::platform();
+        pluginName += QApplication::platformName();
     }
     else {
         pluginName += "test";
@@ -69,7 +69,7 @@ AutoType::~AutoType()
 {
     if (m_executor) {
         delete m_executor;
-        m_executor = Q_NULLPTR;
+        m_executor = nullptr;
     }
 }
 
@@ -201,11 +201,11 @@ void AutoType::performGlobalAutoType(const QList<Database*>& dbList)
         QString message = tr("Couldn't find an entry that matches the window title:");
         message.append("\n\n");
         message.append(windowTitle);
-        MessageBox::information(Q_NULLPTR, tr("Auto-Type - KeePassX"), message);
+        MessageBox::information(nullptr, tr("Auto-Type - KeePassX"), message);
     }
     else if ((matchList.size() == 1) && !config()->get("security/autotypeask").toBool()) {
         m_inAutoType = false;
-        performAutoType(matchList.first().entry, Q_NULLPTR, matchList.first().sequence);
+        performAutoType(matchList.first().entry, nullptr, matchList.first().sequence);
     }
     else {
         m_windowFromGlobal = m_plugin->activeWindow();
@@ -224,8 +224,10 @@ void AutoType::performAutoTypeFromGlobal(AutoTypeMatch match)
 {
     Q_ASSERT(m_inAutoType);
 
+    m_plugin->raiseWindow(m_windowFromGlobal);
+
     m_inAutoType = false;
-    performAutoType(match.entry, Q_NULLPTR, match.sequence, m_windowFromGlobal);
+    performAutoType(match.entry, nullptr, match.sequence, m_windowFromGlobal);
 }
 
 void AutoType::resetInAutoType()
@@ -239,12 +241,12 @@ void AutoType::unloadPlugin()
 {
     if (m_executor) {
         delete m_executor;
-        m_executor = Q_NULLPTR;
+        m_executor = nullptr;
     }
 
     if (m_plugin) {
         m_plugin->unload();
-        m_plugin = Q_NULLPTR;
+        m_plugin = nullptr;
     }
 }
 

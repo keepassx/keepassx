@@ -20,7 +20,6 @@
 
 #include <QTreeView>
 
-#include "core/Global.h"
 #include "core/AutoTypeMatch.h"
 
 #include "gui/entry/AutoTypeMatchModel.h"
@@ -32,7 +31,7 @@ class AutoTypeMatchView : public QTreeView
     Q_OBJECT
 
 public:
-    explicit AutoTypeMatchView(QWidget* parent = Q_NULLPTR);
+    explicit AutoTypeMatchView(QWidget* parent = nullptr);
     void setModel(QAbstractItemModel* model) Q_DECL_OVERRIDE;
     AutoTypeMatch currentMatch();
     void setCurrentMatch(AutoTypeMatch match);

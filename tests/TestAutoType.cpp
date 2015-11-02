@@ -20,7 +20,6 @@
 #include <QPluginLoader>
 #include <QTest>
 
-#include "tests.h"
 #include "core/Config.h"
 #include "core/FilePath.h"
 #include "core/Entry.h"
@@ -94,7 +93,7 @@ void TestAutoType::testInternal()
 
 void TestAutoType::testAutoTypeWithoutSequence()
 {
-    m_autoType->performAutoType(m_entry1, Q_NULLPTR);
+    m_autoType->performAutoType(m_entry1, nullptr);
 
     QCOMPARE(m_test->actionCount(), 14);
     QCOMPARE(m_test->actionChars(),
@@ -105,7 +104,7 @@ void TestAutoType::testAutoTypeWithoutSequence()
 
 void TestAutoType::testAutoTypeWithSequence()
 {
-    m_autoType->performAutoType(m_entry1, Q_NULLPTR, "{Username}abc{PaSsWoRd}");
+    m_autoType->performAutoType(m_entry1, nullptr, "{Username}abc{PaSsWoRd}");
 
     QCOMPARE(m_test->actionCount(), 15);
     QCOMPARE(m_test->actionChars(),

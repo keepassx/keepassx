@@ -23,11 +23,7 @@
 #include <QLocale>
 #include <QStringList>
 
-#if QT_VERSION >= QT_VERSION_CHECK(4, 7, 0)
 #include <QElapsedTimer>
-#else
-#include <QTime>
-#endif
 
 #ifdef Q_OS_WIN
 #include <windows.h> // for Sleep()
@@ -122,15 +118,6 @@ bool readAllFromDevice(QIODevice* device, QByteArray& data)
     }
 }
 
-QDateTime currentDateTimeUtc()
-{
-#if QT_VERSION >= QT_VERSION_CHECK(4, 7, 0)
-     return QDateTime::currentDateTimeUtc();
-#else
-     return QDateTime::currentDateTime().toUTC();
-#endif
-}
-
 QString imageReaderFilter()
 {
     QList<QByteArray> formats = QImageReader::supportedImageFormats();
@@ -174,7 +161,7 @@ void sleep(int ms)
     timespec ts;
     ts.tv_sec = ms / 1000;
     ts.tv_nsec = (ms % 1000) * 1000 * 1000;
-    nanosleep(&ts, Q_NULLPTR);
+    nanosleep(&ts, nullptr);
 #endif
 }
 
@@ -186,11 +173,7 @@ void wait(int ms)
         return;
     }
 
-#if QT_VERSION >= QT_VERSION_CHECK(4, 7, 0)
     QElapsedTimer timer;
-#else
-    QTime timer;
-#endif
     timer.start();
 
     if (ms <= 50) {
@@ -205,21 +188,8 @@ void wait(int ms)
                 QCoreApplication::processEvents(QEventLoop::AllEvents, timeLeft);
                 sleep(10);
             }
-        } while (timer.elapsed() < ms);
+        } while (!timer.hasExpired(ms));
     }
-}
-
-QString platform()
-{
-#if defined(Q_WS_X11)
-    return "x11";
-#elif defined(Q_WS_MAC)
-    return "mac";
-#elif defined(Q_WS_WIN)
-    return "win";
-#else
-    return QString();
-#endif
 }
 
 void disableCoreDumps()
