@@ -22,6 +22,7 @@
 #include "core/DatabaseIcons.h"
 #include "core/Entry.h"
 #include "core/Group.h"
+#include "core/Metadata.h"
 
 AutoTypeMatchModel::AutoTypeMatchModel(QObject* parent)
     : QAbstractTableModel(parent)
@@ -44,7 +45,33 @@ QModelIndex AutoTypeMatchModel::indexFromMatch(AutoTypeMatch match) const
 void AutoTypeMatchModel::setMatchList(const QList<AutoTypeMatch>& matches)
 {
     beginResetModel();
+
+    severConnections();
+
+    m_allGroups.clear();
     m_matches = matches;
+
+    QSet<Database*> databases;
+
+    Q_FOREACH (AutoTypeMatch match, m_matches) {
+        databases.insert(match.entry->group()->database());
+    }
+
+    Q_FOREACH (Database* db, databases) {
+        Q_ASSERT(db);
+        Q_FOREACH (const Group* group, db->rootGroup()->groupsRecursive(true)) {
+            m_allGroups.append(group);
+        }
+
+        if (db->metadata()->recycleBin()) {
+            m_allGroups.removeOne(db->metadata()->recycleBin());
+        }
+    }
+
+    Q_FOREACH (const Group* group, m_allGroups) {
+        makeConnections(group);
+    }
+
     endResetModel();
 }
 
@@ -133,4 +160,45 @@ QVariant AutoTypeMatchModel::headerData(int section, Qt::Orientation orientation
     return QVariant();
 }
 
+void AutoTypeMatchModel::entryDataChanged(Entry* entry)
+{
+    for(int row = 0; row < m_matches.size(); row++) {
+        AutoTypeMatch match = m_matches[row];
+        if(match.entry == entry) {
+            Q_EMIT dataChanged(index(row, 0), index(row, columnCount()-1));
+        }
+    }
+}
 
+
+void AutoTypeMatchModel::entryAboutToRemove(Entry* entry)
+{
+    for(int row = 0; row < m_matches.size(); row++) {
+        AutoTypeMatch match = m_matches[row];
+        if(match.entry == entry) {
+            beginRemoveRows(QModelIndex(), row, row);
+            m_matches.removeAt(row);
+            endRemoveRows();
+            row--;
+        }
+    }
+}
+
+void AutoTypeMatchModel::entryRemoved()
+{
+    //empty
+}
+
+void AutoTypeMatchModel::severConnections()
+{
+    Q_FOREACH (const Group* group, m_allGroups) {
+        disconnect(group, Q_NULLPTR, this, Q_NULLPTR);
+    }
+}
+
+void AutoTypeMatchModel::makeConnections(const Group* group)
+{
+    connect(group, SIGNAL(entryAboutToRemove(Entry*)), SLOT(entryAboutToRemove(Entry*)));
+    connect(group, SIGNAL(entryRemoved(Entry*)), SLOT(entryRemoved()));
+    connect(group, SIGNAL(entryDataChanged(Entry*)), SLOT(entryDataChanged(Entry*)));
+}

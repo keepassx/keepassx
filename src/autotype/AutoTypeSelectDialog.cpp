@@ -52,6 +52,7 @@ AutoTypeSelectDialog::AutoTypeSelectDialog(QWidget* parent)
 
     connect(m_view, SIGNAL(activated(QModelIndex)), SLOT(emitMatchActivated(QModelIndex)));
     connect(m_view, SIGNAL(clicked(QModelIndex)), SLOT(emitMatchActivated(QModelIndex)));
+    connect(m_view->model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(matchRemoved()));
     layout->addWidget(m_view);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel, Qt::Horizontal, this);
@@ -75,4 +76,11 @@ void AutoTypeSelectDialog::emitMatchActivated(const QModelIndex& index)
     AutoTypeMatch match = m_view->matchFromIndex(index);
     accept();
     Q_EMIT matchActivated(match);
+}
+
+void AutoTypeSelectDialog::matchRemoved()
+{
+    if (m_view->model()->rowCount() == 0) {
+        reject();
+    }
 }

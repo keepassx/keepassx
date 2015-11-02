@@ -40,6 +40,7 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void emitMatchActivated(const QModelIndex& index);
+    void matchRemoved();
 
 private:
     AutoTypeSelectView* const m_view;

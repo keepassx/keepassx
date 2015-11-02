@@ -23,6 +23,9 @@
 #include "core/Global.h"
 #include "core/AutoTypeMatch.h"
 
+class Entry;
+class Group;
+
 class AutoTypeMatchModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -47,8 +50,17 @@ public:
 
     void setMatchList(const QList<AutoTypeMatch>& matches);
 
+private Q_SLOTS:
+    void entryAboutToRemove(Entry* entry);
+    void entryRemoved();
+    void entryDataChanged(Entry* entry);
+
 private:
+    void severConnections();
+    void makeConnections(const Group* group);
+
     QList<AutoTypeMatch> m_matches;
+    QList<const Group*> m_allGroups;
 };
 
 #endif // KEEPASSX_AUTOTYPEMATCHMODEL_H
