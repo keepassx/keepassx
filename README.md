@@ -1,5 +1,7 @@
 # KeePassX
 
+[![Build Status](https://travis-ci.org/keepassx/keepassx.svg?branch=2.0)](https://travis-ci.org/keepassx/keepassx)
+
 ## About
 
 KeePassX is an application for people with extremely high demands on secure personal data management.
