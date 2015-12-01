@@ -1231,7 +1231,7 @@ Discard changes and close anyway?</source>
     </message>
     <message>
         <source>Show passwords in cleartext by default</source>
-        <translation>Passwort standartmäßig in Klartext anzeigen</translation>
+        <translation>Passworte standardmäßig in Klartext anzeigen</translation>
     </message>
     <message>
         <source>Always ask before performing auto-type</source>
