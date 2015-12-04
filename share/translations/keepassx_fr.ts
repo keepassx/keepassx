@@ -552,7 +552,7 @@ Ignorer les changements et fermer ?</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation>Non d&apos;utilisateur :</translation>
+        <translation>Nom d&apos;utilisateur :</translation>
     </message>
     <message>
         <source>Password:</source>
@@ -745,7 +745,7 @@ Ignorer les changements et fermer ?</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation>Non d&apos;utilisateur</translation>
+        <translation>Nom d&apos;utilisateur</translation>
     </message>
     <message>
         <source>URL</source>
