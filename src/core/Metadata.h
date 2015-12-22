@@ -77,6 +77,7 @@ public:
     bool protectNotes() const;
     // bool autoEnableVisualHiding() const;
     QImage customIcon(const Uuid& uuid) const;
+    QImage customIconScaled(const Uuid& uuid) const;
     bool containsCustomIcon(const Uuid& uuid) const;
     QHash<Uuid, QImage> customIcons() const;
     QList<Uuid> customIconsOrder() const;

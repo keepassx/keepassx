@@ -135,7 +135,7 @@ QPixmap Group::iconPixmap() const
 
         QPixmap pixmap;
         if (m_db && !QPixmapCache::find(m_pixmapCacheKey, &pixmap)) {
-            pixmap = QPixmap::fromImage(m_db->metadata()->customIcon(m_data.customIcon));
+            pixmap = QPixmap::fromImage(m_db->metadata()->customIconScaled(m_data.customIcon));
             m_pixmapCacheKey = QPixmapCache::insert(pixmap);
         }
 

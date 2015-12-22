@@ -167,6 +167,11 @@ QImage Metadata::customIcon(const Uuid& uuid) const
     return m_customIcons.value(uuid);
 }
 
+QImage Metadata::customIconScaled(const Uuid& uuid) const
+{
+    return m_customIcons.value(uuid).scaled(QSize(16, 16), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+}
+
 bool Metadata::containsCustomIcon(const Uuid& uuid) const
 {
     return m_customIcons.contains(uuid);
