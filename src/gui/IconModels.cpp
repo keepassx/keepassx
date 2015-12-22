@@ -83,7 +83,7 @@ QVariant CustomIconModel::data(const QModelIndex& index, int role) const
 
     if (role == Qt::DecorationRole) {
         Uuid uuid = uuidFromIndex(index);
-        return m_icons.value(uuid);
+        return m_icons.value(uuid).scaled(QSize(16, 16), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     }
 
     return QVariant();
