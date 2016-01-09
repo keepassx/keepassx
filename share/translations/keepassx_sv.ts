@@ -1185,11 +1185,11 @@ Vill du spara endå?</translation>
     </message>
     <message>
         <source>Open previous databases on startup</source>
-        <translation>Öppna senaste databasen är programmet startar</translation>
+        <translation>Öppna den senaste databasen när programmet startar</translation>
     </message>
     <message>
         <source>Automatically save on exit</source>
-        <translation>Spara automatiskt är applikationen anslutas</translation>
+        <translation>Spara automatiskt när applikationen avslutas</translation>
     </message>
     <message>
         <source>Automatically save after every change</source>
