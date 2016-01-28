@@ -291,7 +291,7 @@ Vill du öppna den ändå? Databasen kommer då att öppnas skrivskyddad.</trans
     <message>
         <source>Can't lock the database as you are currently editing it.
 Please press cancel to finish your changes or discard them.</source>
-        <translation>Kan inte låsa databasen eftersom du håller på  att redigera den.
+        <translation>Kan inte låsa databasen eftersom du håller på att redigera den.
 Tryck avbryt för att ansluta dina ändringar alternativt kasta dem.</translation>
     </message>
     <message>
@@ -849,7 +849,7 @@ Vill du spara endå?</translation>
     </message>
     <message>
         <source>Recent databases</source>
-        <translation>Senast använda databser</translation>
+        <translation>Senast använda databaser</translation>
     </message>
     <message>
         <source>Help</source>
