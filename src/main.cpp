@@ -17,6 +17,7 @@
 
 #include <QCommandLineParser>
 #include <QFile>
+#include <stdio.h>
 
 #include "config-keepassx.h"
 #include "core/Config.h"
@@ -62,10 +63,14 @@ int main(int argc, char** argv)
                                      QCoreApplication::translate("main", "key file of the database"),
                                      "keyfile");
 
+    QCommandLineOption pwstdinOption("pw-stdin",
+                                     QCoreApplication::translate("main", "read password from stdin"));
+
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOption(configOption);
     parser.addOption(keyfileOption);
+    parser.addOption(pwstdinOption);
 
     parser.process(app);
     const QStringList args = parser.positionalArguments();
@@ -90,7 +95,11 @@ int main(int argc, char** argv)
     if (!args.isEmpty()) {
         QString filename = args[0];
         if (!filename.isEmpty() && QFile::exists(filename)) {
-            mainWindow.openDatabase(filename, QString(), parser.value(keyfileOption));
+            char password[1024];
+            password[0] = 0; // init empty
+            parser.isSet(pwstdinOption) && fgets(password, 1024, stdin);
+            password[strcspn(password, "\r\n")] = 0; // strip newline
+            mainWindow.openDatabase(filename, QString(password), parser.value(keyfileOption));
         }
     }
 
