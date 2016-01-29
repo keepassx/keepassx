@@ -15,6 +15,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QtConcurrentRun>
+
 #include "DatabaseOpenWidget.h"
 #include "ui_DatabaseOpenWidget.h"
 
@@ -26,6 +28,9 @@
 #include "format/KeePass2Reader.h"
 #include "keys/FileKey.h"
 #include "keys/PasswordKey.h"
+#include "keys/YkChallengeResponseKey.h"
+#include "crypto/Random.h"
+
 
 DatabaseOpenWidget::DatabaseOpenWidget(QWidget* parent)
     : DialogyWidget(parent)
@@ -48,10 +53,13 @@ DatabaseOpenWidget::DatabaseOpenWidget(QWidget* parent)
 
     connect(m_ui->editPassword, SIGNAL(textChanged(QString)), SLOT(activatePassword()));
     connect(m_ui->comboKeyFile, SIGNAL(editTextChanged(QString)), SLOT(activateKeyFile()));
+    connect(m_ui->comboChallengeResponse, SIGNAL(activated(int)), SLOT(activateChallengeResponse()));
 
     connect(m_ui->checkPassword, SIGNAL(toggled(bool)), SLOT(setOkButtonEnabled()));
     connect(m_ui->checkKeyFile, SIGNAL(toggled(bool)), SLOT(setOkButtonEnabled()));
     connect(m_ui->comboKeyFile, SIGNAL(editTextChanged(QString)), SLOT(setOkButtonEnabled()));
+    connect(m_ui->checkChallengeResponse, SIGNAL(toggled(bool)), SLOT(setOkButtonEnabled()));
+    connect(m_ui->comboChallengeResponse, SIGNAL(activated(int)), SLOT(setOkButtonEnabled()));
 
     connect(m_ui->buttonBox, SIGNAL(accepted()), SLOT(openDatabase()));
     connect(m_ui->buttonBox, SIGNAL(rejected()), SLOT(reject()));
@@ -74,6 +82,12 @@ void DatabaseOpenWidget::load(const QString& filename)
             m_ui->comboKeyFile->addItem(lastKeyFiles[m_filename].toString());
         }
     }
+
+    /* YubiKey init is slow */
+    connect(YubiKey::instance(), SIGNAL(detected(int,bool)),
+                                 SLOT(ykDetected(int,bool)),
+                                 Qt::QueuedConnection);
+    QtConcurrent::run(YubiKey::instance(), &YubiKey::detect);
 
     m_ui->editPassword->setFocus();
 }
@@ -154,6 +168,15 @@ CompositeKey DatabaseOpenWidget::databaseKey()
         config()->set("LastKeyFiles", lastKeyFiles);
     }
 
+
+    if (m_ui->checkChallengeResponse->isChecked()) {
+        int i = m_ui->comboChallengeResponse->currentIndex();
+        i = m_ui->comboChallengeResponse->itemData(i).toInt();
+        YkChallengeResponseKey key(i);
+
+        masterKey.addChallengeResponseKey(key);
+    }
+
     return masterKey;
 }
 
@@ -172,9 +195,14 @@ void DatabaseOpenWidget::activateKeyFile()
     m_ui->checkKeyFile->setChecked(true);
 }
 
+void DatabaseOpenWidget::activateChallengeResponse()
+{
+    m_ui->checkChallengeResponse->setChecked(true);
+}
+
 void DatabaseOpenWidget::setOkButtonEnabled()
 {
-    bool enable = m_ui->checkPassword->isChecked()
+    bool enable = m_ui->checkPassword->isChecked() || m_ui->checkChallengeResponse->isChecked()
             || (m_ui->checkKeyFile->isChecked() && !m_ui->comboKeyFile->currentText().isEmpty());
 
     m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(enable);
@@ -188,4 +216,12 @@ void DatabaseOpenWidget::browseKeyFile()
     if (!filename.isEmpty()) {
         m_ui->comboKeyFile->lineEdit()->setText(filename);
     }
+}
+
+void DatabaseOpenWidget::ykDetected(int slot, bool blocking)
+{
+    YkChallengeResponseKey yk(slot, blocking);
+    m_ui->comboChallengeResponse->addItem(yk.getName(), QVariant(slot));
+    m_ui->comboChallengeResponse->setEnabled(true);
+    m_ui->checkChallengeResponse->setEnabled(true);
 }
