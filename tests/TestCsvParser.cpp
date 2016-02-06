@@ -18,9 +18,6 @@
 #include "TestCsvParser.h"
 #include <QTest>
 
-//TODO: http://stackoverflow.com/questions/31001398/qt-run-unit-tests-from-multiple-test-classes-and-summarize-the-output-from-all
-//useful to show CR/LF cat -v /tmp/keepassXn94do1x.csv
-
 QTEST_GUILESS_MAIN(TestCsvParser)
 
 void TestCsvParser::initTestCase()
@@ -336,86 +333,3 @@ void TestCsvParser::testUnicode() {
     QVERIFY(t.at(0).at(2) == "3śAż");
     QVERIFY(t.at(0).at(3) == "żac");
 }
-
-void TestCsvParser::testKeepass() {
-    file.close();
-    file.setFileName("../../res/keepass.csv");
-    if (!file.open(QIODevice::ReadWrite))
-         QFAIL("Cannot open file!");
-    parser->setBackslashSyntax(true);
-    QVERIFY(parser->parse(&file));
-    t = parser->getCsvTable();
-    QVERIFY(t.size() == 3);
-    QVERIFY(t.at(1).at(1) == "2\"");
-    QVERIFY(t.at(1).at(4) == "some notes...\n\nksjdkj@jdjd.com\n");
-    QVERIFY(t.at(2).at(1) == "€èéç");
-}
-
-void TestCsvParser::dumpRow(csvtable, int) {}
-/*
-void TestCsvParser::dumpRow(csvtable table, int row) {
-    if ( (row < 0) || (row >= table.size())) {
-        qDebug() << QString("Error, nonexistent row %1").arg(row);
-        return;
-    }
-    csvrow::const_iterator it = table.at(row).constBegin();
-    qDebug() <<"@row" <<row <<" ";
-    for (; it != table.at(row).constEnd(); ++it)
-        qDebug() <<"|" <<*it;
-}
-*/
-
-/*
-
-void TestCsvParser::testExport()
-{
-    Group* groupRoot = m_db->rootGroup();
-    Group* group= new Group();
-    group->setName("Test Group Name");
-    group->setParent(groupRoot);
-    Entry* entry = new Entry();
-    entry->setGroup(group);
-    entry->setTitle("Test Entry Title");
-    entry->setUsername("Test Username");
-    entry->setPassword("Test Password");
-    entry->setUrl("http://test.url");
-    entry->setNotes("Test Notes");
-
-    QBuffer buffer;
-    QVERIFY(buffer.open(QIODevice::ReadWrite));
-    m_csvExporter->exportDatabase(&buffer, m_db);
-
-    QString expectedResult = QString().append(ExpectedHeaderLine).append("\"Test Group Name\",\"Test Entry Title\",\"Test Username\",\"Test Password\",\"http://test.url\",\"Test Notes\"\n");
-
-    QCOMPARE(QString::fromUtf8(buffer.buffer().constData()), expectedResult);
-}
-
-void TestCsvParser::testEmptyDatabase()
-{
-    QBuffer buffer;
-    QVERIFY(buffer.open(QIODevice::ReadWrite));
-    m_csvExporter->exportDatabase(&buffer, m_db);
-
-    QCOMPARE(QString::fromUtf8(buffer.buffer().constData()), ExpectedHeaderLine);
-}
-
-void TestCsvParser::testNestedGroups()
-{
-    Group* groupRoot = m_db->rootGroup();
-    Group* group= new Group();
-    group->setName("Test Group Name");
-    group->setParent(groupRoot);
-    Group* childGroup= new Group();
-    childGroup->setName("Test Sub Group Name");
-    childGroup->setParent(group);
-    Entry* entry = new Entry();
-    entry->setGroup(childGroup);
-    entry->setTitle("Test Entry Title");
-
-    QBuffer buffer;
-    QVERIFY(buffer.open(QIODevice::ReadWrite));
-    m_csvExporter->exportDatabase(&buffer, m_db);
-
-    QCOMPARE(QString::fromUtf8(buffer.buffer().constData()), QString().append(ExpectedHeaderLine).append("\"Test Group Name/Test Sub Group Name\",\"Test Entry Title\",\"\",\"\",\"\",\"\"\n"));
-}
-*/

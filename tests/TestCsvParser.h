@@ -58,8 +58,6 @@ private Q_SLOTS:
     void testQuoted();
     void testMultiline();
     void testColumns();
-    void testKeepass();
-//    void testBigFile();
 
 private:
     QFile file;

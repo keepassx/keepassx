@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015 Enrico Mariotti <enricomariotti@yahoo.it>
+ *  Copyright (C) 2016 Enrico Mariotti <enricomariotti@yahoo.it>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,8 +17,6 @@
 
 #ifndef KEEPASSX_CSVIMPORTWIZARD_H
 #define KEEPASSX_CSVIMPORTWIZARD_H
-
-#include <QDebug>
 
 #include <QStackedWidget>
 #include <QGridLayout>

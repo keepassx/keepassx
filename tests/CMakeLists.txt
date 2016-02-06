@@ -152,6 +152,18 @@ add_unit_test(NAME testentry SOURCES TestEntry.cpp
 add_unit_test(NAME testcsvparser SOURCES TestCsvParser.cpp
               LIBS ${TEST_LIBRARIES})
 
+add_unit_test(NAME testrandom SOURCES TestRandom.cpp
+              LIBS ${TEST_LIBRARIES})
+
+add_unit_test(NAME testentrysearcher SOURCES TestEntrySearcher.cpp
+              LIBS ${TEST_LIBRARIES})
+
+add_unit_test(NAME testexporter SOURCES TestExporter.cpp
+              LIBS ${TEST_LIBRARIES})
+
+add_unit_test(NAME testcsvexporter SOURCES TestCsvExporter.cpp
+              LIBS ${TEST_LIBRARIES})
+
 if(WITH_GUI_TESTS)
   add_subdirectory(gui)
 endif(WITH_GUI_TESTS)

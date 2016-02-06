@@ -128,6 +128,7 @@
     <addaction name="separator"/>
     <addaction name="menuImport"/>
     <addaction name="actionExportCsv"/>
+    <addaction name="actionRepairDatabase"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -432,6 +433,11 @@
   <action name="actionImportCsv">
    <property name="text">
     <string>Import CSV file</string>
+   </property>
+  </action>
+<action name="actionRepairDatabase">
+   <property name="text">
+    <string>Repair database</string>
    </property>
   </action>
  </widget>

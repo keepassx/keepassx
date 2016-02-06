@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015 Enrico Mariotti <enricomariotti@yahoo.it>
+ *  Copyright (C) 2016 Enrico Mariotti <enricomariotti@yahoo.it>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 
 #include <QFile>
 #include <QFileInfo>
-#include <QDebug>
 
 //I wanted to make the CSV import GUI future-proof, so if one day you need entries
 //to have a new field, all you have to do is uncomment a row or two here, and the GUI will follow:
@@ -103,13 +102,6 @@ CsvImportWidget::CsvImportWidget(QWidget *parent)
 
 void CsvImportWidget::comboChanged(int comboId) {
     QComboBox* currentSender = qobject_cast<QComboBox*>(m_comboMapper->mapping(comboId));
-    if (currentSender != nullptr) {
-        qDebug() <<"comboChanged row " <<currentSender->currentIndex() <<" of sender: " <<comboId;
-    }
-    else {
-        qDebug() <<"CsvImportWidget::comboChanged() - null pointer";
-    }
-
     if (currentSender->currentIndex() != -1) {
         //here is the line that actually updates the GUI table
         m_parserModel->mapColumns(currentSender->currentIndex(), comboId);
@@ -222,7 +214,6 @@ void CsvImportWidget::writeDatabase() {
 
 
 Group* CsvImportWidget::grp(QString label)  {
-    Q_ASSERT(label);
     Group* root = m_db->rootGroup(), *current = root;
     Group* neu = nullptr;
     QStringList grpList = label.split("/",  QString::SkipEmptyParts);
