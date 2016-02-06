@@ -26,6 +26,7 @@
 #include "gui/entry/EntryModel.h"
 
 class ChangeMasterKeyWidget;
+class CsvImportWizard;
 class DatabaseOpenWidget;
 class DatabaseSettingsWidget;
 class Database;
@@ -125,6 +126,8 @@ public Q_SLOTS:
     void switchToDatabaseSettings();
     void switchToOpenDatabase(const QString& fileName);
     void switchToOpenDatabase(const QString& fileName, const QString& password, const QString& keyFile);
+    void switchToImportCsv(const QString& fileName);
+    void csvImportFinished(bool accepted);
     void switchToImportKeepass1(const QString& fileName);
     void openSearch();
 
@@ -162,6 +165,7 @@ private:
     EditEntryWidget* m_historyEditEntryWidget;
     EditGroupWidget* m_editGroupWidget;
     ChangeMasterKeyWidget* m_changeMasterKeyWidget;
+    CsvImportWizard* m_csvImportWizard;
     DatabaseSettingsWidget* m_databaseSettingsWidget;
     DatabaseOpenWidget* m_databaseOpenWidget;
     KeePass1OpenWidget* m_keepass1OpenWidget;

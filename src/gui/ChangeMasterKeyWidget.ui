@@ -7,12 +7,20 @@
     <x>0</x>
     <y>0</y>
     <width>438</width>
-    <height>256</height>
+    <height>278</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="headlineLabel"/>
+    <widget class="QLabel" name="headlineLabel">
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer_2">

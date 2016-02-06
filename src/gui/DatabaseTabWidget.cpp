@@ -193,6 +193,23 @@ void DatabaseTabWidget::openDatabase(const QString& fileName, const QString& pw,
     }
 }
 
+void DatabaseTabWidget::importCsv()
+{
+    QString fileName = fileDialog()->getOpenFileName(this, tr("Open CSV file"), QString(),
+            tr("CSV file") + " (*.csv);;" + tr("All files (*)"));
+
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    Database* db = new Database();
+    DatabaseManagerStruct dbStruct;
+    dbStruct.dbWidget = new DatabaseWidget(db, this);
+
+    insertDatabase(db, dbStruct);
+    dbStruct.dbWidget->switchToImportCsv(fileName);
+}
+
 void DatabaseTabWidget::importKeePass1Database()
 {
     QString fileName = fileDialog()->getOpenFileName(this, tr("Open KeePass 1 database"), QString(),

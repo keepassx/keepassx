@@ -25,6 +25,7 @@
 #include "crypto/Crypto.h"
 #include "gui/Application.h"
 #include "gui/MainWindow.h"
+#include "gui/csvImport/CsvImportWizard.h"
 #include "gui/MessageBox.h"
 
 int main(int argc, char** argv)
@@ -102,6 +103,5 @@ int main(int argc, char** argv)
             }
         }
     }
-
     return app.exec();
 }

@@ -102,9 +102,9 @@ void ChangeMasterKeyWidget::generateKey()
         if (m_ui->enterPasswordEdit->text() == m_ui->repeatPasswordEdit->text()) {
             if (m_ui->enterPasswordEdit->text().isEmpty()) {
                 if (MessageBox::question(this, tr("Question"),
-                                         tr("Do you really want to use an empty string as password?"),
-                                         QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
-                    return;
+                    tr("Do you really want to use an empty string as password?"),
+                    QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
+                        return;
                 }
             }
             m_key.addKey(PasswordKey(m_ui->enterPasswordEdit->text()));
