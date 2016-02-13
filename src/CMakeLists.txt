@@ -39,6 +39,7 @@ set(keepassx_SOURCES
     autotype/WindowSelectComboBox.cpp
     autotype/test/AutoTypeTestInterface.h
     core/AutoTypeAssociations.cpp
+    core/AutoTypeMatch.cpp
     core/Config.cpp
     core/Database.cpp
     core/DatabaseIcons.cpp
@@ -106,6 +107,8 @@ set(keepassx_SOURCES
     gui/UnlockDatabaseWidget.cpp
     gui/WelcomeWidget.cpp
     gui/entry/AutoTypeAssociationsModel.cpp
+    gui/entry/AutoTypeMatchModel.cpp
+    gui/entry/AutoTypeMatchView.cpp
     gui/entry/EditEntryWidget.cpp
     gui/entry/EditEntryWidget_p.h
     gui/entry/EntryAttachmentsModel.cpp
