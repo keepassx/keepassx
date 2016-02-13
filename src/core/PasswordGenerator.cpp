@@ -135,7 +135,7 @@ QVector<PasswordGroup> PasswordGenerator::passwordGroups() const
 
         passwordGroups.append(group);
     }
-    if (m_classes & Numbers) {
+    if (m_classes & Digits) {
         PasswordGroup group;
 
         for (int i = 48; i < (48 + 10); i++) {
@@ -148,28 +148,58 @@ QVector<PasswordGroup> PasswordGenerator::passwordGroups() const
 
         passwordGroups.append(group);
     }
-    if (m_classes & SpecialCharacters) {
+    if (m_classes & Minus) {
+        PasswordGroup group;
+        group.append(45);
+        passwordGroups.append(group);
+    }
+    if (m_classes & Underlines) {
+        PasswordGroup group;
+        group.append(95);
+        passwordGroups.append(group);
+    }
+    if (m_classes & Spaces) {
+        PasswordGroup group;
+        group.append(32);
+        passwordGroups.append(group);
+    }
+    if (m_classes & Specials) {
         PasswordGroup group;
 
         for (int i = 33; i <= 47; i++) {
+            // Skip open/closed parenthesis and minus
+            if ((i == 40) || (i == 41) || (i == 45))
+                continue;
             group.append(i);
         }
 
         for (int i = 58; i <= 64; i++) {
-            group.append(i);
-        }
-
-        for (int i = 91; i <= 96; i++) {
-            group.append(i);
-        }
-
-        for (int i = 123; i <= 126; i++) {
-            if ((m_flags & ExcludeLookAlike) && (i == 124)) { // "|"
+            // Skip angle brackets
+            if ((i == 60) || (i == 62))
                 continue;
-            }
-
             group.append(i);
         }
+
+        // Backslash, Caret, and Grave accent
+        for (int i = 92; i <= 96; i+=2) {
+            group.append(i);
+        }
+
+        if (!(m_flags & ExcludeLookAlike))
+            group.append(124);
+        group.append(126);
+
+        passwordGroups.append(group);
+    }
+    if (m_classes & Brackets) {
+        PasswordGroup group;
+
+        group.append(60);
+        group.append(62);
+        group.append(91);
+        group.append(93);
+        group.append(123);
+        group.append(125);
 
         passwordGroups.append(group);
     }
@@ -187,10 +217,22 @@ int PasswordGenerator::numCharClasses() const
     if (m_classes & UpperLetters) {
         numClasses++;
     }
-    if (m_classes & Numbers) {
+    if (m_classes & Digits) {
         numClasses++;
     }
-    if (m_classes & SpecialCharacters) {
+    if (m_classes & Minus) {
+        numClasses++;
+    }
+    if (m_classes & Underlines) {
+        numClasses++;
+    }
+    if (m_classes & Spaces) {
+        numClasses++;
+    }
+    if (m_classes & Specials) {
+        numClasses++;
+    }
+    if (m_classes & Brackets) {
         numClasses++;
     }
 

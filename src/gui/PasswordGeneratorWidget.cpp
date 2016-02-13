@@ -56,10 +56,14 @@ PasswordGeneratorWidget::~PasswordGeneratorWidget()
 
 void PasswordGeneratorWidget::loadSettings()
 {
-    m_ui->checkBoxLower->setChecked(config()->get("generator/LowerCase", true).toBool());
-    m_ui->checkBoxUpper->setChecked(config()->get("generator/UpperCase", true).toBool());
-    m_ui->checkBoxNumbers->setChecked(config()->get("generator/Numbers", true).toBool());
-    m_ui->checkBoxSpecialChars->setChecked(config()->get("generator/SpecialChars", false).toBool());
+    m_ui->checkBoxBrackets->setChecked(config()->get("generator/Brackets", false).toBool());
+    m_ui->checkBoxDigits->setChecked(config()->get("generator/Digits", true).toBool());
+    m_ui->checkBoxLowers->setChecked(config()->get("generator/LowerCase", true).toBool());
+    m_ui->checkBoxMinus->setChecked(config()->get("generator/Minus", true).toBool());
+    m_ui->checkBoxSpaces->setChecked(config()->get("generator/Spaces", false).toBool());
+    m_ui->checkBoxSpecials->setChecked(config()->get("generator/Specials", false).toBool());
+    m_ui->checkBoxUnderlines->setChecked(config()->get("generator/Underlines", true).toBool());
+    m_ui->checkBoxUppers->setChecked(config()->get("generator/UpperCase", true).toBool());
 
     m_ui->checkBoxExcludeAlike->setChecked(config()->get("generator/ExcludeAlike", true).toBool());
     m_ui->checkBoxEnsureEvery->setChecked(config()->get("generator/EnsureEvery", true).toBool());
@@ -69,10 +73,14 @@ void PasswordGeneratorWidget::loadSettings()
 
 void PasswordGeneratorWidget::saveSettings()
 {
-    config()->set("generator/LowerCase", m_ui->checkBoxLower->isChecked());
-    config()->set("generator/UpperCase", m_ui->checkBoxUpper->isChecked());
-    config()->set("generator/Numbers", m_ui->checkBoxNumbers->isChecked());
-    config()->set("generator/SpecialChars", m_ui->checkBoxSpecialChars->isChecked());
+    config()->set("generator/Brackets", m_ui->checkBoxBrackets->isChecked());
+    config()->set("generator/Digits", m_ui->checkBoxDigits->isChecked());
+    config()->set("generator/LowerCase", m_ui->checkBoxLowers->isChecked());
+    config()->set("generator/Minus", m_ui->checkBoxMinus->isChecked());
+    config()->set("generator/Spaces", m_ui->checkBoxSpaces->isChecked());
+    config()->set("generator/Specials", m_ui->checkBoxSpecials->isChecked());
+    config()->set("generator/Underlines", m_ui->checkBoxUnderlines->isChecked());
+    config()->set("generator/UpperCase", m_ui->checkBoxUppers->isChecked());
 
     config()->set("generator/ExcludeAlike", m_ui->checkBoxExcludeAlike->isChecked());
     config()->set("generator/EnsureEvery", m_ui->checkBoxEnsureEvery->isChecked());
@@ -125,20 +133,36 @@ PasswordGenerator::CharClasses PasswordGeneratorWidget::charClasses()
 {
     PasswordGenerator::CharClasses classes;
 
-    if (m_ui->checkBoxLower->isChecked()) {
+    if (m_ui->checkBoxBrackets->isChecked()) {
+        classes |= PasswordGenerator::Brackets;
+    }
+
+    if (m_ui->checkBoxDigits->isChecked()) {
+        classes |= PasswordGenerator::Digits;
+    }
+
+    if (m_ui->checkBoxLowers->isChecked()) {
         classes |= PasswordGenerator::LowerLetters;
     }
 
-    if (m_ui->checkBoxUpper->isChecked()) {
+    if (m_ui->checkBoxMinus->isChecked()) {
+        classes |= PasswordGenerator::Minus;
+    }
+
+    if (m_ui->checkBoxSpaces->isChecked()) {
+        classes |= PasswordGenerator::Spaces;
+    }
+
+    if (m_ui->checkBoxSpecials->isChecked()) {
+        classes |= PasswordGenerator::Specials;
+    }
+
+    if (m_ui->checkBoxUnderlines->isChecked()) {
+        classes |= PasswordGenerator::Underlines;
+    }
+
+    if (m_ui->checkBoxUppers->isChecked()) {
         classes |= PasswordGenerator::UpperLetters;
-    }
-
-    if (m_ui->checkBoxNumbers->isChecked()) {
-        classes |= PasswordGenerator::Numbers;
-    }
-
-    if (m_ui->checkBoxSpecialChars->isChecked()) {
-        classes |= PasswordGenerator::SpecialCharacters;
     }
 
     return classes;
