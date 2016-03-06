@@ -89,6 +89,7 @@ void DatabaseOpenWidget::load(const QString& filename)
                                  Qt::QueuedConnection);
     QtConcurrent::run(YubiKey::instance(), &YubiKey::detect);
 
+    m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
     m_ui->editPassword->setFocus();
 }
 
@@ -113,9 +114,6 @@ void DatabaseOpenWidget::openDatabase()
 {
     KeePass2Reader reader;
     CompositeKey masterKey = databaseKey();
-    if (masterKey.isEmpty()) {
-        return;
-    }
 
     QFile file(m_filename);
     if (!file.open(QIODevice::ReadOnly)) {

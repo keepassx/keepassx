@@ -42,10 +42,12 @@ private Q_SLOTS:
     void testBroken();
     void testBroken_data();
     void testEmptyUuids();
+    void testInvalidXmlChars();
     void cleanupTestCase();
 
 private:
     static QDateTime genDT(int year, int month, int day, int hour, int min, int second);
+    static QByteArray strToBytes(const QString& str);
 
     Database* m_db;
 };
