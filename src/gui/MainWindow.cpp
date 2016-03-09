@@ -99,6 +99,11 @@ MainWindow::MainWindow()
 
     new QShortcut(Qt::CTRL + Qt::Key_M, this, SLOT(showMinimized()));
 
+    for (int i = 1; i <= 9; i++) {
+        const QString sequence = QString("ALT+") + QString::number(i); 
+        new QShortcut(QKeySequence(sequence), this, SLOT(switchTab()));
+    }
+
     m_ui->actionDatabaseNew->setIcon(filePath()->icon("actions", "document-new"));
     m_ui->actionDatabaseOpen->setIcon(filePath()->icon("actions", "document-open"));
     m_ui->actionDatabaseSave->setIcon(filePath()->icon("actions", "document-save"));
@@ -406,6 +411,16 @@ void MainWindow::showAboutDialog()
 {
     AboutDialog* aboutDialog = new AboutDialog(this);
     aboutDialog->show();
+}
+
+void MainWindow::switchTab()
+{
+    QShortcut* shortcut = qobject_cast<QShortcut*>(sender());
+    QString sequence = shortcut->key().toString();
+    int index = sequence.split("+")[1].toInt();
+    if (index <= m_ui->tabWidget->count()) {
+        m_ui->tabWidget->setCurrentIndex(index - 1);
+    }
 }
 
 void MainWindow::switchToDatabases()
