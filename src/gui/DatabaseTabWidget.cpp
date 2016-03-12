@@ -236,7 +236,7 @@ bool DatabaseTabWidget::closeDatabase(Database* db)
     }
     if (dbStruct.modified) {
         if (config()->get("AutoSaveOnExit").toBool()) {
-            if (!saveDatabase(db)) {
+            if (!saveOrDiscardDatabase(db)) {
                 return false;
             }
         }
@@ -247,7 +247,7 @@ bool DatabaseTabWidget::closeDatabase(Database* db)
                 tr("\"%1\" was modified.\nSave changes?").arg(dbName),
                 QMessageBox::Yes | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Yes);
             if (result == QMessageBox::Yes) {
-                if (!saveDatabase(db)) {
+                if (!saveOrDiscardDatabase(db)) {
                         return false;
                 }
             }
@@ -292,6 +292,24 @@ bool DatabaseTabWidget::closeAllDatabases()
     return true;
 }
 
+bool DatabaseTabWidget::saveOrDiscardDatabase(Database *db)
+{
+    if (saveDatabase(db))
+        return true;
+
+    int dbIndex = databaseIndex(db);
+    Q_ASSERT(dbIndex != -1);
+    QString dbName = tabText(dbIndex);
+
+    QMessageBox::StandardButton discard =
+        MessageBox::warning(
+        this, tr("Discard changes?"),
+        tr("\"%1\" was modified but changes cannot be saved.\nDiscard changes?").arg(dbName),
+        QMessageBox::No | QMessageBox::Discard, QMessageBox::No);
+
+    return discard == QMessageBox::Discard;
+}
+
 bool DatabaseTabWidget::saveDatabase(Database* db)
 {
     DatabaseManagerStruct& dbStruct = m_dbList[db];
@@ -310,6 +328,10 @@ bool DatabaseTabWidget::saveDatabase(Database* db)
                                      + saveFile.errorString());
                 return false;
             }
+        } else {
+            MessageBox::critical(this, tr("Error"), tr("Writing the database failed.") + "\n\n"
+                                 + saveFile.errorString());
+            return false;
         }
 
         dbStruct.modified = false;
