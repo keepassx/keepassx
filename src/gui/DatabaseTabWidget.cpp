@@ -134,8 +134,12 @@ void DatabaseTabWidget::openDatabase(const QString& fileName, const bool& openRe
     while (i.hasNext()) {
         i.next();
         if (i.value().canonicalFilePath == canonicalFilePath) {
-            setCurrentIndex(databaseIndex(i.key()));
-            return;
+            if(i.value().readOnly==openReadOnly) {
+                setCurrentIndex(databaseIndex(i.key()));
+                return;
+            } else {
+                closeDatabase(i.key());
+            }
         }
     }
 
