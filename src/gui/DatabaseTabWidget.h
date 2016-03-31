@@ -55,6 +55,9 @@ public:
     ~DatabaseTabWidget();
     void openDatabase(const QString& fileName, const QString& pw = QString(),
                       const QString& keyFile = QString());
+    void openDatabase(const QString& fileName, const bool& openReadOnly,
+                      const QString& pw = QString(),
+                      const QString& keyFile = QString());
     DatabaseWidget* currentDatabaseWidget();
     bool hasLockableDatabases() const;
 
