@@ -155,6 +155,8 @@ MainWindow::MainWindow()
             SLOT(newDatabase()));
     connect(m_ui->actionDatabaseOpen, SIGNAL(triggered()), m_ui->tabWidget,
             SLOT(openDatabase()));
+    connect(m_ui->actionDatabaseOpenReadOnly, SIGNAL(triggered()), m_ui->tabWidget,
+            SLOT(openDatabaseReadOnly()));
     connect(m_ui->actionDatabaseSave, SIGNAL(triggered()), m_ui->tabWidget,
             SLOT(saveDatabase()));
     connect(m_ui->actionDatabaseSaveAs, SIGNAL(triggered()), m_ui->tabWidget,
@@ -371,6 +373,7 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
     bool inDatabaseTabWidgetOrWelcomeWidget = inDatabaseTabWidget || inWelcomeWidget;
     m_ui->actionDatabaseNew->setEnabled(inDatabaseTabWidgetOrWelcomeWidget);
     m_ui->actionDatabaseOpen->setEnabled(inDatabaseTabWidgetOrWelcomeWidget);
+    m_ui->actionDatabaseOpenReadOnly->setEnabled(inDatabaseTabWidgetOrWelcomeWidget);
     m_ui->menuRecentDatabases->setEnabled(inDatabaseTabWidgetOrWelcomeWidget);
     m_ui->actionImportKeePass1->setEnabled(inDatabaseTabWidgetOrWelcomeWidget);
     m_ui->actionRepairDatabase->setEnabled(inDatabaseTabWidgetOrWelcomeWidget);

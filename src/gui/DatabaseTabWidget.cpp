@@ -98,13 +98,17 @@ void DatabaseTabWidget::newDatabase()
     dbStruct.dbWidget->switchToMasterKeyChange();
 }
 
-void DatabaseTabWidget::openDatabase()
+void DatabaseTabWidget::openDatabaseReadOnly(){
+    openDatabase(true);
+}
+
+void DatabaseTabWidget::openDatabase(const bool& openReadOnly )
 {
     QString filter = QString("%1 (*.kdbx);;%2 (*)").arg(tr("KeePass 2 Database"), tr("All files"));
     QString fileName = fileDialog()->getOpenFileName(this, tr("Open database"), QString(),
                                                      filter);
     if (!fileName.isEmpty()) {
-        openDatabase(fileName);
+        openDatabase(fileName,openReadOnly);
     }
 }
 
