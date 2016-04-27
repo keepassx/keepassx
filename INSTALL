@@ -11,6 +11,7 @@ Common cmake parameters:
 -DCMAKE_VERBOSE_MAKEFILE=ON
 -DCMAKE_BUILD_TYPE=<RelWithDebInfo/Debug/Release>
 -DWITH_GUI_TESTS=ON
+-DWITH_LIBSECRET=ON
 
 Installing:
 ===========

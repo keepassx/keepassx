@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>438</width>
-    <height>256</height>
+    <height>310</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -121,6 +121,16 @@
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="keyRingGroup">
+     <property name="title">
+      <string>System key ring</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>

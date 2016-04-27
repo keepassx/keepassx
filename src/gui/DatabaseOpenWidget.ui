@@ -111,6 +111,13 @@
        </item>
       </layout>
      </item>
+     <item row="2" column="0">
+      <widget class="QCheckBox" name="checkKeyRing">
+       <property name="text">
+        <string>System key ring</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>

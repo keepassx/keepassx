@@ -24,6 +24,11 @@
 #include "gui/FileDialog.h"
 #include "gui/MessageBox.h"
 
+#include "config-keepassx.h"
+#ifdef WITH_LIBSECRET
+#include "keys/LibsecretKey.h"
+#endif // WITH_LIBSECRET
+
 ChangeMasterKeyWidget::ChangeMasterKeyWidget(QWidget* parent)
     : DialogyWidget(parent)
     , m_ui(new Ui::ChangeMasterKeyWidget())
@@ -37,6 +42,10 @@ ChangeMasterKeyWidget::ChangeMasterKeyWidget(QWidget* parent)
     m_ui->repeatPasswordEdit->enableVerifyMode(m_ui->enterPasswordEdit);
     connect(m_ui->createKeyFileButton, SIGNAL(clicked()), SLOT(createKeyFile()));
     connect(m_ui->browseKeyFileButton, SIGNAL(clicked()), SLOT(browseKeyFile()));
+
+#ifndef WITH_LIBSECRET
+    m_ui->keyRingGroup->hide();
+#endif
 }
 
 ChangeMasterKeyWidget::~ChangeMasterKeyWidget()
@@ -79,6 +88,7 @@ void ChangeMasterKeyWidget::clearForms()
     m_ui->repeatPasswordEdit->setText("");
     m_ui->keyFileGroup->setChecked(false);
     m_ui->togglePasswordButton->setChecked(false);
+    m_ui->keyRingGroup->setChecked(false);
     // TODO: clear m_ui->keyFileCombo
 
     m_ui->enterPasswordEdit->setFocus();
@@ -127,7 +137,17 @@ void ChangeMasterKeyWidget::generateKey()
         }
         m_key.addKey(fileKey);
     }
-
+#ifdef WITH_LIBSECRET
+    if (m_ui->keyRingGroup->isChecked()) {
+        LibsecretKey secretKey;
+        QString errorMsg;
+        if (!secretKey.load(&errorMsg)) {
+            MessageBox::critical(this, tr("Failed to read the key from keyring"), tr("libsecret error:\n%1").arg(errorMsg));
+            return;
+        }
+        m_key.addKey(secretKey);
+    }
+#endif // WITH_LIBSECRET
     Q_EMIT editFinished(true);
 }
 

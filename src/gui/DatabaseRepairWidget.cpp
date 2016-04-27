@@ -28,6 +28,11 @@
 #include "keys/FileKey.h"
 #include "keys/PasswordKey.h"
 
+#include "config-keepassx.h"
+#ifdef WITH_LIBSECRET
+#include "keys/LibsecretKey.h"
+#endif // WITH_LIBSECRET
+
 DatabaseRepairWidget::DatabaseRepairWidget(QWidget* parent)
     : DatabaseOpenWidget(parent)
 {
@@ -55,6 +60,19 @@ void DatabaseRepairWidget::openDatabase()
         }
         masterKey.addKey(key);
     }
+
+#ifdef WITH_LIBSECRET
+    if (m_ui->checkKeyRing->isChecked()) {
+        LibsecretKey key;
+        QString errorMsg;
+        if (!key.load(&errorMsg)) {
+            MessageBox::warning(this, tr("Error"), tr("Can't load key from keyring").append(":\n").append(errorMsg));
+            Q_EMIT editFinished(false);
+            return;
+        }
+        masterKey.addKey(key);
+    }
+#endif // WITH_LIBSECRET
 
     KeePass2Repair repair;
 
