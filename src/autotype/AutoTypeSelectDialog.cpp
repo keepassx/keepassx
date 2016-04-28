@@ -24,6 +24,7 @@
 #include <QVBoxLayout>
 
 #include "autotype/AutoTypeSelectView.h"
+#include "core/Config.h"
 #include "core/FilePath.h"
 #include "gui/entry/EntryModel.h"
 
@@ -41,6 +42,10 @@ AutoTypeSelectDialog::AutoTypeSelectDialog(QWidget* parent)
 
     QSize size(400, 250);
     resize(size);
+
+    if (restoreGeometry(config()->get("GUI/AutoTypeSelectDialogGeometry").toByteArray())) {
+        size = this->size();
+    }
 
     // move dialog to the center of the screen
     QPoint screenCenter = QApplication::desktop()->availableGeometry(QCursor::pos()).center();
@@ -65,6 +70,10 @@ void AutoTypeSelectDialog::setEntries(const QList<Entry*>& entries, const QHash<
 {
     m_sequences = sequences;
     m_view->setEntryList(entries);
+
+    for (int i = 0; i < 3; ++i) {
+        m_view->resizeColumnToContents(i);
+    }
 }
 
 void AutoTypeSelectDialog::emitEntryActivated(const QModelIndex& index)
@@ -85,4 +94,10 @@ void AutoTypeSelectDialog::entryRemoved()
     if (m_view->model()->rowCount() == 0) {
         reject();
     }
+}
+
+void AutoTypeSelectDialog::done(int r)
+{
+    config()->set("GUI/AutoTypeSelectDialogGeometry", saveGeometry());
+    QDialog::done(r);
 }

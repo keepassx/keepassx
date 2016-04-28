@@ -39,6 +39,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void emitEntryActivated(const QModelIndex& index);
     void entryRemoved();
+    void done(int r) override;
 
 private:
     AutoTypeSelectView* const m_view;
