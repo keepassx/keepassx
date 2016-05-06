@@ -42,6 +42,7 @@
 #include "gui/KeePass1OpenWidget.h"
 #include "gui/MessageBox.h"
 #include "gui/UnlockDatabaseWidget.h"
+#include "gui/UnlockDatabaseDialog.h"
 #include "gui/entry/EditEntryWidget.h"
 #include "gui/entry/EntryView.h"
 #include "gui/group/EditGroupWidget.h"
@@ -130,6 +131,8 @@ DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     m_keepass1OpenWidget->setObjectName("keepass1OpenWidget");
     m_unlockDatabaseWidget = new UnlockDatabaseWidget();
     m_unlockDatabaseWidget->setObjectName("unlockDatabaseWidget");
+    m_unlockDatabaseDialog = new UnlockDatabaseDialog();
+    m_unlockDatabaseDialog->setObjectName("unlockDatabaseDialog");
     addWidget(m_mainWidget);
     addWidget(m_editEntryWidget);
     addWidget(m_editGroupWidget);
@@ -157,6 +160,7 @@ DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     connect(m_databaseOpenWidget, SIGNAL(editFinished(bool)), SLOT(openDatabase(bool)));
     connect(m_keepass1OpenWidget, SIGNAL(editFinished(bool)), SLOT(openDatabase(bool)));
     connect(m_unlockDatabaseWidget, SIGNAL(editFinished(bool)), SLOT(unlockDatabase(bool)));
+    connect(m_unlockDatabaseDialog, SIGNAL(unlockDone(bool)), SLOT(unlockDatabase(bool)));
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(emitCurrentModeChanged()));
     connect(m_searchUi->searchEdit, SIGNAL(textChanged(QString)), this, SLOT(startSearchTimer()));
     connect(m_searchUi->caseSensitiveCheckBox, SIGNAL(toggled(bool)), this, SLOT(startSearch()));
@@ -181,7 +185,8 @@ DatabaseWidget::Mode DatabaseWidget::currentMode() const
     else if (currentWidget() == m_mainWidget) {
         return DatabaseWidget::ViewMode;
     }
-    else if (currentWidget() == m_unlockDatabaseWidget) {
+    else if (currentWidget() == m_unlockDatabaseWidget ||
+             currentWidget() == m_databaseOpenWidget) {
         return DatabaseWidget::LockedMode;
     }
     else {
@@ -657,7 +662,15 @@ void DatabaseWidget::unlockDatabase(bool accepted)
         return;
     }
 
-    replaceDatabase(static_cast<DatabaseOpenWidget*>(sender())->database());
+    // check if sender() is either the unlock widget or the unlock dialog
+    Database *db = Q_NULLPTR;
+    if (sender() == m_unlockDatabaseDialog) {
+        db = m_unlockDatabaseDialog->database();
+    } else if (sender() == m_unlockDatabaseWidget) {
+        db = m_unlockDatabaseWidget->database();
+    }
+
+    replaceDatabase(db);
 
     QList<Group*> groups = m_db->rootGroup()->groupsRecursive(true);
     Q_FOREACH (Group* group, groups) {
@@ -671,6 +684,12 @@ void DatabaseWidget::unlockDatabase(bool accepted)
     setCurrentWidget(m_mainWidget);
     m_unlockDatabaseWidget->clearForms();
     Q_EMIT unlockedDatabase();
+
+    if (sender() == m_unlockDatabaseDialog) {
+        QList<Database*> dbList;
+        dbList.append(m_db);
+        autoType()->performGlobalAutoType(dbList);
+    }
 }
 
 void DatabaseWidget::entryActivationSignalReceived(Entry* entry, EntryModel::ModelColumn column)
@@ -1014,4 +1033,17 @@ bool DatabaseWidget::eventFilter(QObject* object, QEvent* event)
     }
 
     return false;
+}
+
+void DatabaseWidget::showUnlockDialog()
+{
+    m_unlockDatabaseDialog->clearForms();
+    m_unlockDatabaseDialog->setDBFilename(m_filename);
+    m_unlockDatabaseDialog->show();
+    m_unlockDatabaseDialog->activateWindow();
+}
+
+void DatabaseWidget::closeUnlockDialog()
+{
+    m_unlockDatabaseDialog->close();
 }
