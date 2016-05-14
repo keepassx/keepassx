@@ -34,10 +34,11 @@ Q_SIGNALS:
 
 private:
     DWORD m_threadId;
-    Qt::Key m_key;
-    Qt::KeyboardModifiers m_modifiers;
+    Qt::Key m_currentGlobalKey;
+    Qt::KeyboardModifiers m_currentGlobalModifiers;
 
-    static BYTE getNativeKeyCode(Qt::Key key);
+    static DWORD qtToNativeKeyCode(Qt::Key key);
+    static DWORD qtToNativeModifiers(Qt::KeyboardModifiers modifiers);
     static BOOL isAltTabWindow(HWND hwnd);
     static BOOL CALLBACK windowTitleEnumProc(_In_ HWND hwnd, _In_ LPARAM lParam);
     static DWORD WINAPI hotkeyThreadProc(_In_ LPVOID lpParameter);
