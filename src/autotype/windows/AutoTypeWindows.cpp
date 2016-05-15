@@ -1,13 +1,9 @@
 #include "AutoTypeWindows.h"
 
+#define HOTKEY_ID 1
 #define MAX_WINDOW_TITLE_LENGTH 1024
 
 #define MOD_NOREPEAT 0x4000 // Missing in MinGW
-
-AutoTypePlatformWin::AutoTypePlatformWin()
-    : m_threadId(0)
-{
-}
 
 //
 // Windows 7 or later
@@ -58,36 +54,31 @@ QString AutoTypePlatformWin::activeWindowTitle()
 }
 
 //
-// Start hotkey thread
+// Register global hotkey
 //
 bool AutoTypePlatformWin::registerGlobalShortcut(Qt::Key key, Qt::KeyboardModifiers modifiers)
 {
-    if (m_threadId == 0) {
-        m_currentGlobalKey = key;
-        m_currentGlobalModifiers = modifiers;
-
-        HANDLE thread = ::CreateThread(nullptr, 0, AutoTypePlatformWin::hotkeyThreadProc, this, 0, &m_threadId);
-        ::CloseHandle(thread);
-
-        return true;
+    DWORD nativeKeyCode = qtToNativeKeyCode(key);
+    if (nativeKeyCode == 0) {
+        return false;
+    }
+    DWORD nativeModifiers = qtToNativeModifiers(modifiers);
+    if (!::RegisterHotKey(nullptr, HOTKEY_ID, nativeModifiers | MOD_NOREPEAT, nativeKeyCode)) {
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 //
-// Stop hotkey thread
+// Unregister global hotkey
 //
 void AutoTypePlatformWin::unregisterGlobalShortcut(Qt::Key key, Qt::KeyboardModifiers modifiers)
 {
     Q_UNUSED(key);
     Q_UNUSED(modifiers);
 
-    if (m_threadId != 0) {
-        // Signal graceful shutdown
-        ::PostThreadMessage(m_threadId, WM_QUIT, 0, 0);
-        m_threadId = 0;
-    }
+    ::UnregisterHotKey(nullptr, HOTKEY_ID);
 }
 
 //
@@ -95,10 +86,12 @@ void AutoTypePlatformWin::unregisterGlobalShortcut(Qt::Key key, Qt::KeyboardModi
 //
 int AutoTypePlatformWin::platformEventFilter(void* event)
 {
-    Q_UNUSED(event);
+    MSG *msg = static_cast<MSG *>(event);
 
-    // Need to modify keepassx_core to use native event filter
-    Q_ASSERT(false);
+    if (msg->message == WM_HOTKEY) {
+        Q_EMIT globalShortcutTriggered();
+        return 1;
+    }
 
     return -1;
 }
@@ -119,6 +112,7 @@ int AutoTypePlatformWin::initialTimeout()
 bool AutoTypePlatformWin::raiseWindow(WId window)
 {
     HWND hwnd = reinterpret_cast<HWND>(window);
+
     return ::BringWindowToTop(hwnd) && ::SetForegroundWindow(hwnd);
 }
 
@@ -376,7 +370,7 @@ BOOL AutoTypePlatformWin::isAltTabWindow(HWND hwnd)
     while (hwndTry != hwndWalk) {
         // See if we are the last active visible popup
         hwndTry = ::GetLastActivePopup(hwndWalk);
-        if(::IsWindowVisible(hwndTry)) {
+        if (::IsWindowVisible(hwndTry)) {
             break;
         }
         hwndWalk = hwndTry;
@@ -386,7 +380,7 @@ BOOL AutoTypePlatformWin::isAltTabWindow(HWND hwnd)
 }
 
 //
-// WinApi enum proc
+// Window title enum proc
 //
 BOOL CALLBACK AutoTypePlatformWin::windowTitleEnumProc(
     _In_ HWND   hwnd,
@@ -411,45 +405,6 @@ BOOL CALLBACK AutoTypePlatformWin::windowTitleEnumProc(
 }
 
 //
-// Hotkey thread proc
-//
-DWORD WINAPI AutoTypePlatformWin::hotkeyThreadProc(
-  _In_ LPVOID lpParameter
-)
-{
-    AutoTypePlatformWin *self = reinterpret_cast<AutoTypePlatformWin *>(lpParameter);
-
-    // Register global hotkey
-    DWORD nativeKeyCode = qtToNativeKeyCode(self->m_currentGlobalKey);
-    if (nativeKeyCode == 0) {
-        return 1;
-    }
-    DWORD nativeModifiers = qtToNativeModifiers(self->m_currentGlobalModifiers);
-    if (!::RegisterHotKey(nullptr, 1, nativeModifiers | MOD_NOREPEAT, nativeKeyCode)) {
-        return 2;
-    }
-
-    MSG msg;
-    ::ZeroMemory(&msg, sizeof(MSG));
-
-    while (::GetMessage(&msg, nullptr, 0, 0) != 0)
-    {
-        if (msg.message == WM_QUIT) {
-            // Exit thread
-            break;
-        }
-        else if (msg.message == WM_HOTKEY) {
-            // Emit hotkey signal
-            Q_EMIT self->globalShortcutTriggered();
-        }
-    }
-
-    ::UnregisterHotKey(nullptr, 1);
-
-    return 0;
-}
-
-//
 // ------------------------------ AutoTypeExecutorWin ------------------------------
 //
 
@@ -467,4 +422,3 @@ void AutoTypeExecutorWin::execKey(AutoTypeKey* action)
 {
     m_platform->sendKey(action->key);
 }
-
