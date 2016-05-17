@@ -37,6 +37,7 @@ private:
     static BOOL isExtendedKey(DWORD nativeKeyCode);
     static BOOL isAltTabWindow(HWND hwnd);
     static BOOL CALLBACK windowTitleEnumProc(_In_ HWND hwnd, _In_ LPARAM lParam);
+    static QString windowTitle(HWND hwnd);
 };
 
 class AutoTypeExecutorWin : public AutoTypeExecutor

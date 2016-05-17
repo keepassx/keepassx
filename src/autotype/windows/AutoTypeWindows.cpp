@@ -47,10 +47,7 @@ WId AutoTypePlatformWin::activeWindow()
 //
 QString AutoTypePlatformWin::activeWindowTitle()
 {
-    wchar_t title[MAX_WINDOW_TITLE_LENGTH];
-    int count = ::GetWindowTextW(::GetForegroundWindow(), title, MAX_WINDOW_TITLE_LENGTH);
-
-    return QString::fromUtf16(reinterpret_cast<const ushort *>(title), count);
+    return windowTitle(::GetForegroundWindow());
 }
 
 //
@@ -444,16 +441,25 @@ BOOL CALLBACK AutoTypePlatformWin::windowTitleEnumProc(
         return TRUE;
     }
 
-    wchar_t title[MAX_WINDOW_TITLE_LENGTH];
-    int count = ::GetWindowTextW(hwnd, title, MAX_WINDOW_TITLE_LENGTH);
     QStringList *list = reinterpret_cast<QStringList *>(lParam);
+    QString title = windowTitle(hwnd);
 
-    if (list != nullptr && count > 0) {
-        // Add window title
-        list->append(QString::fromUtf16(reinterpret_cast<const ushort *>(title), count));
+    if (!title.isEmpty()) {
+        list->append(title);
     }
 
     return TRUE;
+}
+
+//
+// Get window title
+//
+QString AutoTypePlatformWin::windowTitle(HWND hwnd)
+{
+    wchar_t title[MAX_WINDOW_TITLE_LENGTH];
+    int count = ::GetWindowTextW(hwnd, title, MAX_WINDOW_TITLE_LENGTH);
+
+    return QString::fromUtf16(reinterpret_cast<const ushort *>(title), count);
 }
 
 //
