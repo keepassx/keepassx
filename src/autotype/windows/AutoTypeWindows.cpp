@@ -206,6 +206,14 @@ DWORD AutoTypePlatformWin::qtToNativeKeyCode(Qt::Key key)
         return VK_RIGHT;    // 0x27
     case Qt::Key_Down:
         return VK_DOWN;     // 0x28
+    case Qt::Key_Print:
+        return VK_SNAPSHOT; // 0x2C
+    case Qt::Key_Insert:
+        return VK_INSERT;   // 0x2D
+    case Qt::Key_Delete:
+        return VK_DELETE;   // 0x2E
+    case Qt::Key_Help:
+        return VK_HELP;     // 0x2F
 
     case Qt::Key_0:
         return 0x30;        // 0x30
@@ -334,6 +342,7 @@ DWORD AutoTypePlatformWin::qtToNativeKeyCode(Qt::Key key)
         return VK_NUMLOCK;  // 0x90
     case Qt::Key_ScrollLock:
         return VK_SCROLL;   // 0x91
+
     default:
         Q_ASSERT(false);
         return 0;
