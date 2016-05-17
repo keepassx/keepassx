@@ -6,7 +6,7 @@
 #define MOD_NOREPEAT 0x4000 // Missing in MinGW
 
 //
-// Windows 7 or later
+// Test if os version is Windows 7 or later
 // see: https://msdn.microsoft.com/en-us/library/windows/desktop/ms724451%28v=vs.85%29.aspx
 //
 bool AutoTypePlatformWin::isAvailable()
@@ -119,45 +119,55 @@ bool AutoTypePlatformWin::raiseWindow(WId window)
 //
 // Send unicode character to foreground window
 //
-void AutoTypePlatformWin::sendChar(const QChar& ch)
+void AutoTypePlatformWin::sendChar(const QChar& ch, bool isKeyDown)
 {
+    DWORD nativeFlags = KEYEVENTF_UNICODE;
+    if (!isKeyDown) {
+        nativeFlags |= KEYEVENTF_KEYUP;
+    }
+
     INPUT in;
     in.type = INPUT_KEYBOARD;
     in.ki.wVk = 0;
     in.ki.wScan = ch.unicode();
-    in.ki.dwFlags = KEYEVENTF_UNICODE;
+    in.ki.dwFlags = nativeFlags;
     in.ki.time = 0;
     in.ki.dwExtraInfo = ::GetMessageExtraInfo();
 
     ::SendInput(1, &in, sizeof(INPUT));
-    ::Sleep(25);
 }
 
 //
 // Send virtual key code to foreground window
 //
-void AutoTypePlatformWin::sendKey(Qt::Key key)
+void AutoTypePlatformWin::sendKey(Qt::Key key, bool isKeyDown)
 {
-    DWORD wVk = qtToNativeKeyCode(key);
-    if (wVk == 0) {
+    DWORD nativeKeyCode = qtToNativeKeyCode(key);
+    if (nativeKeyCode == 0) {
         return;
+    }
+    DWORD nativeFlags = 0;
+    if (isExtendedKey(nativeKeyCode)) {
+        nativeFlags |= KEYEVENTF_EXTENDEDKEY;
+    }
+    if (!isKeyDown) {
+        nativeFlags |= KEYEVENTF_KEYUP;
     }
 
     INPUT in;
     in.type = INPUT_KEYBOARD;
-    in.ki.wVk = wVk;
-    in.ki.wScan = ::MapVirtualKeyW(wVk, MAPVK_VK_TO_VSC);
-    in.ki.dwFlags = 0;
+    in.ki.wVk = LOWORD(nativeKeyCode);
+    in.ki.wScan = LOWORD(::MapVirtualKeyW(nativeKeyCode, MAPVK_VK_TO_VSC));
+    in.ki.dwFlags = nativeFlags;
     in.ki.time = 0;
     in.ki.dwExtraInfo = ::GetMessageExtraInfo();
 
     ::SendInput(1, &in, sizeof(INPUT));
-    ::Sleep(25);
 }
 
 //
 // Translate qt key code to windows virtual key code
-// see: https://msdn.microsoft.com/de-de/library/windows/desktop/dd375731%28v=vs.85%29.aspx
+// see: https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731%28v=vs.85%29.aspx
 //
 DWORD AutoTypePlatformWin::qtToNativeKeyCode(Qt::Key key)
 {
@@ -331,6 +341,39 @@ DWORD AutoTypePlatformWin::qtToNativeKeyCode(Qt::Key key)
 }
 
 //
+// The extended-key flag indicates whether the keystroke message originated
+// from one of the additional keys on the enhanced keyboard
+// see: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646267%28v=vs.85%29.aspx#EXTENDED_KEY_FLAG
+//
+BOOL AutoTypePlatformWin::isExtendedKey(DWORD nativeKeyCode)
+{
+    switch (nativeKeyCode) {
+    case VK_RMENU:
+    case VK_RCONTROL:
+    case VK_INSERT:
+    case VK_DELETE:
+    case VK_HOME:
+    case VK_END:
+    case VK_PRIOR:
+    case VK_NEXT:
+    case VK_LEFT:
+    case VK_UP:
+    case VK_RIGHT:
+    case VK_DOWN:
+    case VK_NUMLOCK:
+    case VK_CANCEL:
+    case VK_SNAPSHOT:
+    case VK_DIVIDE:
+    case VK_LWIN:
+    case VK_RWIN:
+    case VK_APPS:
+        return TRUE;
+    default:
+        return FALSE;
+    }
+}
+
+//
 // Translate qt key modifiers to windows modifiers
 //
 DWORD AutoTypePlatformWin::qtToNativeModifiers(Qt::KeyboardModifiers modifiers)
@@ -354,8 +397,8 @@ DWORD AutoTypePlatformWin::qtToNativeModifiers(Qt::KeyboardModifiers modifiers)
 }
 
 //
-// see: https://stackoverflow.com/questions/7277366/why-does-enumwindows-return-more-windows-than-i-expected
-//      https://blogs.msdn.microsoft.com/oldnewthing/20071008-00/?p=24863
+// Test if window is in Alt+Tab list
+// see: https://blogs.msdn.microsoft.com/oldnewthing/20071008-00/?p=24863
 //
 BOOL AutoTypePlatformWin::isAltTabWindow(HWND hwnd)
 {
@@ -415,10 +458,14 @@ AutoTypeExecutorWin::AutoTypeExecutorWin(AutoTypePlatformWin* platform)
 
 void AutoTypeExecutorWin::execChar(AutoTypeChar* action)
 {
-    m_platform->sendChar(action->character);
+    m_platform->sendChar(action->character, true);
+    m_platform->sendChar(action->character, false);
+    ::Sleep(25);
 }
 
 void AutoTypeExecutorWin::execKey(AutoTypeKey* action)
 {
-    m_platform->sendKey(action->key);
+    m_platform->sendKey(action->key, true);
+    m_platform->sendKey(action->key, false);
+    ::Sleep(25);
 }

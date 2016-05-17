@@ -25,8 +25,8 @@ public:
     bool raiseWindow(WId window) override;
     AutoTypeExecutor* createExecutor() override;
 
-    void sendChar(const QChar& ch);
-    void sendKey(Qt::Key key);
+    void sendChar(const QChar& ch, bool isKeyDown);
+    void sendKey(Qt::Key key, bool isKeyDown);
 
 Q_SIGNALS:
     void globalShortcutTriggered();
@@ -34,6 +34,7 @@ Q_SIGNALS:
 private:
     static DWORD qtToNativeKeyCode(Qt::Key key);
     static DWORD qtToNativeModifiers(Qt::KeyboardModifiers modifiers);
+    static BOOL isExtendedKey(DWORD nativeKeyCode);
     static BOOL isAltTabWindow(HWND hwnd);
     static BOOL CALLBACK windowTitleEnumProc(_In_ HWND hwnd, _In_ LPARAM lParam);
 };
