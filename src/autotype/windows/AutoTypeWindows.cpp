@@ -102,7 +102,7 @@ int AutoTypePlatformWin::platformEventFilter(void* event)
 {
     MSG *msg = static_cast<MSG *>(event);
 
-    if (msg->message == WM_HOTKEY) {
+    if (msg->message == WM_HOTKEY && msg->wParam == HOTKEY_ID) {
         Q_EMIT globalShortcutTriggered();
         return 1;
     }
