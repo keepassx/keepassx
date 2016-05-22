@@ -76,6 +76,7 @@ void SettingsWidget::loadSettings()
     m_generalUi->minimizeOnCopyCheckBox->setChecked(config()->get("MinimizeOnCopy").toBool());
     m_generalUi->useGroupIconOnEntryCreationCheckBox->setChecked(config()->get("UseGroupIconOnEntryCreation").toBool());
     m_generalUi->autoTypeEntryTitleMatchCheckBox->setChecked(config()->get("AutoTypeEntryTitleMatch").toBool());
+    m_generalUi->autoTypeEntryUrlMatchCheckBox->setChecked(config()->get("AutoTypeEntryUrlMatch").toBool());
 
     m_generalUi->languageComboBox->clear();
     QList<QPair<QString, QString> > languages = Translator::availableLanguages();
@@ -125,6 +126,8 @@ void SettingsWidget::saveSettings()
                   m_generalUi->useGroupIconOnEntryCreationCheckBox->isChecked());
     config()->set("AutoTypeEntryTitleMatch",
                   m_generalUi->autoTypeEntryTitleMatchCheckBox->isChecked());
+    config()->set("AutoTypeEntryUrlMatch",
+                  m_generalUi->autoTypeEntryUrlMatchCheckBox->isChecked());
     int currentLangIndex = m_generalUi->languageComboBox->currentIndex();
     config()->set("GUI/Language", m_generalUi->languageComboBox->itemData(currentLangIndex).toString());
 
