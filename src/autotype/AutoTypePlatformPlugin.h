@@ -39,6 +39,10 @@ public:
 
     virtual AutoTypeExecutor* createExecutor() = 0;
 
+#if defined(Q_OS_MAC)
+    virtual bool raiseLastActiveWindow() = 0;
+#endif
+
     // implementations should also provide a globalShortcutTriggered() signal
 };
 

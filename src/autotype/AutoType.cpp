@@ -146,7 +146,11 @@ void AutoType::performAutoType(const Entry* entry, QWidget* hideWindow, const QS
     }
 
     if (hideWindow) {
+#if defined(Q_OS_MAC)
+        m_plugin->raiseLastActiveWindow();
+#else
         hideWindow->showMinimized();
+#endif
     }
 
     Tools::wait(m_plugin->initialTimeout());
