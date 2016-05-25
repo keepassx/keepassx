@@ -73,7 +73,7 @@ QString AutoTypePlatformWin::activeWindowTitle()
 bool AutoTypePlatformWin::registerGlobalShortcut(Qt::Key key, Qt::KeyboardModifiers modifiers)
 {
     DWORD nativeKeyCode = qtToNativeKeyCode(key);
-    if (nativeKeyCode == 0) {
+    if (nativeKeyCode < 1 || nativeKeyCode > 254) {
         return false;
     }
     DWORD nativeModifiers = qtToNativeModifiers(modifiers);
@@ -157,7 +157,7 @@ void AutoTypePlatformWin::sendChar(const QChar& ch, bool isKeyDown)
 void AutoTypePlatformWin::sendKey(Qt::Key key, bool isKeyDown)
 {
     DWORD nativeKeyCode = qtToNativeKeyCode(key);
-    if (nativeKeyCode == 0) {
+    if (nativeKeyCode < 1 || nativeKeyCode > 254) {
         return;
     }
     DWORD nativeFlags = 0;
@@ -356,6 +356,39 @@ DWORD AutoTypePlatformWin::qtToNativeKeyCode(Qt::Key key)
         return VK_NUMLOCK;  // 0x90
     case Qt::Key_ScrollLock:
         return VK_SCROLL;   // 0x91
+
+    case Qt::Key_Exclam:        // !
+    case Qt::Key_QuoteDbl:      // "
+    case Qt::Key_NumberSign:    // #
+    case Qt::Key_Dollar:        // $
+    case Qt::Key_Percent:       // %
+    case Qt::Key_Ampersand:     // &
+    case Qt::Key_Apostrophe:    // '
+    case Qt::Key_ParenLeft:     // (
+    case Qt::Key_ParenRight:    // )
+    case Qt::Key_Asterisk:      // *
+    case Qt::Key_Plus:          // +
+    case Qt::Key_Comma:         // ,
+    case Qt::Key_Minus:         // -
+    case Qt::Key_Period:        // .
+    case Qt::Key_Slash:         // /
+    case Qt::Key_Colon:         // :
+    case Qt::Key_Semicolon:     // ;
+    case Qt::Key_Less:          // <
+    case Qt::Key_Equal:         // =
+    case Qt::Key_Greater:       // >
+    case Qt::Key_Question:      // ?
+    case Qt::Key_BracketLeft:   // [
+    case Qt::Key_Backslash:     // '\'
+    case Qt::Key_BracketRight:  // ]
+    case Qt::Key_AsciiCircum:   // ^
+    case Qt::Key_Underscore:    // _
+    case Qt::Key_QuoteLeft:     // `
+    case Qt::Key_BraceLeft:     // {
+    case Qt::Key_Bar:           // |
+    case Qt::Key_BraceRight:    // }
+    case Qt::Key_AsciiTilde:    // ~
+        return LOBYTE(::VkKeyScanExW(key, ::GetKeyboardLayout(0)));
 
     default:
         Q_ASSERT(false);
