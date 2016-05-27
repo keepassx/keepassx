@@ -12,3 +12,7 @@ target_link_libraries(keepassx-autotype-cocoa ${PROGNAME} Qt5::Core Qt5::Widgets
 install(TARGETS keepassx-autotype-cocoa
         BUNDLE DESTINATION . COMPONENT Runtime
         LIBRARY DESTINATION ${PLUGIN_INSTALL_DIR} COMPONENT Runtime)
+install(CODE "
+    include(BundleUtilities)
+    fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/${PROGNAME}.app\" \"\${CMAKE_INSTALL_PREFIX}/${PLUGIN_INSTALL_DIR}/libkeepassx-autotype-cocoa.so\" \"\")
+" COMPONENT Runtime)
