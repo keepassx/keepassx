@@ -17,6 +17,7 @@
 
 #include <QCommandLineParser>
 #include <QFile>
+#include <QTextStream>
 
 #include "config-keepassx.h"
 #include "core/Config.h"
@@ -61,11 +62,14 @@ int main(int argc, char** argv)
     QCommandLineOption keyfileOption("keyfile",
                                      QCoreApplication::translate("main", "key file of the database"),
                                      "keyfile");
+    QCommandLineOption stdinOption("stdin",
+                                   QCoreApplication::translate("main", "read password of the database from stdin"));
 
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOption(configOption);
     parser.addOption(keyfileOption);
+    parser.addOption(stdinOption);
 
     parser.process(app);
     const QStringList args = parser.positionalArguments();
@@ -90,7 +94,12 @@ int main(int argc, char** argv)
     if (!args.isEmpty()) {
         QString filename = args[0];
         if (!filename.isEmpty() && QFile::exists(filename)) {
-            mainWindow.openDatabase(filename, QString(), parser.value(keyfileOption));
+	          QString password;
+	          if (parser.isSet(stdinOption)) {
+		          static QTextStream in(stdin, QIODevice::ReadOnly);
+		          password = in.readLine();
+	          }
+            mainWindow.openDatabase(filename, password, parser.value(keyfileOption));
         }
     }
 
