@@ -464,11 +464,10 @@ BOOL AutoTypePlatformWin::isAltTabWindow(HWND hwnd)
 
     // Start at the root owner
     HWND hwndWalk = ::GetAncestor(hwnd, GA_ROOTOWNER);
-    HWND hwndTry = nullptr;
+    HWND hwndTry;
 
-    while (hwndTry != hwndWalk) {
-        // See if we are the last active visible popup
-        hwndTry = ::GetLastActivePopup(hwndWalk);
+    // See if we are the last active visible popup
+    while ((hwndTry = ::GetLastActivePopup(hwndWalk)) != hwndWalk) {
         if (::IsWindowVisible(hwndTry)) {
             break;
         }
