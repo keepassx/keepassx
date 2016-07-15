@@ -15,13 +15,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#import "AppKitWrapper.h"
+#import "AppKitImpl.h"
 
 #import <AppKit/NSWorkspace.h>
 
 @implementation AppKitImpl
 
-AppKitWrapper::AppKitWrapper()
+AppKit::AppKit()
 {
     self = [[AppKitImpl alloc] init];
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:static_cast<id>(self)
@@ -30,7 +30,7 @@ AppKitWrapper::AppKitWrapper()
                                                              object:nil];
 }
 
-AppKitWrapper::~AppKitWrapper()
+AppKit::~AppKit()
 {
     [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:static_cast<id>(self)];
     [static_cast<id>(self) dealloc];
@@ -50,14 +50,6 @@ AppKitWrapper::~AppKitWrapper()
 }
 
 //
-// Get process id of own process
-//
-- (pid_t) ownProcessId
-{
-    return [NSProcessInfo processInfo].processIdentifier;
-}
-
-//
 // Get process id of frontmost application (-> keyboard input)
 //
 - (pid_t) activeProcessId
@@ -66,53 +58,45 @@ AppKitWrapper::~AppKitWrapper()
 }
 
 //
+// Get process id of own process
+//
+- (pid_t) ownProcessId
+{
+    return [NSProcessInfo processInfo].processIdentifier;
+}
+
+//
 // Activate application by process id
 //
 - (bool) activateProcess:(pid_t) pid
 {
     NSRunningApplication *app = [NSRunningApplication runningApplicationWithProcessIdentifier:pid];
-    if (app == nil) {
-        return false;
-    }
 
-    return [app activateWithOptions: NSApplicationActivateIgnoringOtherApps];
-}
-
-//
-// Test if process id belongs to frontmost application
-//
-- (bool) isProcessActive:(pid_t) pid
-{
-    return pid == [self activeProcessId];
+    return [app activateWithOptions:NSApplicationActivateIgnoringOtherApps];
 }
 
 //
 // ------------------------- C++ Trampolines -------------------------
 //
 
-pid_t AppKitWrapper::lastActiveProcessId()
+pid_t AppKit::lastActiveProcessId()
 {
     return [static_cast<id>(self) lastActiveApplication].processIdentifier;
 }
 
-pid_t AppKitWrapper::ownProcessId()
-{
-    return [static_cast<id>(self) ownProcessId];
-}
-
-pid_t AppKitWrapper::activeProcessId()
+pid_t AppKit::activeProcessId()
 {
     return [static_cast<id>(self) activeProcessId];
 }
 
-bool AppKitWrapper::activateProcess(pid_t pid)
+pid_t AppKit::ownProcessId()
 {
-    return [static_cast<id>(self) activateProcess:pid];
+    return [static_cast<id>(self) ownProcessId];
 }
 
-bool AppKitWrapper::isProcessActive(pid_t pid)
+bool AppKit::activateProcess(pid_t pid)
 {
-    return [static_cast<id>(self) isProcessActive:pid];
+    return [static_cast<id>(self) activateProcess:pid];
 }
 
 @end

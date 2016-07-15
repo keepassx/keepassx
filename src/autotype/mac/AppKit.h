@@ -15,29 +15,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSX_APPKIT_INTERFACE_H
-#define KEEPASSX_APPKIT_INTERFACE_H
+#ifndef KEEPASSX_APPKIT_H
+#define KEEPASSX_APPKIT_H
 
 #include <unistd.h>
 
 extern "C" {
 
-class AppKitWrapper
+class AppKit
 {
 public:
-    AppKitWrapper();
-    ~AppKitWrapper();
+    AppKit();
+    ~AppKit();
 
     pid_t lastActiveProcessId();
-    pid_t ownProcessId();
     pid_t activeProcessId();
+    pid_t ownProcessId();
     bool activateProcess(pid_t pid);
-    bool isProcessActive(pid_t pid);
 
 private:
     void *self;
 };
 
-} // extern "C"
+}  // extern "C"
 
-#endif // KEEPASSX_APPKIT_INTERFACE_H
+#endif  // KEEPASSX_APPKIT_H

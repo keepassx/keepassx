@@ -24,7 +24,7 @@
 #define INVALID_KEYCODE 0xFFFF
 
 AutoTypePlatformMac::AutoTypePlatformMac()
-    : m_appkit(new AppKitWrapper())
+    : m_appkit(new AppKit())
     , m_hotkeyRef(nullptr)
     , m_hotkeyId({ 'kpx2', HOTKEY_ID })
 {
@@ -74,7 +74,7 @@ QStringList AutoTypePlatformMac::windowTitles()
 }
 
 //
-// Get active window id
+// Get active window process id
 //
 WId AutoTypePlatformMac::activeWindow()
 {
@@ -411,6 +411,7 @@ uint16 AutoTypePlatformMac::qtToNativeModifiers(Qt::KeyboardModifiers modifiers)
 int AutoTypePlatformMac::windowLayer(CFDictionaryRef window)
 {
     int layer;
+
     CFNumberRef layerRef = static_cast<CFNumberRef>(::CFDictionaryGetValue(window, kCGWindowLayer));
     if (layerRef != nullptr
             && ::CFNumberGetValue(layerRef, kCFNumberIntType, &layer)) {
@@ -429,7 +430,7 @@ QString AutoTypePlatformMac::windowTitle(CFDictionaryRef window)
     QString title;
 
     CFStringRef titleRef = static_cast<CFStringRef>(::CFDictionaryGetValue(window, kCGWindowName));
-    if(titleRef != nullptr
+    if (titleRef != nullptr
             && ::CFStringGetCString(titleRef, buffer, MAX_WINDOW_TITLE_LENGTH, kCFStringEncodingUTF8)) {
         title = QString::fromUtf8(buffer);
     }
@@ -447,8 +448,8 @@ OSStatus AutoTypePlatformMac::hotkeyHandler(EventHandlerCallRef nextHandler, Eve
     AutoTypePlatformMac *self = static_cast<AutoTypePlatformMac *>(userData);
     EventHotKeyID hotkeyId;
 
-    ::GetEventParameter(theEvent, kEventParamDirectObject, typeEventHotKeyID, nullptr, sizeof(hotkeyId), nullptr, &hotkeyId);
-    if (hotkeyId.id == HOTKEY_ID) {
+    if (::GetEventParameter(theEvent, kEventParamDirectObject, typeEventHotKeyID, nullptr, sizeof(hotkeyId), nullptr, &hotkeyId) == noErr
+            && hotkeyId.id == HOTKEY_ID) {
         Q_EMIT self->globalShortcutTriggered();
     }
 

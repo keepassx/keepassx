@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#import "AppKitInterface.h"
+#import "AppKit.h"
 
 #import <Foundation/Foundation.h>
 #import <AppKit/NSRunningApplication.h>
@@ -24,9 +24,8 @@
 
 @property (strong) NSRunningApplication *lastActiveApplication;
 
-- (pid_t) ownProcessId;
 - (pid_t) activeProcessId;
+- (pid_t) ownProcessId;
 - (bool) activateProcess:(pid_t) pid;
-- (bool) isProcessActive:(pid_t) pid;
 
 @end

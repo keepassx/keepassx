@@ -18,10 +18,11 @@
 #ifndef KEEPASSX_AUTOTYPEMAC_H
 #define KEEPASSX_AUTOTYPEMAC_H
 
-#include <QtPlugin>
 #include <Carbon/Carbon.h>
+#include <QtPlugin>
+#include <memory>
 
-#include "AppKitInterface.h"
+#include "AppKit.h"
 #include "autotype/AutoTypePlatformPlugin.h"
 #include "autotype/AutoTypeAction.h"
 
@@ -53,7 +54,7 @@ Q_SIGNALS:
     void globalShortcutTriggered();
 
 private:
-    std::unique_ptr<AppKitWrapper> m_appkit;
+    std::unique_ptr<AppKit> m_appkit;
     EventHotKeyRef m_hotkeyRef;
     EventHotKeyID m_hotkeyId;
 
@@ -76,4 +77,4 @@ private:
     AutoTypePlatformMac* const m_platform;
 };
 
-#endif // KEEPASSX_AUTOTYPEMAC_H
+#endif  // KEEPASSX_AUTOTYPEMAC_H

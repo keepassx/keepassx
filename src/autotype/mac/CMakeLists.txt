@@ -3,7 +3,7 @@ set(autotype_mac_SOURCES
 )
 
 set(autotype_mac_mm_SOURCES
-    AppKitWrapper.mm
+    AppKitImpl.mm
 )
 
 add_library(keepassx-autotype-cocoa MODULE ${autotype_mac_SOURCES} ${autotype_mac_mm_SOURCES})
