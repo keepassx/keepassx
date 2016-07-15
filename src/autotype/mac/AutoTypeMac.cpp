@@ -173,6 +173,14 @@ bool AutoTypePlatformMac::raiseLastActiveWindow()
 }
 
 //
+// Activate keepassx window
+//
+bool AutoTypePlatformMac::raiseOwnWindow()
+{
+    return m_appkit->activateProcess(m_appkit->ownProcessId());
+}
+
+//
 // Send unicode character to active window
 // see: Quartz Event Services
 //

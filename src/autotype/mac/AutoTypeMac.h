@@ -46,6 +46,7 @@ public:
     AutoTypeExecutor* createExecutor() override;
 
     bool raiseLastActiveWindow() override;
+    bool raiseOwnWindow() override;
 
     void sendChar(const QChar& ch, bool isKeyDown);
     void sendKey(Qt::Key key, bool isKeyDown);

@@ -120,6 +120,11 @@ bool AutoTypePlatformTest::raiseLastActiveWindow()
 {
     return false;
 }
+
+bool AutoTypePlatformTest::raiseOwnWindow()
+{
+    return false;
+}
 #endif
 
 AutoTypeExecturorTest::AutoTypeExecturorTest(AutoTypePlatformTest* platform)
