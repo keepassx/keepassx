@@ -173,7 +173,7 @@ MainWindow::MainWindow()
             SLOT(exportToCsv()));
     connect(m_ui->actionLockDatabases, SIGNAL(triggered()), m_ui->tabWidget,
             SLOT(lockDatabases()));
-    connect(m_ui->actionQuit, SIGNAL(triggered()), SLOT(close()));
+    connect(m_ui->actionQuit, SIGNAL(triggered()), SLOT(quitApplication()));
 
     m_actionMultiplexer.connect(m_ui->actionEntryNew, SIGNAL(triggered()),
             SLOT(createEntry()));
@@ -436,21 +436,6 @@ void MainWindow::databaseTabChanged(int tabIndex)
     m_actionMultiplexer.setCurrentObject(m_ui->tabWidget->currentDatabaseWidget());
 }
 
-void MainWindow::closeEvent(QCloseEvent* event)
-{
-    bool accept = saveLastDatabases();
-
-    if (accept) {
-        saveWindowInformation();
-
-        event->accept();
-        QApplication::quit();
-    }
-    else {
-        event->ignore();
-    }
-}
-
 void MainWindow::changeEvent(QEvent* event)
 {
     if ((event->type() == QEvent::WindowStateChange) && isMinimized()
@@ -633,6 +618,14 @@ void MainWindow::repairDatabase()
                                      + writer.errorString());
             }
         }
+    }
+}
+
+void MainWindow::quitApplication() {
+    bool okToQuit = saveLastDatabases();
+    if (okToQuit) {
+        saveWindowInformation();
+        QApplication::quit();
     }
 }
 
