@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>477</width>
-    <height>417</height>
+    <height>440</height>
    </rect>
   </property>
   <layout class="QFormLayout" name="formLayout">
@@ -96,7 +96,7 @@
    <item row="9" column="1">
     <widget class="QComboBox" name="languageComboBox"/>
    </item>
-   <item row="11" column="0" colspan="2">
+   <item row="12" column="0" colspan="2">
     <layout class="QGridLayout" name="systrayGridLayout">
      <item row="0" column="0" colspan="3">
       <widget class="QCheckBox" name="systrayShowCheckBox">
@@ -138,7 +138,24 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="systrayHideWindowOnStartupCheckBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Hide window on startup</string>
+       </property>
+      </widget>
+     </item>
     </layout>
+   </item>
+   <item row="11" column="0">
+    <widget class="QCheckBox" name="startMinimizedCheckBox">
+     <property name="text">
+      <string>Start minimized</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

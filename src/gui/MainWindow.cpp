@@ -220,6 +220,11 @@ MainWindow::~MainWindow()
 {
 }
 
+bool MainWindow::isTrayIconActive() const
+{
+    return isTrayIconEnabled() && m_trayIcon && m_trayIcon->isVisible();
+}
+
 void MainWindow::updateLastDatabasesMenu()
 {
     m_ui->menuRecentDatabases->clear();
@@ -439,8 +444,7 @@ void MainWindow::databaseTabChanged(int tabIndex)
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     bool accept = true;
-    if (!isTrayIconEnabled() || !m_trayIcon || !m_trayIcon->isVisible()
-            || !config()->get("GUI/CloseToTray").toBool())
+    if (!isTrayIconActive() || !config()->get("GUI/CloseToTray").toBool())
     {
         accept = tryToQuit();
     }
@@ -466,8 +470,7 @@ bool MainWindow::tryToQuit()
 void MainWindow::changeEvent(QEvent* event)
 {
     if ((event->type() == QEvent::WindowStateChange) && isMinimized()
-            && isTrayIconEnabled() && m_trayIcon && m_trayIcon->isVisible()
-            && config()->get("GUI/MinimizeToTray").toBool())
+            && isTrayIconActive() && config()->get("GUI/MinimizeToTray").toBool())
     {
         event->ignore();
         QTimer::singleShot(0, this, SLOT(hide()));
