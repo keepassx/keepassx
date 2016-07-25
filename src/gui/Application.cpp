@@ -20,6 +20,9 @@
 
 #include <QAbstractNativeEventFilter>
 #include <QFileOpenEvent>
+#include <QLockFile>
+#include <QStandardPaths>
+#include <QtNetwork/QLocalSocket>
 
 #include "autotype/AutoType.h"
 
@@ -46,10 +49,64 @@ public:
 Application::Application(int& argc, char** argv)
     : QApplication(argc, argv)
     , m_mainWindow(nullptr)
+    , alreadyRunning(false)
+    , lock(nullptr)
 {
 #if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
     installNativeEventFilter(new XcbEventFilter());
 #endif
+
+    QString userName = qgetenv("USER");
+    if (userName.isEmpty()) {
+        userName = qgetenv("USERNAME");
+    }
+    QString identifier = "keepassx2";
+    if (!userName.isEmpty()) {
+        identifier.append("-");
+        identifier.append(userName);
+    }
+    QString socketName = identifier + ".socket";
+    QString lockName = identifier + ".lock";
+
+    // According to documentation we should use RuntimeLocation on *nixes, but even Qt doesn't respect
+    // this and creates sockets in TempLocation, so let's be consistent.
+    lock = new QLockFile(QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/" + lockName);
+    lock->setStaleLockTime(0);
+    lock->tryLock();
+    switch (lock->error()) {
+    case QLockFile::NoError:
+        server.setSocketOptions(QLocalServer::UserAccessOption);
+        server.listen(socketName);
+        connect(&server, SIGNAL(newConnection()), this, SIGNAL(anotherInstanceStarted()));
+        break;
+    case QLockFile::LockFailedError: {
+        alreadyRunning = true;
+        // notify the other instance
+        // try several times, in case the other instance is still starting up
+        QLocalSocket client;
+        for (int i = 0; i < 3; i++) {
+            client.connectToServer(socketName);
+            if (client.waitForConnected(150)) {
+                client.abort();
+                break;
+            }
+        }
+        break;
+    }
+    default:
+        qWarning() << QCoreApplication::translate("Main",
+                                                  "The lock file could not be created. Single-instance mode disabled.")
+                      .toUtf8().constData();
+    }
+}
+
+Application::~Application()
+{
+    server.close();
+    if (lock) {
+        lock->unlock();
+        delete lock;
+    }
 }
 
 void Application::setMainWindow(QWidget* mainWindow)
@@ -76,4 +133,9 @@ bool Application::event(QEvent* event)
 #endif
 
     return QApplication::event(event);
+}
+
+bool Application::isAlreadyRunning() const
+{
+    return alreadyRunning;
 }
