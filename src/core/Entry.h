@@ -134,7 +134,7 @@ public:
      * if the entry has been changed.
      */
     void beginUpdate();
-    void endUpdate();
+    bool endUpdate();
 
     Group* group();
     const Group* group() const;
