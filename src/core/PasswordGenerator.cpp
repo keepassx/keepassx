@@ -26,6 +26,62 @@ PasswordGenerator::PasswordGenerator()
 {
 }
 
+int PasswordGenerator::calculateEntropy(QString password)
+{
+    QString delimiters = " _.,-:|";
+    QString pass;
+    QChar best_delimiter;
+    int repetitions;
+
+    // goes through each character in the 'delimiters' string and uses it
+    // as a token to seperate the password into smaller tokens, so as to
+    // detect repetitious portions of the password.
+    QList<int> sizes;
+    for (int i = 0; i < delimiters.size(); i++) {
+        QStringList segments(password.split(delimiters.at(i), QString::SkipEmptyParts));
+        if (segments.size() > 1) {
+            sizes.append(segments.count(segments.at(i)));
+            continue;
+        }
+
+        // no repetitions using delimiters[i].
+        sizes.append(0);
+    }
+
+    // cycles through the list of sizes to determine which
+    // delimiter's set of strings yielded the most repetitions.
+    repetitions = 0;
+    for (int i = 0; i < delimiters.size(); ++i) {
+        if (sizes.at(i) > repetitions) {
+            repetitions = sizes.at(i);
+            best_delimiter = delimiters.at(i);
+        }
+    }
+
+    // if no repetitions were found in the password (password_password with an
+    // underscore as a delimiter for example), assign password passed to the
+    // method to the 'pass' variable, which is the one used to calculate raw
+    // entropy from.
+    if (repetitions > 0) {
+        QStringList segments(password.split(best_delimiter, QString::SkipEmptyParts));
+        pass = segments.at(0);
+    } else {
+        pass = password;
+    }
+
+    // derive the raw entropy of smaller segment of the password
+    float adjusted_entropy = calculateRawEntropy(pass);
+
+    // at this point you would compare against a common password list
+
+    // give a slight bonus for repeating a pattern
+    for (int i = 0; i < repetitions; ++i) {
+        adjusted_entropy = adjusted_entropy * 1.3;
+    }
+
+    return static_cast<int>(adjusted_entropy);
+}
+
 void PasswordGenerator::setLength(int length)
 {
     m_length = length;
@@ -103,6 +159,18 @@ bool PasswordGenerator::isValid() const
     }
 
     return true;
+}
+
+PasswordGenerator::CharClass PasswordGenerator::characterType(QChar c)
+{
+    if (c.isLower())
+        return LowerLetters;
+    if (c.isUpper())
+        return UpperLetters;
+    if (c.isNumber())
+        return Numbers;
+
+    return SpecialCharacters;
 }
 
 QVector<PasswordGroup> PasswordGenerator::passwordGroups() const
@@ -195,4 +263,71 @@ int PasswordGenerator::numCharClasses() const
     }
 
     return numClasses;
+}
+
+int PasswordGenerator::calculateRawEntropy(QString password)
+{
+    PasswordGenerator::CharClass type, last_type;
+    QChar c, last_c;
+
+    // doesn't exist; sentinal value.
+    last_type = static_cast<PasswordGenerator::CharClass>(0x0);
+    last_c = '\0';
+
+    int type_count = 0;
+    int char_count = 0;
+
+    float entropy = 0.0f;
+    float val = 0.0f;
+
+    for (int i = 0; i < password.size(); i++) {
+        c = password.at(i);
+        type = characterType(c);
+
+        if (c == last_c) {
+            char_count++;
+        } else {
+            char_count = 1;
+        }
+
+        if (type == last_type) {
+            type_count++;
+        } else {
+            type_count = 0;
+        }
+
+        // these can be tweaked if someone more knowledgeable comes along
+        switch (type_count) {
+        case 0:
+            val = 7.0f / char_count;
+            break;
+        case 1:
+            val = 5.0f / char_count;
+            break;
+        case 2:
+            val = 3.5f / char_count;
+            break;
+        case 3:
+            val = 2.75f / char_count;
+            break;
+        case 4:
+            val = 2.0f / char_count;
+            break;
+        case 5:
+            val = 1.5f / char_count;
+            break;
+        case 6:
+            val = 0.75f / char_count;
+            break;
+        default:
+            val = 0.5f / char_count;
+        }
+
+        entropy += val;
+        last_type = type;
+    }
+
+    entropy += password.size() / 2;
+
+    return static_cast<int>(entropy);
 }
