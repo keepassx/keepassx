@@ -245,6 +245,10 @@ const EntryAttachments* Entry::attachments() const
     return m_attachments;
 }
 
+bool Entry::hasTOTP() {
+    return m_attributes->hasKey("TOTP Seed");
+}
+
 void Entry::setUuid(const Uuid& uuid)
 {
     Q_ASSERT(!uuid.isNull());

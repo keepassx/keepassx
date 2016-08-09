@@ -97,7 +97,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -157,6 +157,7 @@
     <addaction name="actionEntryAutoType"/>
     <addaction name="actionEntryOpenUrl"/>
     <addaction name="actionSearch"/>
+    <addaction name="actionTOTP"/>
    </widget>
    <widget class="QMenu" name="menuGroups">
     <property name="title">
@@ -426,6 +427,11 @@
   <action name="actionRepairDatabase">
    <property name="text">
     <string>Repair database</string>
+   </property>
+  </action>
+  <action name="actionTOTP">
+   <property name="text">
+    <string>TOTP</string>
    </property>
   </action>
  </widget>

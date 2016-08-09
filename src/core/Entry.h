@@ -82,6 +82,7 @@ public:
     const EntryAttributes* attributes() const;
     EntryAttachments* attachments();
     const EntryAttachments* attachments() const;
+    bool hasTOTP();
 
     static const int DefaultIconNumber;
 

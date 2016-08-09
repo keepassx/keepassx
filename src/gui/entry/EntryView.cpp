@@ -33,7 +33,6 @@ EntryView::EntryView(QWidget* parent)
     m_sortModel->setSortLocaleAware(true);
     m_sortModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     QTreeView::setModel(m_sortModel);
-
     setUniformRowHeights(true);
     setRootIsDecorated(false);
     setAlternatingRowColors(true);

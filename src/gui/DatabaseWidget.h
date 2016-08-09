@@ -85,6 +85,7 @@ public:
     bool currentEntryHasPassword();
     bool currentEntryHasUrl();
     bool currentEntryHasNotes();
+    bool currentEntryHasTOTP();
 
 Q_SIGNALS:
     void closeRequest();

@@ -988,6 +988,17 @@ bool DatabaseWidget::currentEntryHasUrl()
     return !currentEntry->url().isEmpty();
 }
 
+
+bool DatabaseWidget::currentEntryHasTOTP()
+{
+    Entry* currentEntry = m_entryView->currentEntry();
+    if (!currentEntry) {
+        //Q_ASSERT(false);
+        return false;
+    }
+    return currentEntry->hasTOTP();
+}
+
 bool DatabaseWidget::currentEntryHasNotes()
 {
     Entry* currentEntry = m_entryView->currentEntry();
