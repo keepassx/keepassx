@@ -194,6 +194,18 @@ bool DatabaseWidget::isInEditMode() const
     return currentMode() == DatabaseWidget::EditMode;
 }
 
+bool DatabaseWidget::isEditWidgetModified() const
+{
+    if (currentWidget() == m_editEntryWidget) {
+        return m_editEntryWidget->hasBeenModified();
+    }
+    else {
+        // other edit widget don't have a hasBeenModified() method yet
+        // assume that they already have been modified
+        return true;
+    }
+}
+
 QList<int> DatabaseWidget::splitterSizes() const
 {
     return m_splitter->sizes();
@@ -493,7 +505,9 @@ void DatabaseWidget::deleteGroup()
     }
 
     bool inRecylceBin = Tools::hasChild(m_db->metadata()->recycleBin(), currentGroup);
-    if (inRecylceBin || !m_db->metadata()->recycleBinEnabled()) {
+    bool isRecycleBin = (currentGroup == m_db->metadata()->recycleBin());
+    bool isRecycleBinSubgroup = Tools::hasChild(currentGroup, m_db->metadata()->recycleBin());
+    if (inRecylceBin || isRecycleBin || isRecycleBinSubgroup || !m_db->metadata()->recycleBinEnabled()) {
         QMessageBox::StandardButton result = MessageBox::question(
             this, tr("Delete group?"),
             tr("Do you really want to delete the group \"%1\" for good?")
@@ -871,8 +885,7 @@ bool DatabaseWidget::dbHasKey() const
 bool DatabaseWidget::canDeleteCurrentGroup() const
 {
     bool isRootGroup = m_db->rootGroup() == m_groupView->currentGroup();
-    bool isRecycleBin = m_db->metadata()->recycleBin() == m_groupView->currentGroup();
-    return !isRootGroup && !isRecycleBin;
+    return !isRootGroup;
 }
 
 bool DatabaseWidget::isInSearchMode() const

@@ -371,7 +371,6 @@ const QList<Entry*>& Entry::historyItems() const
 void Entry::addHistoryItem(Entry* entry)
 {
     Q_ASSERT(!entry->parent());
-    Q_ASSERT(entry->uuid() == uuid());
 
     m_history.append(entry);
     Q_EMIT modified();
@@ -509,7 +508,7 @@ void Entry::beginUpdate()
     m_modifiedSinceBegin = false;
 }
 
-void Entry::endUpdate()
+bool Entry::endUpdate()
 {
     Q_ASSERT(m_tmpHistoryItem);
     if (m_modifiedSinceBegin) {
@@ -522,6 +521,8 @@ void Entry::endUpdate()
     }
 
     m_tmpHistoryItem = nullptr;
+
+    return m_modifiedSinceBegin;
 }
 
 void Entry::updateModifiedSinceBegin()
