@@ -365,6 +365,10 @@ Discard changes and close anyway?</source>
 Do you want to save it anyway?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Unable to open the database.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DatabaseWidget</name>
@@ -741,6 +745,14 @@ Do you want to save it anyway?</source>
             <numerusform></numerusform>
         </translation>
     </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t read icon:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>EditWidgetProperties</name>
@@ -852,6 +864,10 @@ Do you want to save it anyway?</source>
     </message>
     <message>
         <source>Unable to calculate master key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong key or database file is corrupt.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1082,6 +1098,18 @@ This is a one-way migration. You won&apos;t be able to open the imported databas
         <source>Writing the database failed.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>TOTP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+T</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TOTPSeetings</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PasswordGeneratorWidget</name>
@@ -1123,64 +1151,6 @@ This is a one-way migration. You won&apos;t be able to open the imported databas
     </message>
     <message>
         <source>Accept</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QCommandLineParser</name>
-    <message>
-        <source>Displays version information.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Displays this help.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unknown option &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unknown options: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Missing value after &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unexpected value after &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>[options]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Usage: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Options:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Arguments:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QSaveFile</name>
-    <message>
-        <source>Existing file %1 is not writable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Writing canceled by application</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Partial write. Partition full?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1302,6 +1272,10 @@ This is a one-way migration. You won&apos;t be able to open the imported databas
         <source>Remember last key files</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show TOTP in a dialog window</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SettingsWidgetSecurity</name>
@@ -1323,6 +1297,21 @@ This is a one-way migration. You won&apos;t be able to open the imported databas
     </message>
     <message>
         <source>Always ask before performing auto-type</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TOTPSettings</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the TOTP Seed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

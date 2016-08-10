@@ -187,7 +187,7 @@ MainWindow::MainWindow()
     m_actionMultiplexer.connect(m_ui->actionTOTP, SIGNAL(triggered()),
             SLOT(getTOTP()));
 
-    m_actionMultiplexer.connect(m_ui->actionTOTPSeetings, SIGNAL(triggered()),
+    m_actionMultiplexer.connect(m_ui->actionTOTPSettings, SIGNAL(triggered()),
             SLOT(editTOTP()));
 
     m_actionMultiplexer.connect(m_ui->actionEntryCopyTitle, SIGNAL(triggered()),
@@ -310,7 +310,7 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
             m_ui->actionEntryAutoType->setEnabled(singleEntrySelected);
             m_ui->actionEntryOpenUrl->setEnabled(singleEntrySelected && dbWidget->currentEntryHasUrl());
             m_ui->actionTOTP->setEnabled(dbWidget->currentEntryHasTOTP());
-            m_ui->actionTOTPSeetings->setEnabled(singleEntrySelected);
+            m_ui->actionTOTPSettings->setEnabled(singleEntrySelected);
             m_ui->actionGroupNew->setEnabled(groupSelected);
             m_ui->actionGroupEdit->setEnabled(groupSelected);
             m_ui->actionGroupDelete->setEnabled(groupSelected && dbWidget->canDeleteCurrentGroup());

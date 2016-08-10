@@ -158,7 +158,7 @@
     <addaction name="actionEntryOpenUrl"/>
     <addaction name="actionSearch"/>
     <addaction name="actionTOTP"/>
-    <addaction name="actionTOTPSeetings"/>
+    <addaction name="actionTOTPSettings"/>
    </widget>
    <widget class="QMenu" name="menuGroups">
     <property name="title">
@@ -438,9 +438,9 @@
     <string>Ctrl+T</string>
    </property>
   </action>
-  <action name="actionTOTPSeetings">
+  <action name="actionTOTPSettings">
    <property name="text">
-    <string>TOTPSeetings</string>
+    <string>TOTPSettings</string>
    </property>
   </action>
  </widget>
