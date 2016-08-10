@@ -116,6 +116,8 @@ public Q_SLOTS:
     void copyURL();
     void copyNotes();
     void copyAttribute(QAction* action);
+    void getTOTP();
+    void editTOTP();
     void performAutoType();
     void openUrl();
     void openUrlForEntry(Entry* entry);

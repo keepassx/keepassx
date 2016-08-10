@@ -126,6 +126,8 @@ set(keepassx_SOURCES
     streams/qtiocompressor.cpp
     streams/StoreDataStream.cpp
     streams/SymmetricCipherStream.cpp
+    gui/entry/TOTPSettings.cpp
+    gui/entry/TOTPSettings.h
 )
 
 set(keepassx_SOURCES_MAINEXE
@@ -149,6 +151,7 @@ set(keepassx_FORMS
     gui/entry/EditEntryWidgetAdvanced.ui
     gui/entry/EditEntryWidgetAutoType.ui
     gui/entry/EditEntryWidgetHistory.ui
+    gui/entry/TOTPSettings.ui
     gui/entry/EditEntryWidgetMain.ui
     gui/group/EditGroupWidgetMain.ui
 )

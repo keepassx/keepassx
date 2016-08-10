@@ -77,6 +77,8 @@ void SettingsWidget::loadSettings()
     m_generalUi->useGroupIconOnEntryCreationCheckBox->setChecked(config()->get("UseGroupIconOnEntryCreation").toBool());
     m_generalUi->autoTypeEntryTitleMatchCheckBox->setChecked(config()->get("AutoTypeEntryTitleMatch").toBool());
 
+    m_generalUi->totpCheckDialogcheckBox->setChecked(config()->get("TOTPDialog",true).toBool());
+
     m_generalUi->languageComboBox->clear();
     QList<QPair<QString, QString> > languages = Translator::availableLanguages();
     for (int i = 0; i < languages.size(); i++) {
@@ -123,6 +125,11 @@ void SettingsWidget::saveSettings()
     config()->set("MinimizeOnCopy", m_generalUi->minimizeOnCopyCheckBox->isChecked());
     config()->set("UseGroupIconOnEntryCreation",
                   m_generalUi->useGroupIconOnEntryCreationCheckBox->isChecked());
+
+    config()->set("TOTPDialog",
+                  m_generalUi->totpCheckDialogcheckBox->isChecked());
+
+
     config()->set("AutoTypeEntryTitleMatch",
                   m_generalUi->autoTypeEntryTitleMatchCheckBox->isChecked());
     int currentLangIndex = m_generalUi->languageComboBox->currentIndex();

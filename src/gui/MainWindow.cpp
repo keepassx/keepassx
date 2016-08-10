@@ -184,6 +184,12 @@ MainWindow::MainWindow()
     m_actionMultiplexer.connect(m_ui->actionEntryDelete, SIGNAL(triggered()),
             SLOT(deleteEntries()));
 
+    m_actionMultiplexer.connect(m_ui->actionTOTP, SIGNAL(triggered()),
+            SLOT(getTOTP()));
+
+    m_actionMultiplexer.connect(m_ui->actionTOTPSeetings, SIGNAL(triggered()),
+            SLOT(editTOTP()));
+
     m_actionMultiplexer.connect(m_ui->actionEntryCopyTitle, SIGNAL(triggered()),
             SLOT(copyTitle()));
     m_actionMultiplexer.connect(m_ui->actionEntryCopyUsername, SIGNAL(triggered()),
@@ -304,6 +310,7 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
             m_ui->actionEntryAutoType->setEnabled(singleEntrySelected);
             m_ui->actionEntryOpenUrl->setEnabled(singleEntrySelected && dbWidget->currentEntryHasUrl());
             m_ui->actionTOTP->setEnabled(dbWidget->currentEntryHasTOTP());
+            m_ui->actionTOTPSeetings->setEnabled(singleEntrySelected);
             m_ui->actionGroupNew->setEnabled(groupSelected);
             m_ui->actionGroupEdit->setEnabled(groupSelected);
             m_ui->actionGroupDelete->setEnabled(groupSelected && dbWidget->canDeleteCurrentGroup());

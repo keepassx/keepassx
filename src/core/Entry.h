@@ -84,6 +84,10 @@ public:
     const EntryAttachments* attachments() const;
     bool hasTOTP();
 
+    QString getTOTP();
+    void setSeedTOTP(QString seed);
+    QString seed();
+
     static const int DefaultIconNumber;
 
     void setUuid(const Uuid& uuid);
