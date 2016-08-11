@@ -47,7 +47,9 @@
 #include "gui/group/EditGroupWidget.h"
 #include "gui/group/GroupView.h"
 #include "gui/entry/TOTPSettings.h"
+#include "QRcode/QRCodeDialog.h"
 #include <QMessageBox>
+
 
 DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     : QStackedWidget(parent)
@@ -346,6 +348,19 @@ void DatabaseWidget::editTOTP()
         currentEntry->setSeedTOTP(dia.seed());
     }
 }
+
+void DatabaseWidget::showQRcode() {
+    Entry* currentEntry = m_entryView->currentEntry();
+    if (!currentEntry) {
+        Q_ASSERT(false);
+        return;
+    }
+    QRCodeDialog dia(this);
+    QString url = QString("otpauth://totp/%1?secret=%2").arg(currentEntry->username(),currentEntry->seed());
+    dia.stringToQR(url);
+    dia.exec();
+}
+
 
 void DatabaseWidget::deleteEntries()
 {

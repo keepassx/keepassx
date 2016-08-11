@@ -147,6 +147,14 @@
      <addaction name="actionEntryCopyNotes"/>
      <addaction name="separator"/>
     </widget>
+    <widget class="QMenu" name="menuTotp">
+     <property name="title">
+      <string>TOTP</string>
+     </property>
+     <addaction name="actionTOTPSettings"/>
+     <addaction name="actionTOTP"/>
+     <addaction name="actionShow_TOTP_Seed_QRCode"/>
+    </widget>
     <addaction name="actionEntryNew"/>
     <addaction name="actionEntryClone"/>
     <addaction name="actionEntryEdit"/>
@@ -157,8 +165,7 @@
     <addaction name="actionEntryAutoType"/>
     <addaction name="actionEntryOpenUrl"/>
     <addaction name="actionSearch"/>
-    <addaction name="actionTOTP"/>
-    <addaction name="actionTOTPSettings"/>
+    <addaction name="menuTotp"/>
    </widget>
    <widget class="QMenu" name="menuGroups">
     <property name="title">
@@ -441,6 +448,11 @@
   <action name="actionTOTPSettings">
    <property name="text">
     <string>TOTPSettings</string>
+   </property>
+  </action>
+  <action name="actionShow_TOTP_Seed_QRCode">
+   <property name="text">
+    <string>Show TOTP Seed QRCode</string>
    </property>
   </action>
  </widget>

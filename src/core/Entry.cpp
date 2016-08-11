@@ -353,13 +353,15 @@ const EntryAttachments* Entry::attachments() const
     return m_attachments;
 }
 
-bool Entry::hasTOTP() {
+bool Entry::hasTOTP() const{
     return m_attributes->hasKey("TOTP Seed");
 }
 
-QString Entry::getTOTP(){
+QString Entry::getTOTP() const{
     if (hasTOTP()) {
         return OTPgeneratePin(m_attributes->value("TOTP Seed").toLatin1());
+    } else {
+        return QString("");
     }
 }
 
@@ -723,6 +725,7 @@ QString Entry::resolvePlaceholders(const QString& str) const
     result.replace("{URL}", url(), Qt::CaseInsensitive);
     result.replace("{PASSWORD}", password(), Qt::CaseInsensitive);
     result.replace("{NOTES}", notes(), Qt::CaseInsensitive);
+    result.replace("{TOTP}", getTOTP(), Qt::CaseInsensitive);
 
     // TODO: lots of other placeholders missing
 

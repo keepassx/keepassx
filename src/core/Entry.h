@@ -82,9 +82,9 @@ public:
     const EntryAttributes* attributes() const;
     EntryAttachments* attachments();
     const EntryAttachments* attachments() const;
-    bool hasTOTP();
+    bool hasTOTP() const;
 
-    QString getTOTP();
+    QString getTOTP() const;
     void setSeedTOTP(QString seed);
     QString seed();
 

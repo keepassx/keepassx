@@ -128,6 +128,30 @@ set(keepassx_SOURCES
     streams/SymmetricCipherStream.cpp
     gui/entry/TOTPSettings.cpp
     gui/entry/TOTPSettings.h
+    QRcode/libqtqrencode_global.h
+    QRcode/qqrencode.cpp
+    QRcode/qqrencode.h
+    QRcode/mask.h
+    QRcode/bitstream.h
+    QRcode/bitstream.c
+    QRcode/split.h
+    QRcode/split.c
+    QRcode/rsecc.h
+    QRcode/rsecc.c
+    QRcode/qrspec.h
+    QRcode/qrspec.c
+    QRcode/qrinput.h
+    QRcode/qrencode.h
+    QRcode/mqrspec.h
+    QRcode/mqrspec.c
+    QRcode/mmask.h
+    QRcode/qqrencode_p.h
+    QRcode/mask.c
+    QRcode/mmask.c
+    QRcode/qrencode.c
+    QRcode/qrinput.c
+    QRcode/QRCodeDialog.h
+    QRcode/QRCodeDialog.cpp
 )
 
 set(keepassx_SOURCES_MAINEXE
@@ -154,6 +178,7 @@ set(keepassx_FORMS
     gui/entry/TOTPSettings.ui
     gui/entry/EditEntryWidgetMain.ui
     gui/group/EditGroupWidgetMain.ui
+    QRcode/QRCodeDialog.ui
 )
 
 if(MINGW)

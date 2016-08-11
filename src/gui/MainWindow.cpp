@@ -190,6 +190,9 @@ MainWindow::MainWindow()
     m_actionMultiplexer.connect(m_ui->actionTOTPSettings, SIGNAL(triggered()),
             SLOT(editTOTP()));
 
+    m_actionMultiplexer.connect(m_ui->actionShow_TOTP_Seed_QRCode, SIGNAL(triggered()),
+            SLOT(showQRcode()));
+
     m_actionMultiplexer.connect(m_ui->actionEntryCopyTitle, SIGNAL(triggered()),
             SLOT(copyTitle()));
     m_actionMultiplexer.connect(m_ui->actionEntryCopyUsername, SIGNAL(triggered()),
@@ -307,10 +310,12 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
             m_ui->actionEntryCopyURL->setEnabled(singleEntrySelected && dbWidget->currentEntryHasUrl());
             m_ui->actionEntryCopyNotes->setEnabled(singleEntrySelected && dbWidget->currentEntryHasNotes());
             m_ui->menuEntryCopyAttribute->setEnabled(singleEntrySelected);
+            m_ui->menuTotp->menuAction()->setEnabled(singleEntrySelected);
             m_ui->actionEntryAutoType->setEnabled(singleEntrySelected);
             m_ui->actionEntryOpenUrl->setEnabled(singleEntrySelected && dbWidget->currentEntryHasUrl());
             m_ui->actionTOTP->setEnabled(dbWidget->currentEntryHasTOTP());
             m_ui->actionTOTPSettings->setEnabled(singleEntrySelected);
+            m_ui->actionShow_TOTP_Seed_QRCode->setEnabled(dbWidget->currentEntryHasTOTP());
             m_ui->actionGroupNew->setEnabled(groupSelected);
             m_ui->actionGroupEdit->setEnabled(groupSelected);
             m_ui->actionGroupDelete->setEnabled(groupSelected && dbWidget->canDeleteCurrentGroup());
