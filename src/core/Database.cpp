@@ -279,6 +279,12 @@ void Database::recycleGroup(Group* group)
      }
 }
 
+void Database::merge(const Database* other)
+{
+    m_rootGroup->merge(other->rootGroup());
+    Q_EMIT modified();
+}
+
 void Database::setEmitModified(bool value)
 {
     if (m_emitModified && !value) {
