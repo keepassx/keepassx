@@ -68,6 +68,7 @@ public:
     QString defaultAutoTypeSequence() const;
     Group::TriState autoTypeEnabled() const;
     Group::TriState searchingEnabled() const;
+    Group::MergeMode resolveMergeMode() const;
     Group::MergeMode mergeMode() const;
     bool resolveSearchingEnabled() const;
     bool resolveAutoTypeEnabled() const;

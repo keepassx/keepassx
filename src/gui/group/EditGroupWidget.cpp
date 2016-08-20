@@ -69,6 +69,8 @@ void EditGroupWidget::loadGroup(Group* group, bool create, Database* database)
         addTriStateItems(m_mainUi->searchComboBox, true);
         addTriStateItems(m_mainUi->autotypeComboBox, true);
     }
+    
+    addMergeModeItems(m_mainUi->mergeModeCombo);
 
     m_mainUi->editName->setText(m_group->name());
     m_mainUi->editNotes->setPlainText(m_group->notes());
@@ -76,6 +78,7 @@ void EditGroupWidget::loadGroup(Group* group, bool create, Database* database)
     m_mainUi->expireDatePicker->setDateTime(group->timeInfo().expiryTime().toLocalTime());
     m_mainUi->searchComboBox->setCurrentIndex(indexFromTriState(group->searchingEnabled()));
     m_mainUi->autotypeComboBox->setCurrentIndex(indexFromTriState(group->autoTypeEnabled()));
+    m_mainUi->mergeModeCombo->setCurrentIndex(indexFromMergeMode(group->mergeMode()));
     if (group->defaultAutoTypeSequence().isEmpty()) {
         m_mainUi->autoTypeSequenceInherit->setChecked(true);
     }
@@ -105,6 +108,8 @@ void EditGroupWidget::save()
 
     m_group->setSearchingEnabled(triStateFromIndex(m_mainUi->searchComboBox->currentIndex()));
     m_group->setAutoTypeEnabled(triStateFromIndex(m_mainUi->autotypeComboBox->currentIndex()));
+
+    m_group->setMergeMode(mergeModeFromIndex(m_mainUi->mergeModeCombo->currentIndex()));
 
     if (m_mainUi->autoTypeSequenceInherit->isChecked()) {
         m_group->setDefaultAutoTypeSequence(QString());
@@ -190,5 +195,48 @@ Group::TriState EditGroupWidget::triStateFromIndex(int index)
     default:
         Q_ASSERT(false);
         return Group::Inherit;
+    }
+}
+
+void EditGroupWidget::addMergeModeItems(QComboBox* comboBox)
+{
+    comboBox->clear();
+    comboBox->addItem(tr("Inherit from parent group"));
+    comboBox->addItem(tr("Keep both if changed"));
+    comboBox->addItem(tr("Keep newer"));
+    comboBox->addItem(tr("Keep existing (do not overwrite)"));
+}
+
+int EditGroupWidget::indexFromMergeMode(Group::MergeMode mergeMode)
+{
+    switch (mergeMode) {
+        case Group::ModeInherit:
+            return 0;
+        case Group::KeepBoth:
+            return 1;
+        case Group::KeepNewer:
+            return 2;
+        case Group::KeepExisting:
+            return 3;
+        default:
+            Q_ASSERT(false);
+            return 0;
+    }
+}
+
+Group::MergeMode EditGroupWidget::mergeModeFromIndex(int index)
+{
+    switch (index) {
+        case 0:
+            return Group::ModeInherit;
+        case 1:
+            return Group::KeepBoth;
+        case 2:
+            return Group::KeepNewer;
+        case 3:
+            return Group::KeepExisting;
+        default:
+            Q_ASSERT(false);
+            return Group::ModeInherit;
     }
 }

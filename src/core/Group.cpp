@@ -196,7 +196,7 @@ Group::TriState Group::searchingEnabled() const
     return m_data.searchingEnabled;
 }
 
-Group::MergeMode Group::mergeMode() const
+Group::MergeMode Group::resolveMergeMode() const
 {
     if (m_data.mergeMode == Group::MergeMode::ModeInherit) {
         if (m_parent) {
@@ -207,6 +207,11 @@ Group::MergeMode Group::mergeMode() const
     } else {
         return m_data.mergeMode;
     }
+}
+
+Group::MergeMode Group::mergeMode() const
+{
+    return m_data.mergeMode;
 }
 
 Entry* Group::lastTopVisibleEntry() const
@@ -318,6 +323,8 @@ void Group::setExpiryTime(const QDateTime& dateTime)
 
 void Group::setMergeMode(MergeMode newMode)
 {
+    // do not set inherit on root folders
+    Q_ASSERT(newMode != Group::ModeInherit || this->parent());
     set(m_data.mergeMode, newMode);
 }
 
@@ -462,6 +469,7 @@ Entry* Group::findEntry(const Uuid& uuid)
 {
     Q_ASSERT(!uuid.isNull());
     Q_FOREACH (Entry* entry, m_entries) {
+        Q_ASSERT(!entry->uuid().isNull());
         if (entry->uuid() == uuid) {
             return entry;
         }
@@ -523,8 +531,9 @@ void Group::merge(const Group* other)
 {
     // merge entries
     Q_FOREACH (Entry* entry, other->entries()) {
+        Q_ASSERT(!entry->uuid().isNull());
         // entries are searched by uuid
-        if (!findEntry(entry->uuid())) {
+        if (!this->findEntry(entry->uuid())) {
             entry->clone(Entry::CloneNoFlags)->setGroup(this);
         } else {
             resolveConflict(this->findEntry(entry->uuid()), entry);
@@ -742,7 +751,7 @@ void Group::resolveConflict(Entry* existingEntry, Entry* otherEntry)
 
     Entry* clonedEntry;
 
-    switch(this->mergeMode()) {
+    switch(this->resolveMergeMode()) {
         case KeepBoth:
             // if one entry is newer, create a clone and add it to the group
             if (timeExisting > timeOther) {

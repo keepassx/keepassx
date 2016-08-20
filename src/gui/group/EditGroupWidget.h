@@ -54,6 +54,9 @@ private:
     void addTriStateItems(QComboBox* comboBox, bool inheritValue);
     int indexFromTriState(Group::TriState triState);
     Group::TriState triStateFromIndex(int index);
+    void addMergeModeItems(QComboBox* comboBox);
+    int indexFromMergeMode(Group::MergeMode mergeMode);
+    Group::MergeMode mergeModeFromIndex(int index);
 
     const QScopedPointer<Ui::EditGroupWidgetMain> m_mainUi;
     QWidget* const m_editGroupWidgetMain;
