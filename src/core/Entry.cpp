@@ -509,7 +509,7 @@ void Entry::beginUpdate()
     m_modifiedSinceBegin = false;
 }
 
-void Entry::endUpdate()
+bool Entry::endUpdate()
 {
     Q_ASSERT(m_tmpHistoryItem);
     if (m_modifiedSinceBegin) {
@@ -522,6 +522,8 @@ void Entry::endUpdate()
     }
 
     m_tmpHistoryItem = Q_NULLPTR;
+
+    return m_modifiedSinceBegin;
 }
 
 void Entry::updateModifiedSinceBegin()

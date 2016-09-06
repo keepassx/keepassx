@@ -113,7 +113,7 @@ void EditGroupWidget::save()
         m_group->setDefaultAutoTypeSequence(m_mainUi->autoTypeSequenceCustomEdit->text());
     }
 
-    IconStruct iconStruct = m_editGroupWidgetIcons->save();
+    IconStruct iconStruct = m_editGroupWidgetIcons->state();
 
     if (iconStruct.number < 0) {
         m_group->setIcon(Group::DefaultIconNumber);
@@ -144,6 +144,7 @@ void EditGroupWidget::clear()
 {
     m_group = Q_NULLPTR;
     m_database = Q_NULLPTR;
+    m_editGroupWidgetIcons->reset();
 }
 
 void EditGroupWidget::addTriStateItems(QComboBox* comboBox, bool inheritDefault)

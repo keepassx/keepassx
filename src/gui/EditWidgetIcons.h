@@ -47,7 +47,8 @@ public:
     explicit EditWidgetIcons(QWidget* parent = Q_NULLPTR);
     ~EditWidgetIcons();
 
-    IconStruct save();
+    IconStruct state() const;
+    void reset();
     void load(Uuid currentUuid, Database* database, IconStruct iconStruct);
 
 private Q_SLOTS:
