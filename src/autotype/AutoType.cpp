@@ -158,7 +158,7 @@ void AutoType::performAutoType(const Entry* entry, QWidget* hideWindow, const QS
 
     QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
 
-    Q_FOREACH (AutoTypeAction* action, actions) {
+    for (AutoTypeAction* action : asConst(actions)) {
         if (m_plugin->activeWindow() != window) {
             qWarning("Active window changed, interrupting auto-type.");
             break;
@@ -189,8 +189,9 @@ void AutoType::performGlobalAutoType(const QList<Database*>& dbList)
     QList<Entry*> entryList;
     QHash<Entry*, QString> sequenceHash;
 
-    Q_FOREACH (Database* db, dbList) {
-        Q_FOREACH (Entry* entry, db->rootGroup()->entriesRecursive()) {
+    for (Database* db : dbList) {
+        const QList<Entry*> dbEntries = db->rootGroup()->entriesRecursive();
+        for (Entry* entry : dbEntries) {
             QString sequence = autoTypeSequence(entry, windowTitle);
             if (!sequence.isEmpty()) {
                 entryList << entry;
@@ -302,7 +303,7 @@ bool AutoType::parseActions(const QString& sequence, const Entry* entry, QList<A
     QString tmpl;
     bool inTmpl = false;
 
-    Q_FOREACH (const QChar& ch, sequence) {
+    for (const QChar& ch : sequence) {
         // TODO: implement support for {{}, {}} and {DELAY=X}
 
         if (inTmpl) {
@@ -484,10 +485,10 @@ QList<AutoTypeAction*> AutoType::createActionFromTemplate(const QString& tmpl, c
     }
 
 
-    QString placeholder = QString("{%1}").arg(tmplName);
-    QString resolved = entry->resolvePlaceholders(placeholder);
+    const QString placeholder = QString("{%1}").arg(tmplName);
+    const QString resolved = entry->resolvePlaceholders(placeholder);
     if (placeholder != resolved) {
-        Q_FOREACH (const QChar& ch, resolved) {
+        for (const QChar& ch : resolved) {
             if (ch == '\n') {
                 list.append(new AutoTypeKey(Qt::Key_Enter));
             }
@@ -513,7 +514,8 @@ QString AutoType::autoTypeSequence(const Entry* entry, const QString& windowTitl
     QString sequence;
     if (!windowTitle.isEmpty()) {
         bool match = false;
-        Q_FOREACH (const AutoTypeAssociations::Association& assoc, entry->autoTypeAssociations()->getAll()) {
+        const QList<AutoTypeAssociations::Association> assocList = entry->autoTypeAssociations()->getAll();
+        for (const AutoTypeAssociations::Association& assoc : assocList) {
             if (windowMatches(windowTitle, assoc.window)) {
                 if (!assoc.sequence.isEmpty()) {
                     sequence = assoc.sequence;
