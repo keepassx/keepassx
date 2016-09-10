@@ -380,26 +380,14 @@ QStringList AutoTypePlatformX11::windowTitlesRecursive(Window window)
 
 bool AutoTypePlatformX11::isTopLevelWindow(Window window)
 {
-    Atom type = None;
-    int format;
-    unsigned long nitems;
-    unsigned long after;
-    unsigned char* data = nullptr;
-    int retVal = XGetWindowProperty(m_dpy, window, m_atomWmState, 0, 2, False, m_atomWmState, &type, &format,
-                                    &nitems, &after, &data);
+    Window root;
+    Window parent;
+    Window* children = nullptr;
+    unsigned int numChildren;
 
-    bool result = false;
+    XQueryTree(m_dpy, window, &root, &parent, &children, &numChildren);
 
-    if (retVal == 0 && data) {
-        if (type == m_atomWmState && format == 32 && nitems > 0) {
-            qint32 state = static_cast<qint32>(*data);
-            result = (state != WithdrawnState);
-        }
-
-        XFree(data);
-    }
-
-    return result;
+    return parent == m_rootWindow;
 }
 
 KeySym AutoTypePlatformX11::charToKeySym(const QChar& ch)
