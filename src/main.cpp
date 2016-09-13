@@ -62,14 +62,14 @@ int main(int argc, char** argv)
     QCommandLineOption keyfileOption("keyfile",
                                      QCoreApplication::translate("main", "key file of the database"),
                                      "keyfile");
-    QCommandLineOption stdinOption("stdin",
-                                   QCoreApplication::translate("main", "read password of the database from stdin"));
+    QCommandLineOption pwstdinOption("pw-stdin",
+                                     QCoreApplication::translate("main", "read password of the database from stdin"));
 
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOption(configOption);
     parser.addOption(keyfileOption);
-    parser.addOption(stdinOption);
+    parser.addOption(pwstdinOption);
 
     parser.process(app);
     const QStringList args = parser.positionalArguments();
@@ -95,7 +95,7 @@ int main(int argc, char** argv)
         QString filename = args[0];
         if (!filename.isEmpty() && QFile::exists(filename)) {
 	          QString password;
-	          if (parser.isSet(stdinOption)) {
+	          if (parser.isSet(pwstdinOption)) {
 		          static QTextStream in(stdin, QIODevice::ReadOnly);
 		          password = in.readLine();
 	          }
