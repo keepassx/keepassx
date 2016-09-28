@@ -808,6 +808,11 @@ void AutoTypePlatformX11::SendKeyPressedEvent(KeySym keysym)
 
     /* restore the old keyboard mask */
     SendModifier(&event, release_mask, KeyPress);
+	
+	timespec ts;
+    ts.tv_sec = 0;
+    ts.tv_nsec = 30 * 1000 * 1000;
+    nanosleep(&ts, nullptr);
 }
 
 int AutoTypePlatformX11::MyErrorHandler(Display* my_dpy, XErrorEvent* event)
