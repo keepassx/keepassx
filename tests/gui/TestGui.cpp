@@ -297,6 +297,7 @@ void TestGui::testSearch()
     QVERIFY(entryDeleteWidget->isEnabled());
     QVERIFY(!m_db->metadata()->recycleBin());
 
+    MessageBox::setNextAnswer(QMessageBox::Yes);
     QTest::mouseClick(entryDeleteWidget, Qt::LeftButton);
 
     QCOMPARE(entryView->model()->rowCount(), 3);
