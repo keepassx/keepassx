@@ -37,6 +37,14 @@ Install KeePassX from the Red Hat (or CentOS) repository:
 sudo yum install keepassx
 ```
 
+### Arch
+
+Install KeePassX from the official Arch repositories:
+
+```bash
+sudo pacman -S keepassx2
+```
+
 ### Windows / Mac OS X
 
 Download the installer from the KeePassX [download](https://www.keepassx.org/downloads) page.
