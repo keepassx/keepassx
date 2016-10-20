@@ -387,7 +387,7 @@ void DatabaseWidget::copyTitle()
         return;
     }
 
-    setClipboardTextAndMinimize(currentEntry->title());
+    setClipboardTextAndMinimize(currentEntry->resolvePlaceholders(currentEntry->title()));
 }
 
 void DatabaseWidget::copyUsername()
@@ -398,7 +398,7 @@ void DatabaseWidget::copyUsername()
         return;
     }
 
-    setClipboardTextAndMinimize(currentEntry->username());
+    setClipboardTextAndMinimize(currentEntry->resolvePlaceholders(currentEntry->username()));
 }
 
 void DatabaseWidget::copyPassword()
@@ -409,7 +409,7 @@ void DatabaseWidget::copyPassword()
         return;
     }
 
-    setClipboardTextAndMinimize(currentEntry->password());
+    setClipboardTextAndMinimize(currentEntry->resolvePlaceholders(currentEntry->password()));
 }
 
 void DatabaseWidget::copyURL()
@@ -420,7 +420,7 @@ void DatabaseWidget::copyURL()
         return;
     }
 
-    setClipboardTextAndMinimize(currentEntry->url());
+    setClipboardTextAndMinimize(currentEntry->resolvePlaceholders(currentEntry->url()));
 }
 
 void DatabaseWidget::copyNotes()
@@ -431,7 +431,7 @@ void DatabaseWidget::copyNotes()
         return;
     }
 
-    setClipboardTextAndMinimize(currentEntry->notes());
+    setClipboardTextAndMinimize(currentEntry->resolvePlaceholders(currentEntry->notes()));
 }
 
 void DatabaseWidget::copyAttribute(QAction* action)
