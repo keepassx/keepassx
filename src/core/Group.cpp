@@ -324,8 +324,6 @@ void Group::setExpiryTime(const QDateTime& dateTime)
 
 void Group::setMergeMode(MergeMode newMode)
 {
-    // do not set inherit on root folders
-    Q_ASSERT(newMode != Group::ModeInherit || this->parent());
     set(m_data.mergeMode, newMode);
 }
 
