@@ -46,6 +46,7 @@
 #include "gui/entry/EntryView.h"
 #include "gui/group/EditGroupWidget.h"
 #include "gui/group/GroupView.h"
+#include "QRWidget.h"
 
 DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     : QStackedWidget(parent)
@@ -90,6 +91,11 @@ DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     m_searchWidget->hide();
     m_searchUi->caseSensitiveCheckBox->setVisible(false);
     m_searchUi->searchEdit->installEventFilter(this);
+    
+    //QR widget
+    m_QRWidget = new QRWidget(rightHandSideWidget);
+    addWidget(m_QRWidget);
+    
 
     QVBoxLayout* vLayout = new QVBoxLayout(rightHandSideWidget);
     vLayout->setMargin(0);
@@ -166,6 +172,9 @@ DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     connect(m_searchTimer, SIGNAL(timeout()), this, SLOT(search()));
     connect(closeAction, SIGNAL(triggered()), this, SLOT(closeSearch()));
 
+    //QR acknowledge
+    connect(m_QRWidget, &QRWidget::Finished, this, &DatabaseWidget::switchToView);
+    
     setCurrentWidget(m_mainWidget);
 }
 
@@ -1038,3 +1047,20 @@ bool DatabaseWidget::eventFilter(QObject* object, QEvent* event)
 
     return false;
 }
+
+
+void DatabaseWidget::viewQR()
+{
+  auto entry = m_entryView->currentEntry();
+  
+  m_QRWidget->setUser(entry->username());
+  m_QRWidget->setPass(entry->password());
+  
+  auto groupname = m_groupView->currentGroup()->name();
+  
+  m_QRWidget->setEntryName( QString("%1 > %2").arg(groupname, entry->title()) );
+  
+  setCurrentWidget(m_QRWidget);
+
+}
+

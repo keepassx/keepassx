@@ -105,6 +105,7 @@ set(keepassx_SOURCES
     gui/SortFilterHideProxyModel.cpp
     gui/UnlockDatabaseWidget.cpp
     gui/WelcomeWidget.cpp
+    gui/QRWidget.cpp
     gui/entry/AutoTypeAssociationsModel.cpp
     gui/entry/EditEntryWidget.cpp
     gui/entry/EditEntryWidget_p.h
@@ -145,12 +146,14 @@ set(keepassx_FORMS
     gui/SearchWidget.ui
     gui/SettingsWidgetGeneral.ui
     gui/SettingsWidgetSecurity.ui
+    gui/SettingsWidgetQR.ui
     gui/WelcomeWidget.ui
     gui/entry/EditEntryWidgetAdvanced.ui
     gui/entry/EditEntryWidgetAutoType.ui
     gui/entry/EditEntryWidgetHistory.ui
     gui/entry/EditEntryWidgetMain.ui
     gui/group/EditGroupWidgetMain.ui
+    gui/QRWidget.ui
 )
 
 if(MINGW)
@@ -161,11 +164,18 @@ endif()
 
 qt5_wrap_ui(keepassx_SOURCES ${keepassx_FORMS})
 
+#HACK: find qrencode
+find_library(qrencode qrencode)
+message(STATUS "qrencode: ${qrencode}")
+
 add_library(keepassx_core STATIC ${keepassx_SOURCES})
 set_target_properties(keepassx_core PROPERTIES COMPILE_DEFINITIONS KEEPASSX_BUILDING_CORE)
-target_link_libraries(keepassx_core Qt5::Core Qt5::Concurrent Qt5::Widgets)
+target_link_libraries(keepassx_core Qt5::Core Qt5::Concurrent Qt5::Widgets ${qrencode})
 
-add_executable(${PROGNAME} WIN32 MACOSX_BUNDLE ${keepassx_SOURCES_MAINEXE})
+
+add_executable(${PROGNAME} WIN32 MACOSX_BUNDLE ${keepassx_SOURCES_MAINEXE} )
+
+
 target_link_libraries(${PROGNAME}
                       keepassx_core
                       Qt5::Core

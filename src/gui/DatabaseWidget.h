@@ -40,6 +40,7 @@ class QFile;
 class QMenu;
 class QSplitter;
 class UnlockDatabaseWidget;
+class QRWidget;
 
 namespace Ui {
     class SearchWidget;
@@ -128,6 +129,10 @@ public Q_SLOTS:
     void switchToOpenDatabase(const QString& fileName, const QString& password, const QString& keyFile);
     void switchToImportKeepass1(const QString& fileName);
     void openSearch();
+    
+    //view QR
+    void viewQR();
+    
 
 private Q_SLOTS:
     void entryActivationSignalReceived(Entry* entry, EntryModel::ModelColumn column);
@@ -175,6 +180,7 @@ private:
     Group* m_newParent;
     Group* m_lastGroup;
     QTimer* m_searchTimer;
+    QRWidget* m_QRWidget;
     QString m_filename;
     Uuid m_groupBeforeLock;
 };

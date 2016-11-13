@@ -213,6 +213,11 @@ MainWindow::MainWindow()
     m_actionMultiplexer.connect(m_ui->actionSearch, SIGNAL(triggered()),
                                 SLOT(openSearch()));
 
+    //QR view
+    //TODO: rename action appropriately
+    m_actionMultiplexer.connect(m_ui->actionViewQR, SIGNAL(triggered()), SLOT(viewQR()));
+//     connect(m_ui->actionViewQR, &QAction::triggered, m_ui->tabWidget->currentDatabaseWidget(), &DatabaseWidget::viewQR);
+    
     updateTrayIcon();
 }
 
@@ -314,6 +319,10 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
             m_ui->actionDatabaseSave->setEnabled(true);
             m_ui->actionDatabaseSaveAs->setEnabled(true);
             m_ui->actionExportCsv->setEnabled(true);
+	    
+	    //QR code viewing action
+	    m_ui->actionViewQR->setEnabled(singleEntrySelected);
+	    
             break;
         }
         case DatabaseWidget::EditMode:

@@ -18,6 +18,7 @@
 #include "SettingsWidget.h"
 #include "ui_SettingsWidgetGeneral.h"
 #include "ui_SettingsWidgetSecurity.h"
+#include "ui_SettingsWidgetQR.h"
 
 #include "autotype/AutoType.h"
 #include "core/Config.h"
@@ -27,8 +28,10 @@ SettingsWidget::SettingsWidget(QWidget* parent)
     : EditWidget(parent)
     , m_secWidget(new QWidget())
     , m_generalWidget(new QWidget())
+    , m_QRWidget(new QWidget())
     , m_secUi(new Ui::SettingsWidgetSecurity())
     , m_generalUi(new Ui::SettingsWidgetGeneral())
+    , m_QRUi(new Ui::SettingsWidgetQR())
     , m_globalAutoTypeKey(static_cast<Qt::Key>(0))
     , m_globalAutoTypeModifiers(Qt::NoModifier)
 {
@@ -36,8 +39,10 @@ SettingsWidget::SettingsWidget(QWidget* parent)
 
     m_secUi->setupUi(m_secWidget);
     m_generalUi->setupUi(m_generalWidget);
+    m_QRUi->setupUi(m_QRWidget);
     add(tr("General"), m_generalWidget);
     add(tr("Security"), m_secWidget);
+    add(tr("QR"),m_QRWidget);
 
     m_generalUi->autoTypeShortcutWidget->setVisible(autoType()->isAvailable());
     m_generalUi->autoTypeShortcutLabel->setVisible(autoType()->isAvailable());
@@ -108,6 +113,10 @@ void SettingsWidget::loadSettings()
 
     m_secUi->autoTypeAskCheckBox->setChecked(config()->get("security/autotypeask").toBool());
 
+    //QR settings
+    m_QRUi->timeoutSpinBox->setValue(config()->get("QR/timeout").toDouble());
+    m_QRUi->errorCorrectionComboBox->setCurrentIndex(config()->get("QR/errorcorrection").toInt());
+    
     setCurrentRow(0);
 }
 
@@ -146,6 +155,9 @@ void SettingsWidget::saveSettings()
 
     config()->set("security/autotypeask", m_secUi->autoTypeAskCheckBox->isChecked());
 
+    config()->set("QR/timeout", m_QRUi->timeoutSpinBox->value());
+    config()->set("QR/errorcorrection", m_QRUi->errorCorrectionComboBox->currentIndex());
+    
     Q_EMIT editFinished(true);
 }
 
