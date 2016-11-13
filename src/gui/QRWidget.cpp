@@ -13,6 +13,7 @@
 
 #include "core/Config.h"
 
+#ifdef BUILD_QR_SUPPORT
 QPixmap paintQRcode(const QRcode& code)
 {
   QPixmap pmap(2*code.width+1,2*code.width+1);
@@ -36,6 +37,7 @@ QPixmap paintQRcode(const QRcode& code)
   return pmap;
 }
 
+
 void printQRcode(const QRcode& code)
 {
  for(int i =0 ; i  < code.width; i++)
@@ -53,7 +55,13 @@ void printQRcode(const QRcode& code)
  }
   
 }
+#else
 
+//TODO: translation
+const QString noQRsupport("keepassx was built without QR support");
+
+
+#endif
 
 
 QRWidget::QRWidget(QWidget* parent): QWidget(parent), m_ui( new Ui::QRWidget() ),
@@ -65,9 +73,17 @@ m_blank(this), m_user_scene(this), m_pass_scene(this)
   m_blank_pixmap.fill();
   m_blank.addPixmap(m_blank_pixmap);
   
+#ifdef BUILD_QR_SUPPORT
   m_user_scene.addItem(&m_user_pixmap_item);
   m_pass_scene.addItem(&m_pass_pixmap_item);
+#else
+  m_user_scene.addText(noQRsupport);
+  m_pass_scene.addText(noQRsupport);
+  
+#endif
 
+  
+  
   m_ui->PassDisplay->setScene(&m_blank);
   m_ui->UserDisplay->setScene(&m_blank);
   
@@ -94,35 +110,39 @@ m_blank(this), m_user_scene(this), m_pass_scene(this)
   //NOTE: indices in the settings combobox chosen to correctly map onto QR_ECLEVEL enum
   m_eclevel = static_cast<QRecLevel>(config()->get("QR/errorcorrection").toInt());
   
+  
+  
   startTimer(m_time_display_update_msec);
   
 }
 
 void QRWidget::setPass(const QString& pass)
 {
+#ifdef BUILD_QR_SUPPORT
   m_pass_qr = get_qrcode(pass);
   Q_ASSERT(m_pass_qr);
   
-
   //WARNING: may not work because pixmap is temporary
   m_pass_pixmap = paintQRcode(*m_pass_qr);
   m_pass_pixmap_item.setPixmap(m_pass_pixmap);
   
-//   m_ui->PassDisplay->setScene(&m_pass_scene);
-  qDebug() << "bounding rect: " << m_pass_scene.itemsBoundingRect();
+#endif
+  
 }
 
 
 void QRWidget::setUser(const QString& user)
 {
+#ifdef BUILD_QR_SUPPORT
   m_user_qr = get_qrcode(user);
   Q_ASSERT(m_user_qr);
   
-  
   m_user_pixmap = paintQRcode(*m_user_qr);
   m_user_pixmap_item.setPixmap(m_user_pixmap);
+#endif
   
-//   m_ui->UserDisplay->setScene(&m_user_scene);
+  
+  
 }
 
 void QRWidget::setEntryName(const QString& title)
@@ -153,10 +173,14 @@ deleted_pointer< QRcode > QRWidget::get_qrcode(const QString& st)
   static const int qr_version = 0;
   static const int casesens = 1;
   
+#ifdef BUILD_QR_SUPPORT
   deleted_pointer<QRcode> qrptr(
     QRcode_encodeString(st.toStdString().c_str(),qr_version, m_eclevel, QR_MODE_8, casesens),
     QRdeleter  );
-
+#else
+  deleted_pointer<QRcode> qrptr(nullptr);
+#endif
+  
   return qrptr;
 }
 

@@ -165,8 +165,12 @@ endif()
 qt5_wrap_ui(keepassx_SOURCES ${keepassx_FORMS})
 
 #HACK: find qrencode
-find_library(qrencode qrencode)
-message(STATUS "qrencode: ${qrencode}")
+option(BUILD_QR_SUPPORT "Build with QR view support" OFF )
+if(BUILD_QR_SUPPORT)
+  find_library(qrencode qrencode)
+  message(STATUS "qrencode: ${qrencode}")
+  add_definitions(-DBUILD_QR_SUPPORT)
+endif(BUILD_QR_SUPPORT)
 
 add_library(keepassx_core STATIC ${keepassx_SOURCES})
 set_target_properties(keepassx_core PROPERTIES COMPILE_DEFINITIONS KEEPASSX_BUILDING_CORE)

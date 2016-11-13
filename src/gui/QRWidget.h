@@ -6,7 +6,11 @@
 
 #include <QWidget>
 #include "ui_QRWidget.h"
+
+#ifdef BUILD_QR_SUPPORT
 #include <qrencode.h>
+#endif
+
 #include <QGraphicsScene>
 #include <QImage>
 #include <QGraphicsPixmapItem>
@@ -22,10 +26,20 @@ class QResizeEvent;
 template <typename T>
 using deleted_pointer = std::unique_ptr<T,std::function<void(T*)>>;
 
+
+#ifdef BUILD_QR_SUPPORT
 auto QRdeleter = [](QRcode* code){QRcode_free(code);};
-
-
 QPixmap paintQRcode(const QRcode& code);
+#else
+struct QRcode {
+};
+
+enum class QRecLevel
+{
+  L,M,Q,H
+};
+#endif
+
 
 
 
