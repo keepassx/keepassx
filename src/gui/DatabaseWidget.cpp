@@ -308,6 +308,9 @@ void DatabaseWidget::cloneEntry()
 
     Entry* entry = currentEntry->clone(Entry::CloneNewUuid | Entry::CloneResetTimeInfo);
     entry->setGroup(currentEntry->group());
+    if (isInSearchMode()) {
+        search(); // update results
+    }
     m_entryView->setFocus();
     m_entryView->setCurrentEntry(entry);
 }
