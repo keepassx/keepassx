@@ -415,7 +415,7 @@ QList<AutoTypeAction*> AutoType::createActionFromTemplate(const QString& tmpl, c
     else if (tmplName == "ptrsc") {
         list.append(new AutoTypeKey(Qt::Key_Print));
     }
-    else if (tmplName == "scolllock") {
+    else if (tmplName == "scrolllock") {
         list.append(new AutoTypeKey(Qt::Key_ScrollLock));
     }
     // Qt doesn't know about keypad keys so use the normal ones instead
