@@ -323,7 +323,7 @@ void DatabaseWidget::deleteEntries()
 
     // get all entry pointers as the indexes change when removing multiple entries
     QList<Entry*> selectedEntries;
-    Q_FOREACH (const QModelIndex& index, selected) {
+    for (const QModelIndex& index : selected) {
         selectedEntries.append(m_entryView->entryFromIndex(index));
     }
 
@@ -347,23 +347,33 @@ void DatabaseWidget::deleteEntries()
         }
 
         if (result == QMessageBox::Yes) {
-            Q_FOREACH (Entry* entry, selectedEntries) {
+            for (Entry* entry : asConst(selectedEntries)) {
                 delete entry;
             }
         }
     }
     else {
-        if (selected.size() > 1) {
-            QMessageBox::StandardButton result = MessageBox::question(
+        QMessageBox::StandardButton result;
+
+        if (selected.size() == 1) {
+            result = MessageBox::question(
+                this, tr("Move entry to recycle bin?"),
+                tr("Do you really want to move entry \"%1\" to the recycle bin?")
+                .arg(selectedEntries.first()->title()),
+                QMessageBox::Yes | QMessageBox::No);
+        }
+        else {
+            result = MessageBox::question(
                 this, tr("Move entries to recycle bin?"),
                 tr("Do you really want to move %n entry(s) to the recycle bin?", 0, selected.size()),
                 QMessageBox::Yes | QMessageBox::No);
-            if (result == QMessageBox::No) {
-                return;
-            }
         }
 
-        Q_FOREACH (Entry* entry, selectedEntries) {
+        if (result == QMessageBox::No) {
+            return;
+        }
+
+        for (Entry* entry : asConst(selectedEntries)) {
             m_db->recycleEntry(entry);
         }
     }
@@ -673,8 +683,8 @@ void DatabaseWidget::unlockDatabase(bool accepted)
 
     replaceDatabase(static_cast<DatabaseOpenWidget*>(sender())->database());
 
-    QList<Group*> groups = m_db->rootGroup()->groupsRecursive(true);
-    Q_FOREACH (Group* group, groups) {
+    const QList<Group*> groups = m_db->rootGroup()->groupsRecursive(true);
+    for (Group* group : groups) {
         if (group->uuid() == m_groupBeforeLock) {
             m_groupView->setCurrentGroup(group);
             break;
