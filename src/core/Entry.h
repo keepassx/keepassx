@@ -77,6 +77,7 @@ public:
     QString username() const;
     QString password() const;
     QString notes() const;
+    QString lastModified() const;
     bool isExpired() const;
     EntryAttributes* attributes();
     const EntryAttributes* attributes() const;
