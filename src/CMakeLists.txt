@@ -54,6 +54,8 @@ set(keepassx_SOURCES
     core/ListDeleter.h
     core/Metadata.cpp
     core/PasswordGenerator.cpp
+    core/ScreenLockListener.cpp
+    core/ScreenLockListener.h
     core/SignalMultiplexer.cpp
     core/TimeDelta.cpp
     core/TimeInfo.cpp
@@ -128,6 +130,14 @@ set(keepassx_SOURCES
     streams/SymmetricCipherStream.cpp
 )
 
+if(APPLE)
+    set(keepassx_SOURCES
+        ${keepassx_SOURCES}
+        core/ScreenLockListenerMac.h
+        core/ScreenLockListenerMac.cpp
+        )
+endif()
+
 set(keepassx_SOURCES_MAINEXE
     main.cpp
 )
@@ -164,6 +174,9 @@ qt5_wrap_ui(keepassx_SOURCES ${keepassx_FORMS})
 add_library(keepassx_core STATIC ${keepassx_SOURCES})
 set_target_properties(keepassx_core PROPERTIES COMPILE_DEFINITIONS KEEPASSX_BUILDING_CORE)
 target_link_libraries(keepassx_core Qt5::Core Qt5::Concurrent Qt5::Widgets)
+if(APPLE)
+    target_link_libraries(keepassx_core "-framework Foundation")
+endif()
 
 add_executable(${PROGNAME} WIN32 MACOSX_BUNDLE ${keepassx_SOURCES_MAINEXE})
 target_link_libraries(${PROGNAME}
@@ -189,6 +202,7 @@ install(TARGETS ${PROGNAME}
 add_subdirectory(autotype)
 
 if(APPLE)
+
   if(QT_MAC_USE_COCOA AND EXISTS "${QT_LIBRARY_DIR}/Resources/qt_menu.nib")
     install(DIRECTORY "${QT_LIBRARY_DIR}/Resources/qt_menu.nib"
             DESTINATION "${DATA_INSTALL_DIR}")
