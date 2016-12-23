@@ -138,6 +138,14 @@ if(APPLE)
         )
 endif()
 
+if(MINGW)
+    set(keepassx_SOURCES
+        ${keepassx_SOURCES}
+        core/ScreenLockListenerWin.h
+        core/ScreenLockListenerWin.cpp
+        )
+endif()
+
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     set(keepassx_SOURCES
         ${keepassx_SOURCES}
@@ -188,6 +196,10 @@ endif()
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     target_link_libraries(keepassx_core Qt5::DBus)
+endif()
+
+if(MINGW)
+    target_link_libraries(keepassx_core Wtsapi32.lib)
 endif()
 
 add_executable(${PROGNAME} WIN32 MACOSX_BUNDLE ${keepassx_SOURCES_MAINEXE})

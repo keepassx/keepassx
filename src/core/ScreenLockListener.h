@@ -1,7 +1,7 @@
 #ifndef SCREENLOCKLISTENER_H
 #define SCREENLOCKLISTENER_H
 
-#include <QObject>
+#include <QWidget>
 
 #if defined(Q_OS_OSX)
 class ScreenLockListenerMac;
@@ -9,11 +9,14 @@ class ScreenLockListenerMac;
 #if defined(Q_OS_LINUX)
 class ScreenLockListenerDBus;
 #endif
+#if defined(Q_OS_WIN)
+class ScreenLockListenerWin;
+#endif
 class ScreenLockListener : public QObject {
     Q_OBJECT
 
 public:
-    ScreenLockListener(QObject* parent=NULL);
+    ScreenLockListener(QWidget* parent=NULL);
     ~ScreenLockListener();
     void onNotification();
 
@@ -26,6 +29,9 @@ private:
 #endif
 #if defined(Q_OS_LINUX)
     ScreenLockListenerDBus* m_dbus_listener;
+#endif
+#if defined(Q_OS_WIN)
+    ScreenLockListenerWin* m_win_listener;
 #endif
 };
 
