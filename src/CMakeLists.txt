@@ -138,6 +138,14 @@ if(APPLE)
         )
 endif()
 
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    set(keepassx_SOURCES
+        ${keepassx_SOURCES}
+        core/ScreenLockListenerDBus.h
+        core/ScreenLockListenerDBus.cpp
+        )
+endif()
+
 set(keepassx_SOURCES_MAINEXE
     main.cpp
 )
@@ -178,6 +186,10 @@ if(APPLE)
     target_link_libraries(keepassx_core "-framework Foundation")
 endif()
 
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    target_link_libraries(keepassx_core Qt5::DBus)
+endif()
+
 add_executable(${PROGNAME} WIN32 MACOSX_BUNDLE ${keepassx_SOURCES_MAINEXE})
 target_link_libraries(${PROGNAME}
                       keepassx_core
@@ -186,6 +198,10 @@ target_link_libraries(${PROGNAME}
                       Qt5::Widgets
                       ${GCRYPT_LIBRARIES}
                       ${ZLIB_LIBRARIES})
+
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+  target_link_libraries(${PROGNAME} Qt5::DBus)
+endif()
 
 set_target_properties(${PROGNAME} PROPERTIES ENABLE_EXPORTS ON)
 

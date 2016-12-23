@@ -6,6 +6,9 @@
 #if defined(Q_OS_OSX)
 class ScreenLockListenerMac;
 #endif
+#if defined(Q_OS_LINUX)
+class ScreenLockListenerDBus;
+#endif
 class ScreenLockListener : public QObject {
     Q_OBJECT
 
@@ -20,6 +23,9 @@ Q_SIGNALS:
 private:
 #if defined(Q_OS_OSX)
     ScreenLockListenerMac* m_mac_listener;
+#endif
+#if defined(Q_OS_LINUX)
+    ScreenLockListenerDBus* m_dbus_listener;
 #endif
 };
 
