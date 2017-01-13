@@ -116,6 +116,13 @@ set(keepassx_SOURCES
     gui/group/EditGroupWidget.cpp
     gui/group/GroupModel.cpp
     gui/group/GroupView.cpp
+    http/AccessControlDialog.cpp
+    http/EntryConfig.cpp
+    http/HttpSettings.cpp
+    http/OptionDialog.cpp
+    http/Protocol.cpp
+    http/Server.cpp
+    http/Service.cpp
     keys/CompositeKey.cpp
     keys/CompositeKey_p.h
     keys/FileKey.cpp
@@ -130,6 +137,71 @@ set(keepassx_SOURCES
 
 set(keepassx_SOURCES_MAINEXE
     main.cpp
+)
+
+set(keepassx_MOC
+    autotype/AutoType.h
+    autotype/AutoTypeSelectDialog.h
+    autotype/AutoTypeSelectView.h
+    autotype/ShortcutWidget.h
+    autotype/WindowSelectComboBox.h
+    core/AutoTypeAssociations.h
+    core/Config.h
+    core/Database.h
+    core/Entry.h
+    core/EntryAttachments.h
+    core/EntryAttributes.h
+    core/Group.h
+    core/InactivityTimer.h
+    core/Metadata.h
+    core/qsavefile.h
+    gui/AboutDialog.h
+    gui/Application.h
+    gui/ChangeMasterKeyWidget.h
+    gui/Clipboard.h
+    gui/DatabaseOpenWidget.h
+    gui/DatabaseSettingsWidget.h
+    gui/DatabaseTabWidget.h
+    gui/DatabaseWidget.h
+    gui/DatabaseWidgetStateSync.h
+    gui/DialogyWidget.h
+    gui/DragTabBar.h
+    gui/EditWidget.h
+    gui/EditWidgetIcons.h
+    gui/EditWidgetProperties.h
+    gui/IconModels.h
+    gui/KeePass1OpenWidget.h
+    gui/LineEdit.h
+    gui/MainWindow.h
+    gui/PasswordEdit.h
+    gui/PasswordGeneratorWidget.h
+    gui/PasswordComboBox.h
+    gui/SettingsWidget.h
+    gui/SortFilterHideProxyModel.h
+    gui/UnlockDatabaseWidget.h
+    gui/WelcomeWidget.h
+    gui/entry/AutoTypeAssociationsModel.h
+    gui/entry/EditEntryWidget.h
+    gui/entry/EntryAttachmentsModel.h
+    gui/entry/EntryAttributesModel.h
+    gui/entry/EntryHistoryModel.h
+    gui/entry/EntryModel.h
+    gui/entry/EntryView.h
+    gui/group/EditGroupWidget.h
+    gui/group/GroupModel.h
+    gui/group/GroupView.h
+    http/AccessControlDialog.h
+    http/EntryConfig.h
+    http/OptionDialog.h
+    http/Protocol.h
+    http/Server.h
+    http/Service.h
+    keys/CompositeKey_p.h
+    streams/HashedBlockStream.h
+    streams/LayeredStream.h
+    streams/qtiocompressor.h
+    streams/StoreDataStream.h
+    streams/SymmetricCipherStream.h
 )
 
 set(keepassx_FORMS
@@ -151,6 +223,8 @@ set(keepassx_FORMS
     gui/entry/EditEntryWidgetHistory.ui
     gui/entry/EditEntryWidgetMain.ui
     gui/group/EditGroupWidgetMain.ui
+    http/AccessControlDialog.ui
+    http/OptionDialog.ui
 )
 
 if(MINGW)
@@ -172,7 +246,9 @@ target_link_libraries(${PROGNAME}
                       Qt5::Concurrent
                       Qt5::Widgets
                       ${GCRYPT_LIBRARIES}
-                      ${ZLIB_LIBRARIES})
+                      ${ZLIB_LIBRARIES}
+                      ${QJSON_LIBRARIES}
+                      ${MHD_LIBRARIES})
 
 set_target_properties(${PROGNAME} PROPERTIES ENABLE_EXPORTS ON)
 
@@ -202,8 +278,8 @@ if(APPLE)
   set(CPACK_PACKAGE_FILE_NAME "${PROGNAME}-${KEEPASSX_VERSION_NUM}")
   include(CPack)
 
-  include(DeployQt4)
-  install_qt4_executable(${PROGNAME}.app "qjpeg;qgif;qico;qtaccessiblewidgets")
+  include(DeployQt5)
+  install_qt5_executable(${PROGNAME}.app "qjpeg;qgif;qico;qtaccessiblewidgets")
 endif()
 
 if(MINGW )
@@ -212,6 +288,6 @@ if(MINGW )
   set(CPACK_PACKAGE_FILE_NAME "${PROGNAME}-${KEEPASSX_VERSION_NUM}")
   include(CPack)
 
-  include(DeployQt4)
-  install_qt4_executable(${PROGNAME}.exe "qjpeg;qgif;qico;qtaccessiblewidgets")
+  include(DeployQt5)
+  install_qt5_executable(${PROGNAME}.exe "qjpeg;qgif;qico;qtaccessiblewidgets")
 endif()

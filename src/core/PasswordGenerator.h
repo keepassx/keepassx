@@ -53,6 +53,7 @@ public:
     bool isValid() const;
 
     QString generatePassword() const;
+    int getbits() const;
 
 private:
     QVector<PasswordGroup> passwordGroups() const;

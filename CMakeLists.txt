@@ -161,6 +161,10 @@ set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_NONE QT_NO_DEBUG)
 
 find_package(Gcrypt 1.6.0 REQUIRED)
 
+find_package(LibMicroHTTPD REQUIRED)
+
+find_package(QJSON-qt5 REQUIRED)
+
 find_package(ZLIB REQUIRED)
 
 check_cxx_source_compiles("
