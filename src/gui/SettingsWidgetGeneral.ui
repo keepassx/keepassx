@@ -113,6 +113,16 @@
      </property>
     </widget>
    </item>
+   <item row="12" column="0">
+    <widget class="QCheckBox" name="systrayCloseToTrayCheckBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Hide window to system tray when closing main window (Use Ctrl+Q or Database -> Exit to exit).</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>

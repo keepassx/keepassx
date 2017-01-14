@@ -444,6 +444,13 @@ void MainWindow::databaseTabChanged(int tabIndex)
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
+
+  if (config()->get("GUI/CloseToTray").toBool()) {
+    event->ignore();
+    QTimer::singleShot(0, this, SLOT(hide()));
+  }
+  else {
+
     bool accept = saveLastDatabases();
 
     if (accept) {
@@ -455,6 +462,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
     else {
         event->ignore();
     }
+  }
 }
 
 void MainWindow::changeEvent(QEvent* event)
