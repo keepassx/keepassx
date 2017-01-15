@@ -321,7 +321,7 @@ Save changes?</source>
     <message>
         <source>The database you are trying to open is locked by another instance of KeePassX.
 Do you want to open it anyway? Alternatively the database is opened read-only.</source>
-        <translation>Die Datenbank, die geöffnet werden soll, ist aktuell von einer anderen Instanz von KeePassX blockiert. Soll sie dennoch geöffnet werden? Andererseits wird die Datenbank schreibgeschützt geöffnet.</translation>
+        <translation>Die Datenbank, die geöffnet werden soll, ist aktuell von einer anderen Instanz von KeePassX blockiert. Soll sie dennoch geöffnet werden? Andernfalls wird die Datenbank schreibgeschützt geöffnet.</translation>
     </message>
     <message>
         <source>Lock database</source>
@@ -337,14 +337,14 @@ Wählen sie &quot;cancel&quot;, um die Änderungen zu speichern oder sie zurück
         <source>This database has never been saved.
 You can save the database or stop locking it.</source>
         <translation>Diese Datenbank wurde noch nicht gespeichert.
-Sie können sie speichern oder Sperre freigeben.</translation>
+Sie können sie speichern oder die Sperre freigeben.</translation>
     </message>
     <message>
         <source>This database has been modified.
 Do you want to save the database before locking it?
 Otherwise your changes are lost.</source>
         <translation>Dieses Datenbank wurde geändert.
-Soll sie gespeichert werden bevor sie gesperrt wirt?
+Soll sie gespeichert werden bevor sie gesperrt wird?
 Anderenfalls gehen Ihre Änderungen verloren.</translation>
     </message>
     <message>
@@ -1174,7 +1174,7 @@ Dieser Vorgang ist nur in eine Richtung möglich. Die importierte Datenbank kann
     </message>
     <message>
         <source>Writing canceled by application</source>
-        <translation>Schreiben von der Applikation abgebrochen</translation>
+        <translation>Schreiben von der Anwendung abgebrochen</translation>
     </message>
     <message>
         <source>Partial write. Partition full?</source>
