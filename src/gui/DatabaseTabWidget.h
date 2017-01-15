@@ -91,6 +91,7 @@ private Q_SLOTS:
     void emitActivateDatabaseChanged();
 
 private:
+    bool saveOrDiscardDatabase(Database* db);
     bool saveDatabase(Database* db);
     bool saveDatabaseAs(Database* db);
     bool closeDatabase(Database* db);
