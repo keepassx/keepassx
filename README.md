@@ -86,6 +86,10 @@ sudo make install
 
 More detailed instructions available in the INSTALL file.
 
+### Command line help
+
+To see what options are available from the command line, including optional arguments you can pass, execute KeePassX with the option `-h` `--help` or `-?`.
+
 ## Contribute
 
 Coordination of work between developers is handled through the [KeePassX development](https://www.keepassx.org/dev/) site.
