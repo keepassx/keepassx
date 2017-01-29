@@ -26,6 +26,7 @@ if(UNIX AND NOT APPLE)
             FILES_MATCHING PATTERN "application-x-keepassx.png" PATTERN "application-x-keepassx.svgz")
     install(FILES linux/keepassx.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
     install(FILES linux/keepassx.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
+    install(FILES linux/keepassx.appdata.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/appdata)
 endif(UNIX AND NOT APPLE)
 
 if(APPLE)
