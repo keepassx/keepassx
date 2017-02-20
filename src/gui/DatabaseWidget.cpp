@@ -392,6 +392,9 @@ void DatabaseWidget::copyTitle()
 
 void DatabaseWidget::copyUsername()
 {
+	if(!m_entryView->hasFocus()){
+		m_entryView->setFocus();	
+	}
     Entry* currentEntry = m_entryView->currentEntry();
     if (!currentEntry) {
         Q_ASSERT(false);
@@ -402,18 +405,20 @@ void DatabaseWidget::copyUsername()
 }
 
 void DatabaseWidget::copyPassword()
-{
+{	
     Entry* currentEntry = m_entryView->currentEntry();
     if (!currentEntry) {
         Q_ASSERT(false);
         return;
     }
-
     setClipboardTextAndMinimize(currentEntry->password());
 }
 
 void DatabaseWidget::copyURL()
 {
+	if(!m_entryView->hasFocus()){
+		m_entryView->setFocus();	
+	}
     Entry* currentEntry = m_entryView->currentEntry();
     if (!currentEntry) {
         Q_ASSERT(false);
@@ -466,6 +471,9 @@ void DatabaseWidget::performAutoType()
 
 void DatabaseWidget::openUrl()
 {
+	if(!m_entryView->hasFocus()){
+		m_entryView->setFocus();	
+	}
     Entry* currentEntry = m_entryView->currentEntry();
     if (!currentEntry) {
         Q_ASSERT(false);
