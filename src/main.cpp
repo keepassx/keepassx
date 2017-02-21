@@ -68,6 +68,16 @@ int main(int argc, char** argv)
     parser.addOption(keyfileOption);
 
     parser.process(app);
+
+    // Hide password from argument list after consumption
+    for(uint i=0; i < argc; i++){
+        if(QString(argv[i]).compare("--password") == 0 && ++i < argc){
+		for(uint j=0; argv[i][j] != '\0'; j++){
+			argv[i][j] = '\0';
+		}
+	}
+    }
+
     const QStringList args = parser.positionalArguments();
 
     if (parser.isSet(configOption)) {
