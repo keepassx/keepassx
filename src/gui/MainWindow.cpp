@@ -311,7 +311,7 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
             m_ui->actionSearch->setEnabled(true);
             m_ui->actionChangeMasterKey->setEnabled(true);
             m_ui->actionChangeDatabaseSettings->setEnabled(true);
-            m_ui->actionDatabaseSave->setEnabled(true);
+            m_ui->actionDatabaseSave->setEnabled(m_ui->tabWidget->canSave(-1));
             m_ui->actionDatabaseSaveAs->setEnabled(true);
             m_ui->actionExportCsv->setEnabled(true);
             break;
@@ -394,6 +394,7 @@ void MainWindow::updateWindowTitle()
         if (m_ui->tabWidget->readOnly(tabWidgetIndex)) {
             customWindowTitlePart.append(QString(" [%1]").arg(tr("read-only")));
         }
+        m_ui->actionDatabaseSave->setEnabled(m_ui->tabWidget->canSave(tabWidgetIndex));
     } else if (stackedWidgetIndex == 1) {
         customWindowTitlePart = tr("Settings");
     }
