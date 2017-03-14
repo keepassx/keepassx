@@ -45,6 +45,7 @@ private Q_SLOTS:
     void save();
     void reject();
     void transformRoundsBenchmark();
+    void changeKdf(int index);
 
 private:
     void truncateHistories();

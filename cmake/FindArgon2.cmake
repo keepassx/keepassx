@@ -1,4 +1,4 @@
-#  Copyright (C) 2010 Felix Geyer <debfx@fobos.de>
+#  Copyright (C) 2011 Felix Geyer <debfx@fobos.de>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -13,14 +13,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-include_directories(../src)
+find_path(ARGON2_INCLUDE_DIR argon2.h)
+find_library(ARGON2_LIBRARIES argon2)
+mark_as_advanced(ARGON2_LIBRARIES ARGON2_INCLUDE_DIR)
 
-add_executable(kdbx-extract kdbx-extract.cpp)
-target_link_libraries(kdbx-extract
-                      keepassx_core
-                      Qt5::Core
-                      Qt5::Concurrent
-                      Qt5::Widgets
-                      ${GCRYPT_LIBRARIES}
-                      ${ARGON2_LIBRARIES}
-                      ${ZLIB_LIBRARIES})
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Argon2 DEFAULT_MSG ARGON2_LIBRARIES ARGON2_INCLUDE_DIR)

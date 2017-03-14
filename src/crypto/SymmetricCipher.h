@@ -31,7 +31,8 @@ public:
     {
         Aes256,
         Twofish,
-        Salsa20
+        Salsa20,
+        ChaCha20
     };
 
     enum Mode
@@ -70,6 +71,7 @@ public:
     bool reset();
     int blockSize() const;
     QString errorString() const;
+    Algorithm algorithm() const;
 
 private:
     static SymmetricCipherBackend* createBackend(SymmetricCipher::Algorithm algo, SymmetricCipher::Mode mode,
@@ -77,6 +79,7 @@ private:
 
     const QScopedPointer<SymmetricCipherBackend> m_backend;
     bool m_initialized;
+    Algorithm m_algo;
 
     Q_DISABLE_COPY(SymmetricCipher)
 };

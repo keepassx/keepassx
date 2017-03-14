@@ -19,6 +19,7 @@
 
 #include <QBuffer>
 #include <QFile>
+#include <core/Endian.h>
 
 #include "core/Database.h"
 #include "core/DatabaseIcons.h"
@@ -31,12 +32,19 @@
 typedef QPair<QString, QString> StringPair;
 
 KeePass2XmlReader::KeePass2XmlReader()
+        : KeePass2XmlReader(KeePass2::FILE_VERSION_4, QHash<QString, QByteArray>())
+{
+}
+
+KeePass2XmlReader::KeePass2XmlReader(quint32 version, QHash<QString, QByteArray> binaryPool)
     : m_randomStream(nullptr)
     , m_db(nullptr)
     , m_meta(nullptr)
     , m_tmpParent(nullptr)
+    , m_binaryPool(binaryPool)
     , m_error(false)
     , m_strictMode(false)
+    , m_version(version)
 {
 }
 
@@ -296,6 +304,9 @@ void KeePass2XmlReader::parseMeta()
         }
         else if (m_xml.name() == "CustomData") {
             parseCustomData();
+        }
+        else if (m_xml.name() == "SettingsChanged") {
+            m_meta->setSettingsChanged(readDateTime());
         }
         else {
             skipCurrentElement();
@@ -1047,17 +1058,13 @@ QDateTime KeePass2XmlReader::readDateTime()
 {
     QString str = readString();
     QDateTime dt = QDateTime::fromString(str, Qt::ISODate);
-
-    if (!dt.isValid()) {
-        if (m_strictMode) {
-            raiseError("Invalid date time value");
-        }
-        else {
-            dt = QDateTime::currentDateTimeUtc();
-        }
+    if (dt.isValid()) {
+        return dt;
     }
-
-    return dt;
+    // FIXME don't fallback to Qt's super-tolerant base64 parsing
+    QByteArray secsBytes = QByteArray::fromBase64(str.toUtf8()).leftJustified(8, '\0', true).left(8);
+    qint64 secs = Endian::bytesToInt64(secsBytes, KeePass2::BYTEORDER);
+    return QDateTime(QDate(1, 1, 1), QTime(0, 0, 0, 0), Qt::UTC).addSecs(secs);
 }
 
 QColor KeePass2XmlReader::readColor()

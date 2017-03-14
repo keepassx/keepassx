@@ -90,6 +90,7 @@ set(TEST_LIBRARIES
     Qt5::Widgets
     Qt5::Test
     ${GCRYPT_LIBRARIES}
+    ${ARGON2_LIBRARIES}
     ${ZLIB_LIBRARIES}
 )
 

@@ -15,6 +15,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <format/KeePass2.h>
+#include <crypto/kdf/Kdf.h>
+#include <crypto/kdf/Argon2Kdf.h>
 #include "DatabaseSettingsWidget.h"
 #include "ui_DatabaseSettingsWidget.h"
 
@@ -22,6 +25,7 @@
 #include "core/Group.h"
 #include "core/Metadata.h"
 #include "keys/CompositeKey.h"
+#include "MessageBox.h"
 
 DatabaseSettingsWidget::DatabaseSettingsWidget(QWidget* parent)
     : DialogyWidget(parent)
@@ -37,6 +41,7 @@ DatabaseSettingsWidget::DatabaseSettingsWidget(QWidget* parent)
     connect(m_ui->historyMaxSizeCheckBox, SIGNAL(toggled(bool)),
             m_ui->historyMaxSizeSpinBox, SLOT(setEnabled(bool)));
     connect(m_ui->transformBenchmarkButton, SIGNAL(clicked()), SLOT(transformRoundsBenchmark()));
+    connect(m_ui->kdfCombo, SIGNAL(currentIndexChanged(int)), SLOT(changeKdf(int)));
 }
 
 DatabaseSettingsWidget::~DatabaseSettingsWidget()
@@ -53,7 +58,6 @@ void DatabaseSettingsWidget::load(Database* db)
     m_ui->dbDescriptionEdit->setText(meta->description());
     m_ui->recycleBinEnabledCheckBox->setChecked(meta->recycleBinEnabled());
     m_ui->defaultUsernameEdit->setText(meta->defaultUserName());
-    m_ui->transformRoundsSpinBox->setValue(m_db->transformRounds());
     if (meta->historyMaxItems() > -1) {
         m_ui->historyMaxItemsSpinBox->setValue(meta->historyMaxItems());
         m_ui->historyMaxItemsCheckBox->setChecked(true);
@@ -72,6 +76,30 @@ void DatabaseSettingsWidget::load(Database* db)
         m_ui->historyMaxSizeCheckBox->setChecked(false);
     }
 
+    // FIXME don't hardcode this here
+    m_ui->cipherCombo->addItem("AES-256", KeePass2::CIPHER_AES.toByteArray());
+    m_ui->cipherCombo->addItem("ChaCha20", KeePass2::CIPHER_CHACHA20.toByteArray());
+    int cipherIndex = m_ui->cipherCombo->findData(m_db->cipher().toByteArray());
+    if (cipherIndex > -1) {
+        m_ui->cipherCombo->setCurrentIndex(cipherIndex);
+    }
+
+    m_ui->kdfCombo->addItem("AES-KDF", QVariant(KeePass2::KDF_AES.toByteArray()));
+    m_ui->kdfCombo->addItem("Argon2", QVariant(KeePass2::KDF_ARGON2.toByteArray()));
+    QVariantMap& kdfParams = m_db->kdfParams();
+    Uuid curKdf = Uuid(kdfParams.value(KeePass2::KDFPARAM_UUID).toByteArray());
+    int kdfIndex = m_ui->kdfCombo->findData(curKdf.toByteArray()); // FIXME format details here :(
+    if (kdfIndex > -1) {
+        m_ui->kdfCombo->setCurrentIndex(kdfIndex);
+    }
+    if (curKdf == KeePass2::KDF_AES) {
+        m_ui->transformRoundsSpinBox->setValue(kdfParams.value(KeePass2::KDFPARAM_AES_ROUNDS).toInt());
+    } else if (curKdf == KeePass2::KDF_ARGON2) {
+        m_ui->transformRoundsSpinBox->setValue(kdfParams.value(KeePass2::KDFPARAM_ARGON2_TIME).toInt());
+        m_ui->memoryCostSpinBox->setValue(kdfParams.value(KeePass2::KDFPARAM_ARGON2_MEMORY).toInt());
+        m_ui->lanesSpinBox->setValue(kdfParams.value(KeePass2::KDFPARAM_ARGON2_LANES).toInt());
+    }
+
     m_ui->dbNameEdit->setFocus();
 }
 
@@ -83,11 +111,7 @@ void DatabaseSettingsWidget::save()
     meta->setDescription(m_ui->dbDescriptionEdit->text());
     meta->setDefaultUserName(m_ui->defaultUsernameEdit->text());
     meta->setRecycleBinEnabled(m_ui->recycleBinEnabledCheckBox->isChecked());
-    if (static_cast<quint64>(m_ui->transformRoundsSpinBox->value()) != m_db->transformRounds()) {
-        QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-        m_db->setTransformRounds(m_ui->transformRoundsSpinBox->value());
-        QApplication::restoreOverrideCursor();
-    }
+    meta->setSettingsChanged(QDateTime::currentDateTimeUtc());
 
     bool truncate = false;
 
@@ -119,6 +143,30 @@ void DatabaseSettingsWidget::save()
         truncateHistories();
     }
 
+    m_db->setCipher(Uuid(m_ui->cipherCombo->currentData().toByteArray()));
+    // FIXME we shouldn't be dealing with the raw map here although KeePass2 itself also does it..
+    QVariantMap kdfParams(m_db->kdfParams());
+    Uuid selKdf(m_ui->kdfCombo->currentData().toByteArray());
+    if (kdfParams.value(KeePass2::KDFPARAM_UUID).toByteArray() != selKdf.toByteArray()) {
+        QScopedPointer<Kdf> kdf(Kdf::getKdf(selKdf));
+        kdfParams = kdf->defaultParams();
+        kdf->randomizeSalt(kdfParams);
+    }
+
+    if (selKdf == KeePass2::KDF_AES) {
+        kdfParams.insert(KeePass2::KDFPARAM_AES_ROUNDS, static_cast<quint64>(m_ui->transformRoundsSpinBox->value()));
+    } else if (selKdf == KeePass2::KDF_ARGON2) {
+        kdfParams.insert(KeePass2::KDFPARAM_ARGON2_TIME, static_cast<quint64>(m_ui->transformRoundsSpinBox->value()));
+        kdfParams.insert(KeePass2::KDFPARAM_ARGON2_MEMORY, static_cast<quint64>(m_ui->memoryCostSpinBox->value()));
+        kdfParams.insert(KeePass2::KDFPARAM_ARGON2_LANES, static_cast<quint32>(m_ui->lanesSpinBox->value()));
+    }
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    bool newParamsOk = m_db->changeKdfParams(kdfParams);
+    QApplication::restoreOverrideCursor();
+    if (!newParamsOk) {
+        MessageBox::warning(this, tr("Error"), tr("Invalid key derivation function parameters;\nparameters left unchanged."));
+    }
+
     Q_EMIT editFinished(true);
 }
 
@@ -130,7 +178,14 @@ void DatabaseSettingsWidget::reject()
 void DatabaseSettingsWidget::transformRoundsBenchmark()
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    int rounds = CompositeKey::transformKeyBenchmark(1000);
+    int rounds = -1;
+    Uuid selKdf(m_ui->kdfCombo->currentData().toByteArray());
+    if (selKdf == KeePass2::KDF_AES) {
+        rounds = CompositeKey::transformKeyAesBenchmark(1000);
+    } else if (selKdf == KeePass2::KDF_ARGON2) {
+        rounds = CompositeKey::transformKeyArgon2Benchmark(1000, m_ui->lanesSpinBox->value(), m_ui->memoryCostSpinBox->value());
+    }
+
     if (rounds != -1) {
         m_ui->transformRoundsSpinBox->setValue(rounds);
     }
@@ -143,4 +198,14 @@ void DatabaseSettingsWidget::truncateHistories()
     for (Entry* entry : allEntries) {
         entry->truncateHistory();
     }
+}
+
+void DatabaseSettingsWidget::changeKdf(int index) {
+    // FIXME format details here again
+    Uuid selKdf(m_ui->kdfCombo->itemData(index).toByteArray());
+    bool vis = selKdf == KeePass2::KDF_ARGON2;
+    m_ui->memoryCostLabel->setVisible(vis);
+    m_ui->memoryCostSpinBox->setVisible(vis);
+    m_ui->lanesLabel->setVisible(vis);
+    m_ui->lanesSpinBox->setVisible(vis);
 }

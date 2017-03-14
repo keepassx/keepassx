@@ -40,6 +40,7 @@ class KeePass2XmlReader
 
 public:
     KeePass2XmlReader();
+    KeePass2XmlReader(quint32 version, QHash<QString, QByteArray> binaryPool);
     Database* readDatabase(QIODevice* device);
     void readDatabase(QIODevice* device, Database* db, KeePass2RandomStream* randomStream = nullptr);
     Database* readDatabase(const QString& filename);
@@ -96,6 +97,7 @@ private:
     bool m_error;
     QString m_errorStr;
     bool m_strictMode;
+    quint32 m_version;
 };
 
 #endif // KEEPASSX_KEEPASS2XMLREADER_H

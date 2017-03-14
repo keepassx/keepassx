@@ -159,8 +159,8 @@ set(CMAKE_AUTOMOC ON)
 # Make sure we don't enable asserts there.
 set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_NONE QT_NO_DEBUG)
 
-find_package(Gcrypt 1.6.0 REQUIRED)
-
+find_package(Gcrypt 1.7.0 REQUIRED)
+find_package(Argon2 REQUIRED)
 find_package(ZLIB REQUIRED)
 
 check_cxx_source_compiles("

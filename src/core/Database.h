@@ -54,9 +54,9 @@ public:
     {
         Uuid cipher;
         CompressionAlgorithm compressionAlgo;
-        QByteArray transformSeed;
-        quint64 transformRounds;
         QByteArray transformedMasterKey;
+        QByteArray publicCustomData;
+        QVariantMap kdfParams;
         CompositeKey key;
         bool hasKey;
     };
@@ -85,20 +85,15 @@ public:
 
     Uuid cipher() const;
     Database::CompressionAlgorithm compressionAlgo() const;
-    QByteArray transformSeed() const;
-    quint64 transformRounds() const;
+    QVariantMap & kdfParams();
+    QByteArray publicCustomData() const;
     QByteArray transformedMasterKey() const;
 
     void setCipher(const Uuid& cipher);
     void setCompressionAlgo(Database::CompressionAlgorithm algo);
-    bool setTransformRounds(quint64 rounds);
-    bool setKey(const CompositeKey& key, const QByteArray& transformSeed,
-                bool updateChangedTime = true);
-
-    /**
-     * Sets the database key and generates a random transform seed.
-     */
-    bool setKey(const CompositeKey& key);
+    void setKdfParams(QVariantMap params);
+    void setPublicCustomData(QByteArray data);
+    bool setKey(const CompositeKey& key, bool updateChangedTime = true);
     bool hasKey() const;
     bool verifyKey(const CompositeKey& key) const;
     void recycleEntry(Entry* entry);
@@ -110,6 +105,7 @@ public:
      * Returns a unique id that is only valid as long as the Database exists.
      */
     Uuid uuid();
+    bool changeKdfParams(QVariantMap kdfParams);
 
     static Database* databaseByUuid(const Uuid& uuid);
 

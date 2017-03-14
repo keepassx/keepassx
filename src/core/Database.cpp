@@ -19,11 +19,10 @@
 
 #include <QFile>
 #include <QTimer>
-#include <QXmlStreamReader>
+#include <crypto/kdf/Argon2Kdf.h>
 
 #include "core/Group.h"
 #include "core/Metadata.h"
-#include "crypto/Random.h"
 #include "format/KeePass2.h"
 
 QHash<Uuid, Database*> Database::m_uuidMap;
@@ -34,9 +33,11 @@ Database::Database()
     , m_emitModified(false)
     , m_uuid(Uuid::random())
 {
-    m_data.cipher = KeePass2::CIPHER_AES;
+    m_data.cipher = KeePass2::CIPHER_CHACHA20;
     m_data.compressionAlgo = CompressionGZip;
-    m_data.transformRounds = 100000;
+    Argon2Kdf tempKdf;
+    m_data.kdfParams = tempKdf.defaultParams();
+    tempKdf.randomizeSalt(m_data.kdfParams);
     m_data.hasKey = false;
 
     setRootGroup(new Group());
@@ -161,16 +162,6 @@ Database::CompressionAlgorithm Database::compressionAlgo() const
     return m_data.compressionAlgo;
 }
 
-QByteArray Database::transformSeed() const
-{
-    return m_data.transformSeed;
-}
-
-quint64 Database::transformRounds() const
-{
-    return m_data.transformRounds;
-}
-
 QByteArray Database::transformedMasterKey() const
 {
     return m_data.transformedMasterKey;
@@ -190,38 +181,17 @@ void Database::setCompressionAlgo(Database::CompressionAlgorithm algo)
     m_data.compressionAlgo = algo;
 }
 
-bool Database::setTransformRounds(quint64 rounds)
-{
-    if (m_data.transformRounds != rounds) {
-        quint64 oldRounds = m_data.transformRounds;
-
-        m_data.transformRounds = rounds;
-
-        if (m_data.hasKey) {
-            if (!setKey(m_data.key)) {
-                m_data.transformRounds = oldRounds;
-                return false;
-            }
-        }
-    }
-
-    return true;
-}
-
-bool Database::setKey(const CompositeKey& key, const QByteArray& transformSeed,
-                      bool updateChangedTime)
+bool Database::setKey(const CompositeKey& key, bool updateChangedTime)
 {
     bool ok;
     QString errorString;
 
-    QByteArray transformedMasterKey =
-            key.transform(transformSeed, transformRounds(), &ok, &errorString);
+    QByteArray transformedMasterKey = key.transform(m_data.kdfParams, &ok, &errorString);
     if (!ok) {
         return false;
     }
 
     m_data.key = key;
-    m_data.transformSeed = transformSeed;
     m_data.transformedMasterKey = transformedMasterKey;
     m_data.hasKey = true;
     if (updateChangedTime) {
@@ -230,11 +200,6 @@ bool Database::setKey(const CompositeKey& key, const QByteArray& transformSeed,
     Q_EMIT modifiedImmediate();
 
     return true;
-}
-
-bool Database::setKey(const CompositeKey& key)
-{
-    return setKey(key, randomGen()->randomArray(32));
 }
 
 bool Database::hasKey() const
@@ -317,4 +282,36 @@ void Database::startModifiedTimer()
         m_timer->stop();
     }
     m_timer->start(150);
+}
+
+QVariantMap& Database::kdfParams() {
+    return m_data.kdfParams;
+}
+
+void Database::setKdfParams(QVariantMap params) {
+    m_data.kdfParams = params;
+}
+
+void Database::setPublicCustomData(QByteArray data) {
+    m_data.publicCustomData = data;
+}
+
+QByteArray Database::publicCustomData() const {
+    return m_data.publicCustomData;
+}
+
+bool Database::changeKdfParams(QVariantMap kdfParams) {
+    bool ok;
+    QString errorString;
+
+    QByteArray transformedMasterKey = m_data.key.transform(kdfParams, &ok, &errorString);
+    if (!ok) {
+        return false;
+    }
+
+    m_data.kdfParams = kdfParams;
+    m_data.transformedMasterKey = transformedMasterKey;
+    Q_EMIT modifiedImmediate();
+
+    return true;
 }

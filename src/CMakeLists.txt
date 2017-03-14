@@ -67,10 +67,13 @@ set(keepassx_SOURCES
     crypto/SymmetricCipher.cpp
     crypto/SymmetricCipherBackend.h
     crypto/SymmetricCipherGcrypt.cpp
+    crypto/kdf/Kdf.cpp
+    crypto/kdf/AesKdf.cpp
+    crypto/kdf/Argon2Kdf.cpp
     format/CsvExporter.cpp
     format/KeePass1.h
     format/KeePass1Reader.cpp
-    format/KeePass2.h
+    format/KeePass2.cpp
     format/KeePass2RandomStream.cpp
     format/KeePass2Reader.cpp
     format/KeePass2Repair.cpp
@@ -122,6 +125,7 @@ set(keepassx_SOURCES
     keys/Key.h
     keys/PasswordKey.cpp
     streams/HashedBlockStream.cpp
+    streams/HmacBlockStream.cpp
     streams/LayeredStream.cpp
     streams/qtiocompressor.cpp
     streams/StoreDataStream.cpp
@@ -172,6 +176,7 @@ target_link_libraries(${PROGNAME}
                       Qt5::Concurrent
                       Qt5::Widgets
                       ${GCRYPT_LIBRARIES}
+                      ${ARGON2_LIBRARIES}
                       ${ZLIB_LIBRARIES})
 
 set_target_properties(${PROGNAME} PROPERTIES ENABLE_EXPORTS ON)
