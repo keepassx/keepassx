@@ -407,6 +407,7 @@ QByteArray KeePass1Reader::key(const QByteArray& password, const QByteArray& key
         return QByteArray();
     }
 
+    m_db->setKdfParams(kdfParams);
     CryptoHash hash(CryptoHash::Sha256);
     hash.addData(m_masterSeed);
     hash.addData(transformedKey);
