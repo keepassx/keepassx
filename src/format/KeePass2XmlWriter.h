@@ -36,20 +36,17 @@ class KeePass2XmlWriter
 {
 public:
     KeePass2XmlWriter();
-    void writeDatabase(QIODevice* device, Database* db, KeePass2RandomStream* randomStream = nullptr,
-                       const QByteArray& headerHash = QByteArray());
+    KeePass2XmlWriter(QHash<QByteArray, int> idMap);
+    void writeDatabase(QIODevice* device, Database* db, KeePass2RandomStream* randomStream = nullptr);
     void writeDatabase(const QString& filename, Database* db);
     bool hasError();
     QString errorString();
 
 private:
-    void generateIdMap();
-
     void writeMetadata();
     void writeMemoryProtection();
     void writeCustomIcons();
     void writeIcon(const Uuid& uuid, const QImage& icon);
-    void writeBinaries();
     void writeCustomData();
     void writeCustomDataItem(const QString& key, const QString& value);
     void writeRoot();
@@ -81,7 +78,6 @@ private:
     Database* m_db;
     Metadata* m_meta;
     KeePass2RandomStream* m_randomStream;
-    QByteArray m_headerHash;
     QHash<QByteArray, int> m_idMap;
     bool m_error;
     QString m_errorStr;

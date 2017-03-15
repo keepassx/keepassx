@@ -95,8 +95,18 @@ bool Crypto::checkAlgorithms()
         qWarning("Crypto::checkAlgorithms: %s", qPrintable(m_errorStr));
         return false;
     }
+    if (gcry_cipher_algo_info(GCRY_CIPHER_CHACHA20, GCRYCTL_TEST_ALGO, nullptr, nullptr) != 0) {
+        m_errorStr = "GCRY_CIPHER_CHACHA20 not found.";
+        qWarning("Crypto::checkAlgorithms: %s", qPrintable(m_errorStr));
+        return false;
+    }
     if (gcry_md_test_algo(GCRY_MD_SHA256) != 0) {
         m_errorStr = "GCRY_MD_SHA256 not found.";
+        qWarning("Crypto::checkAlgorithms: %s", qPrintable(m_errorStr));
+        return false;
+    }
+    if (gcry_md_test_algo(GCRY_MD_SHA512) != 0) {
+        m_errorStr = "GCRY_MD_SHA512 not found.";
         qWarning("Crypto::checkAlgorithms: %s", qPrintable(m_errorStr));
         return false;
     }
@@ -106,7 +116,7 @@ bool Crypto::checkAlgorithms()
 
 bool Crypto::selfTest()
 {
-    return testSha256() && testAes256Cbc() && testAes256Ecb() && testTwofish() && testSalsa20();
+    return testSha256() && testSha512() && testAes256Cbc() && testAes256Ecb() && testTwofish() && testSalsa20() && testChaCha20();
 }
 
 void Crypto::raiseError(const QString& str)
@@ -122,6 +132,19 @@ bool Crypto::testSha256()
 
     if (sha256Test != QByteArray::fromHex("248D6A61D20638B8E5C026930C3E6039A33CE45964FF2167F6ECEDD419DB06C1")) {
         raiseError("SHA-256 mismatch.");
+        return false;
+    }
+
+    return true;
+}
+
+bool Crypto::testSha512()
+{
+    QByteArray sha512Test = CryptoHash::hash("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
+                                             CryptoHash::Sha512);
+
+    if (sha512Test != QByteArray::fromHex("204a8fc6dda82f0a0ced7beb8e08a41657c16ef468b228a8279be331a703c33596fd15c13b1b07f9aa1d3bea57789ca031ad85c7a71dd70354ec631238ca3445")) {
+        raiseError("SHA-512 mismatch.");
         return false;
     }
 
@@ -283,5 +306,10 @@ bool Crypto::testSalsa20()
         return false;
     }
 
+    return true;
+}
+
+bool Crypto::testChaCha20() {
+    // TODO
     return true;
 }

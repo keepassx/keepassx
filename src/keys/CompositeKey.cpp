@@ -20,6 +20,9 @@
 
 #include <QtConcurrent>
 #include <QElapsedTimer>
+#include <crypto/kdf/Kdf.h>
+#include <crypto/kdf/Argon2Kdf.h>
+#include <format/KeePass2.h>
 
 #include "core/Global.h"
 #include "crypto/CryptoHash.h"
@@ -82,64 +85,16 @@ QByteArray CompositeKey::rawKey() const
     return cryptoHash.result();
 }
 
-QByteArray CompositeKey::transform(const QByteArray& seed, quint64 rounds,
-                                   bool* ok, QString* errorString) const
+QByteArray CompositeKey::transform(QVariantMap kdfParams, bool* ok, QString* errorString) const
 {
-    Q_ASSERT(seed.size() == 32);
-    Q_ASSERT(rounds > 0);
-
-    bool okLeft;
-    QString errorStringLeft;
-    bool okRight;
-    QString errorStringRight;
-
-    QByteArray key = rawKey();
-
-    QFuture<QByteArray> future = QtConcurrent::run(transformKeyRaw, key.left(16), seed, rounds,
-                                                   &okLeft, &errorStringLeft);
-    QByteArray result2 = transformKeyRaw(key.right(16), seed, rounds, &okRight, &errorStringRight);
-
-    QByteArray transformed;
-    transformed.append(future.result());
-    transformed.append(result2);
-
-    *ok = (okLeft && okRight);
-
-    if (!okLeft) {
-        *errorString = errorStringLeft;
-        return QByteArray();
-    }
-
-    if (!okRight) {
-        *errorString = errorStringRight;
-        return QByteArray();
-    }
-
-    return CryptoHash::hash(transformed, CryptoHash::Sha256);
-}
-
-QByteArray CompositeKey::transformKeyRaw(const QByteArray& key, const QByteArray& seed,
-                                         quint64 rounds, bool* ok, QString* errorString)
-{
-    QByteArray iv(16, 0);
-    SymmetricCipher cipher(SymmetricCipher::Aes256, SymmetricCipher::Ecb,
-                           SymmetricCipher::Encrypt);
-    if (!cipher.init(seed, iv)) {
+    QScopedPointer<Kdf> kdf(Kdf::getKdf(kdfParams));
+    if (kdf.isNull()) {
         *ok = false;
-        *errorString = cipher.errorString();
+        *errorString = "Unsupported KDF";
         return QByteArray();
     }
 
-    QByteArray result = key;
-
-    if (!cipher.processInPlace(result, rounds)) {
-        *ok = false;
-        *errorString = cipher.errorString();
-        return QByteArray();
-    }
-
-    *ok = true;
-    return result;
+    return kdf->transform(rawKey(), kdfParams, ok, errorString);
 }
 
 void CompositeKey::addKey(const Key& key)
@@ -147,10 +102,10 @@ void CompositeKey::addKey(const Key& key)
     m_keys.append(key.clone());
 }
 
-int CompositeKey::transformKeyBenchmark(int msec)
+int CompositeKey::transformKeyAesBenchmark(int msec)
 {
-    TransformKeyBenchmarkThread thread1(msec);
-    TransformKeyBenchmarkThread thread2(msec);
+    TransformKeyAesBenchmarkThread thread1(msec);
+    TransformKeyAesBenchmarkThread thread2(msec);
 
     thread1.start();
     thread2.start();
@@ -161,20 +116,33 @@ int CompositeKey::transformKeyBenchmark(int msec)
     return qMin(thread1.rounds(), thread2.rounds());
 }
 
+int CompositeKey::transformKeyArgon2Benchmark(int msec, int lanes, int memory)
+{
+    TransformKeyArgon2BenchmarkThread thread1(msec, lanes, memory);
+    TransformKeyArgon2BenchmarkThread thread2(msec, lanes, memory);
 
-TransformKeyBenchmarkThread::TransformKeyBenchmarkThread(int msec)
+    thread1.start();
+    thread2.start();
+
+    thread1.wait();
+    thread2.wait();
+
+    return qMin(thread1.rounds(), thread2.rounds());
+}
+
+TransformKeyAesBenchmarkThread::TransformKeyAesBenchmarkThread(int msec)
     : m_msec(msec)
     , m_rounds(0)
 {
     Q_ASSERT(msec > 0);
 }
 
-int TransformKeyBenchmarkThread::rounds()
+int TransformKeyAesBenchmarkThread::rounds()
 {
     return m_rounds;
 }
 
-void TransformKeyBenchmarkThread::run()
+void TransformKeyAesBenchmarkThread::run()
 {
     QByteArray key = QByteArray(16, '\x7E');
     QByteArray seed = QByteArray(32, '\x4B');
@@ -193,5 +161,39 @@ void TransformKeyBenchmarkThread::run()
             return;
         }
         m_rounds += 10000;
+    } while (!t.hasExpired(m_msec));
+}
+
+TransformKeyArgon2BenchmarkThread::TransformKeyArgon2BenchmarkThread(int msec, int lanes, int memory)
+        : m_msec(msec)
+        , m_lanes(lanes)
+        , m_memory(memory)
+        , m_rounds(0)
+{
+    Q_ASSERT(msec > 0);
+    Q_ASSERT(lanes > 0);
+    Q_ASSERT(memory >= 8192);
+}
+
+int TransformKeyArgon2BenchmarkThread::rounds() {
+    return m_rounds;
+}
+
+void TransformKeyArgon2BenchmarkThread::run() {
+    QByteArray key = QByteArray(32, '\x7E');
+    Argon2Kdf kdf;
+    QVariantMap p = kdf.defaultParams();
+    kdf.randomizeSalt(p);
+    p.insert(KeePass2::KDFPARAM_ARGON2_LANES, m_lanes);
+    p.insert(KeePass2::KDFPARAM_ARGON2_MEMORY, m_memory);
+
+    QElapsedTimer t;
+    bool ok;
+    QString err;
+    t.start();
+
+    do {
+        kdf.transform(key, p, &ok, &err);
+        m_rounds++;
     } while (!t.hasExpired(m_msec));
 }

@@ -19,31 +19,33 @@
 
 #include <QBuffer>
 #include <QFile>
+#include <core/Endian.h>
 
 #include "core/Metadata.h"
 #include "format/KeePass2RandomStream.h"
-#include "streams/QtIOCompressor"
 
 KeePass2XmlWriter::KeePass2XmlWriter()
-    : m_db(nullptr)
-    , m_meta(nullptr)
-    , m_randomStream(nullptr)
-    , m_error(false)
+    : KeePass2XmlWriter(QHash<QByteArray, int>())
+{
+}
+
+KeePass2XmlWriter::KeePass2XmlWriter(QHash<QByteArray, int> idMap)
+        : m_db(nullptr)
+        , m_meta(nullptr)
+        , m_randomStream(nullptr)
+        , m_idMap(idMap)
+        , m_error(false)
 {
     m_xml.setAutoFormatting(true);
     m_xml.setAutoFormattingIndent(-1); // 1 tab
     m_xml.setCodec("UTF-8");
 }
 
-void KeePass2XmlWriter::writeDatabase(QIODevice* device, Database* db, KeePass2RandomStream* randomStream,
-                                      const QByteArray& headerHash)
+void KeePass2XmlWriter::writeDatabase(QIODevice* device, Database* db, KeePass2RandomStream* randomStream)
 {
     m_db = db;
     m_meta = db->metadata();
     m_randomStream = randomStream;
-    m_headerHash = headerHash;
-
-    generateIdMap();
 
     m_xml.setDevice(device);
 
@@ -80,30 +82,10 @@ QString KeePass2XmlWriter::errorString()
     return m_errorStr;
 }
 
-void KeePass2XmlWriter::generateIdMap()
-{
-    const QList<Entry*> allEntries = m_db->rootGroup()->entriesRecursive(true);
-    int nextId = 0;
-
-    for (Entry* entry : allEntries) {
-        const QList<QString> attachmentKeys = entry->attachments()->keys();
-        for (const QString& key : attachmentKeys) {
-            QByteArray data = entry->attachments()->value(key);
-            if (!m_idMap.contains(data)) {
-                m_idMap.insert(data, nextId++);
-            }
-        }
-    }
-}
-
 void KeePass2XmlWriter::writeMetadata()
 {
     m_xml.writeStartElement("Meta");
-
     writeString("Generator", m_meta->generator());
-    if (!m_headerHash.isEmpty()) {
-        writeBinary("HeaderHash", m_headerHash);
-    }
     writeString("DatabaseName", m_meta->name());
     writeDateTime("DatabaseNameChanged", m_meta->nameChanged());
     writeString("DatabaseDescription", m_meta->description());
@@ -126,7 +108,7 @@ void KeePass2XmlWriter::writeMetadata()
     writeUuid("LastTopVisibleGroup", m_meta->lastTopVisibleGroup());
     writeNumber("HistoryMaxItems", m_meta->historyMaxItems());
     writeNumber("HistoryMaxSize", m_meta->historyMaxSize());
-    writeBinaries();
+    writeDateTime("SettingsChanged", m_meta->settingsChanged());
     writeCustomData();
 
     m_xml.writeEndElement();
@@ -171,48 +153,6 @@ void KeePass2XmlWriter::writeIcon(const Uuid& uuid, const QImage& icon)
     icon.save(&buffer, "PNG");
     buffer.close();
     writeBinary("Data", ba);
-
-    m_xml.writeEndElement();
-}
-
-void KeePass2XmlWriter::writeBinaries()
-{
-    m_xml.writeStartElement("Binaries");
-
-    QHash<QByteArray, int>::const_iterator i;
-    for (i = m_idMap.constBegin(); i != m_idMap.constEnd(); ++i) {
-        m_xml.writeStartElement("Binary");
-
-        m_xml.writeAttribute("ID", QString::number(i.value()));
-
-        QByteArray data;
-        if (m_db->compressionAlgo() == Database::CompressionGZip) {
-            m_xml.writeAttribute("Compressed", "True");
-
-            QBuffer buffer;
-            buffer.open(QIODevice::ReadWrite);
-
-            QtIOCompressor compressor(&buffer);
-            compressor.setStreamFormat(QtIOCompressor::GzipFormat);
-            compressor.open(QIODevice::WriteOnly);
-
-            qint64 bytesWritten = compressor.write(i.key());
-            Q_ASSERT(bytesWritten == i.key().size());
-            Q_UNUSED(bytesWritten);
-            compressor.close();
-
-            buffer.seek(0);
-            data = buffer.readAll();
-        }
-        else {
-            data = i.key();
-        }
-
-        if (!data.isEmpty()) {
-            m_xml.writeCharacters(QString::fromLatin1(data.toBase64()));
-        }
-        m_xml.writeEndElement();
-    }
 
     m_xml.writeEndElement();
 }
@@ -476,13 +416,9 @@ void KeePass2XmlWriter::writeDateTime(const QString& qualifiedName, const QDateT
     Q_ASSERT(dateTime.isValid());
     Q_ASSERT(dateTime.timeSpec() == Qt::UTC);
 
-    QString dateTimeStr = dateTime.toString(Qt::ISODate);
-
-    // Qt < 4.8 doesn't append a 'Z' at the end
-    if (!dateTimeStr.isEmpty() && dateTimeStr[dateTimeStr.size() - 1] != 'Z') {
-        dateTimeStr.append('Z');
-    }
-
+    qint64 secs = QDateTime(QDate(1, 1, 1), QTime(0, 0, 0, 0), Qt::UTC).secsTo(dateTime);
+    QByteArray secsBytes = Endian::int64ToBytes(secs, KeePass2::BYTEORDER);
+    QString dateTimeStr = QString::fromLatin1(secsBytes.toBase64());
     writeString(qualifiedName, dateTimeStr);
 }
 

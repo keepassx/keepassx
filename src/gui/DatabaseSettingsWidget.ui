@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>500</width>
-    <height>399</height>
+    <height>505</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -50,34 +50,61 @@
       <widget class="QLineEdit" name="dbDescriptionEdit"/>
      </item>
      <item row="3" column="0">
-      <widget class="QLabel" name="transformRoundsLabel">
-       <property name="text">
-        <string>Transform rounds:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
       <widget class="QLabel" name="defaultUsernameLabel">
        <property name="text">
         <string>Default username:</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="3" column="1">
       <widget class="QLineEdit" name="defaultUsernameEdit">
        <property name="enabled">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label">
+     <item row="4" column="0">
+      <widget class="QLabel" name="useRecycleBinLabel">
        <property name="text">
         <string>Use recycle bin:</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="recycleBinEnabledCheckBox"/>
+     </item>
+     <item row="5" column="0">
+      <widget class="QCheckBox" name="historyMaxItemsCheckBox">
+       <property name="text">
+        <string>Max. history items:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QSpinBox" name="historyMaxItemsSpinBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximum">
+          <number>2000000000</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="6" column="0">
+      <widget class="QCheckBox" name="historyMaxSizeCheckBox">
+       <property name="text">
+        <string>Max. history size:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QSpinBox" name="historyMaxSizeSpinBox">
@@ -100,24 +127,34 @@
        </item>
       </layout>
      </item>
-     <item row="6" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QSpinBox" name="historyMaxItemsSpinBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximum">
-          <number>2000000000</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
+     <item row="7" column="0">
+      <widget class="QLabel" name="cipherLabel">
+       <property name="text">
+        <string>Encryption cipher:</string>
+       </property>
+      </widget>
      </item>
-     <item row="3" column="1">
+     <item row="7" column="1">
+      <widget class="QComboBox" name="cipherCombo"/>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="kdfLabel">
+       <property name="text">
+        <string>Key derivation function:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QComboBox" name="kdfCombo"/>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="transformRoundsLabel">
+       <property name="text">
+        <string>Transform rounds:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QSpinBox" name="transformRoundsSpinBox">
@@ -131,12 +168,15 @@
           <number>1</number>
          </property>
          <property name="maximum">
-          <number>1000000000</number>
+          <number>2147483647</number>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="transformBenchmarkButton">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>Benchmark</string>
          </property>
@@ -144,22 +184,42 @@
        </item>
       </layout>
      </item>
-     <item row="6" column="0">
-      <widget class="QCheckBox" name="historyMaxItemsCheckBox">
-       <property name="text">
-        <string>Max. history items:</string>
+     <item row="10" column="1">
+      <widget class="QSpinBox" name="memoryCostSpinBox">
+       <property name="minimum">
+        <number>8192</number>
+       </property>
+       <property name="maximum">
+        <number>2147483647</number>
+       </property>
+       <property name="value">
+        <number>1048576</number>
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
-      <widget class="QCheckBox" name="historyMaxSizeCheckBox">
+     <item row="10" column="0">
+      <widget class="QLabel" name="memoryCostLabel">
        <property name="text">
-        <string>Max. history size:</string>
+        <string>Memory cost:</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
-      <widget class="QCheckBox" name="recycleBinEnabledCheckBox"/>
+     <item row="11" column="0">
+      <widget class="QLabel" name="lanesLabel">
+       <property name="text">
+        <string>Lanes:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="1">
+      <widget class="QSpinBox" name="lanesSpinBox">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>2147483647</number>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

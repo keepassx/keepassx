@@ -19,6 +19,7 @@
 
 #include <QBuffer>
 #include <QTest>
+#include <crypto/kdf/AesKdf.h>
 
 #include "config-keepassx-tests.h"
 #include "core/Database.h"
@@ -26,7 +27,6 @@
 #include "crypto/Crypto.h"
 #include "format/KeePass2Reader.h"
 #include "format/KeePass2Writer.h"
-#include "keys/CompositeKey.h"
 #include "keys/FileKey.h"
 #include "keys/PasswordKey.h"
 
@@ -51,14 +51,17 @@ void TestKeys::testComposite()
     delete passwordKey1;
     delete passwordKey2;
 
-    QByteArray transformed = compositeKey1->transform(QByteArray(32, '\0'), 1, &ok, &errorString);
+    QVariantMap kdfParams = AesKdf().defaultParams();
+    kdfParams.insert(KeePass2::KDFPARAM_AES_SEED, QVariant(QByteArray(32, '\0')));
+    kdfParams.insert(KeePass2::KDFPARAM_AES_ROUNDS, 1);
+    QByteArray transformed = compositeKey1->transform(kdfParams, &ok, &errorString);
     QVERIFY(ok);
     QCOMPARE(transformed.size(), 32);
 
     // make sure the subkeys are copied
     CompositeKey* compositeKey2 = compositeKey1->clone();
     delete compositeKey1;
-    QCOMPARE(compositeKey2->transform(QByteArray(32, '\0'), 1, &ok, &errorString), transformed);
+    QCOMPARE(compositeKey2->transform(kdfParams, &ok, &errorString), transformed);
     QVERIFY(ok);
     delete compositeKey2;
 
@@ -141,14 +144,20 @@ void TestKeys::testCreateFileKey()
     dbBuffer.open(QBuffer::ReadWrite);
 
     KeePass2Writer writer;
-    writer.writeDatabase(&dbBuffer, dbOrg);
+    bool writeSuccess = writer.writeDatabase(&dbBuffer, dbOrg);
+    if (writer.hasError()) {
+        QFAIL(writer.errorString().toUtf8().constData());
+    }
+    QVERIFY(writeSuccess);
     dbBuffer.reset();
     delete dbOrg;
 
     KeePass2Reader reader;
     Database* dbRead = reader.readDatabase(&dbBuffer, compositeKey);
+    if (reader.hasError()) {
+        QFAIL(reader.errorString().toUtf8().constData());
+    }
     QVERIFY(dbRead);
-    QVERIFY(!reader.hasError());
     QCOMPARE(dbRead->metadata()->name(), dbName);
     delete dbRead;
 }
@@ -188,8 +197,11 @@ void TestKeys::benchmarkTransformKey()
 
     bool ok;
     QString errorString;
+    QVariantMap kdfParams = AesKdf().defaultParams();
+    kdfParams.insert(KeePass2::KDFPARAM_AES_SEED, QVariant(seed));
+    kdfParams.insert(KeePass2::KDFPARAM_AES_ROUNDS, 1e6);
 
     QBENCHMARK {
-        compositeKey.transform(seed, 1e6, &ok, &errorString);
+        compositeKey.transform(kdfParams, &ok, &errorString);
     }
 }

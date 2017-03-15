@@ -19,6 +19,7 @@
 #define KEEPASSX_COMPOSITEKEY_H
 
 #include <QList>
+#include <QVariant>
 
 #include "keys/Key.h"
 
@@ -34,16 +35,13 @@ public:
     CompositeKey& operator=(const CompositeKey& key);
 
     QByteArray rawKey() const;
-    QByteArray transform(const QByteArray& seed, quint64 rounds,
-                         bool* ok, QString* errorString) const;
+    QByteArray transform(QVariantMap kdfParams, bool* ok, QString* errorString) const;
     void addKey(const Key& key);
 
-    static int transformKeyBenchmark(int msec);
+    static int transformKeyAesBenchmark(int msec);
+    static int transformKeyArgon2Benchmark(int msec, int lanes, int memory);
 
 private:
-    static QByteArray transformKeyRaw(const QByteArray& key, const QByteArray& seed,
-                                      quint64 rounds, bool* ok, QString* errorString);
-
     QList<Key*> m_keys;
 };
 

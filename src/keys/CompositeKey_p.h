@@ -20,12 +20,12 @@
 
 #include <QThread>
 
-class TransformKeyBenchmarkThread : public QThread
+class TransformKeyAesBenchmarkThread : public QThread
 {
     Q_OBJECT
 
 public:
-    explicit TransformKeyBenchmarkThread(int msec);
+    explicit TransformKeyAesBenchmarkThread(int msec);
     int rounds();
 
 protected:
@@ -33,6 +33,24 @@ protected:
 
 private:
     int m_msec;
+    int m_rounds;
+};
+
+class TransformKeyArgon2BenchmarkThread : public QThread
+{
+Q_OBJECT
+
+public:
+    explicit TransformKeyArgon2BenchmarkThread(int msec, int lanes, int memory);
+    int rounds();
+
+protected:
+    void run();
+
+private:
+    int m_msec;
+    int m_lanes;
+    int m_memory;
     int m_rounds;
 };
 

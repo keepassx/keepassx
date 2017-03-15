@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2010 Felix Geyer <debfx@fobos.de>
+ *  Copyright (C) 2017 angelsl
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,24 +15,27 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSX_TESTKEEPASS2READER_H
-#define KEEPASSX_TESTKEEPASS2READER_H
+#include <format/KeePass2.h>
+#include "Kdf.h"
+#include "AesKdf.h"
+#include "Argon2Kdf.h"
 
-#include <QObject>
-
-class TestKeePass2Reader : public QObject
+Kdf* Kdf::getKdf(QVariantMap p)
 {
-    Q_OBJECT
+    QByteArray uuidBytes = p.value(KeePass2::KDFPARAM_UUID).toByteArray();
+    if (uuidBytes.size() != Uuid::Length) {
+        return nullptr;
+    }
 
-private Q_SLOTS:
-    void initTestCase();
-    void testNonAscii();
-    void testCompressed();
-    void testProtectedStrings();
-    void testBrokenHeaderHash();
-    void testFormat200();
-    void testFormat300();
-    void testFormat400();
-};
+    return getKdf(Uuid(uuidBytes));
+}
 
-#endif // KEEPASSX_TESTKEEPASS2READER_H
+Kdf* Kdf::getKdf(Uuid uuid) {
+    if (uuid == KeePass2::KDF_AES) {
+        return new AesKdf();
+    } else if (uuid == KeePass2::KDF_ARGON2) {
+        return new Argon2Kdf();
+    }
+
+    return nullptr;
+}
