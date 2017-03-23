@@ -5,6 +5,7 @@ GenericName[de]=Passwortverwaltung
 GenericName[es]=Gestor de contraseñas
 GenericName[fr]=Gestionnaire de mot de passe
 GenericName[ru]=менеджер паролей
+GenericName[zh_CN]=密码管理器
 Exec=keepassx %f
 Icon=keepassx
 Terminal=false
