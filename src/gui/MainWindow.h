@@ -24,6 +24,7 @@
 
 #include "core/SignalMultiplexer.h"
 #include "gui/DatabaseWidget.h"
+#include "http/Service.h"
 
 namespace Ui {
     class MainWindow;
@@ -42,6 +43,7 @@ public:
 public Q_SLOTS:
     void openDatabase(const QString& fileName, const QString& pw = QString(),
                       const QString& keyFile = QString());
+    bool isHttpServiceStarted() const;
 
 protected:
      void closeEvent(QCloseEvent* event) override;
@@ -87,6 +89,7 @@ private:
     InactivityTimer* m_inactivityTimer;
     int m_countDefaultAttributes;
     QSystemTrayIcon* m_trayIcon;
+    Service* m_http_service;
 
     Q_DISABLE_COPY(MainWindow)
 };

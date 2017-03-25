@@ -23,6 +23,7 @@
 namespace Ui {
     class SettingsWidgetGeneral;
     class SettingsWidgetSecurity;
+    class SettingsWidgetHttp;
 }
 
 class SettingsWidget : public EditWidget
@@ -43,8 +44,10 @@ private Q_SLOTS:
     void enableAutoSaveOnExit(bool checked);
 
 private:
+    QWidget* const m_httpWidget;
     QWidget* const m_secWidget;
     QWidget* const m_generalWidget;
+    const QScopedPointer<Ui::SettingsWidgetHttp> m_httpUi;
     const QScopedPointer<Ui::SettingsWidgetSecurity> m_secUi;
     const QScopedPointer<Ui::SettingsWidgetGeneral> m_generalUi;
     Qt::Key m_globalAutoTypeKey;

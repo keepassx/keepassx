@@ -18,6 +18,7 @@
 #include "SettingsWidget.h"
 #include "ui_SettingsWidgetGeneral.h"
 #include "ui_SettingsWidgetSecurity.h"
+#include "ui_SettingsWidgetHttp.h"
 
 #include "autotype/AutoType.h"
 #include "core/Config.h"
@@ -25,8 +26,10 @@
 
 SettingsWidget::SettingsWidget(QWidget* parent)
     : EditWidget(parent)
+    , m_httpWidget(new QWidget())
     , m_secWidget(new QWidget())
     , m_generalWidget(new QWidget())
+    , m_httpUi(new Ui::SettingsWidgetHttp())
     , m_secUi(new Ui::SettingsWidgetSecurity())
     , m_generalUi(new Ui::SettingsWidgetGeneral())
     , m_globalAutoTypeKey(static_cast<Qt::Key>(0))
@@ -34,10 +37,12 @@ SettingsWidget::SettingsWidget(QWidget* parent)
 {
     setHeadline(tr("Application Settings"));
 
+    m_httpUi->setupUi(m_httpWidget);
     m_secUi->setupUi(m_secWidget);
     m_generalUi->setupUi(m_generalWidget);
     add(tr("General"), m_generalWidget);
     add(tr("Security"), m_secWidget);
+    add(tr("Http"), m_httpWidget);
 
     m_generalUi->autoTypeShortcutWidget->setVisible(autoType()->isAvailable());
     m_generalUi->autoTypeShortcutLabel->setVisible(autoType()->isAvailable());
@@ -108,6 +113,8 @@ void SettingsWidget::loadSettings()
 
     m_secUi->autoTypeAskCheckBox->setChecked(config()->get("security/autotypeask").toBool());
 
+    m_httpUi->enableHttpPluginCheckBox->setChecked(config()->get("http/enablehttpplugin").toBool());
+
     setCurrentRow(0);
 }
 
@@ -145,6 +152,8 @@ void SettingsWidget::saveSettings()
     config()->set("security/passwordscleartext", m_secUi->passwordCleartextCheckBox->isChecked());
 
     config()->set("security/autotypeask", m_secUi->autoTypeAskCheckBox->isChecked());
+
+    config()->set("http/enablehttpplugin", m_httpUi->enableHttpPluginCheckBox->isChecked());
 
     Q_EMIT editFinished(true);
 }

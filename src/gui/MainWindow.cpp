@@ -45,6 +45,9 @@ MainWindow::MainWindow()
     m_countDefaultAttributes = m_ui->menuEntryCopyAttribute->actions().size();
 
     restoreGeometry(config()->get("GUI/MainWindowGeometry").toByteArray());
+    QByteArray host = config()->get("http/serverhost", Service::defaultHost).toByteArray();
+    int port = config()->get("http/serverport", Service::defaultPort).toInt();
+    m_http_service = new Service(m_ui->tabWidget, host.constData(), port);
 
     setWindowIcon(filePath()->applicationIcon());
     QAction* toggleViewAction = m_ui->toolBar->toggleViewAction();
@@ -578,6 +581,14 @@ void MainWindow::applySettingsChanges()
         m_inactivityTimer->deactivate();
     }
 
+    if (config()->get("http/enablehttpplugin").toBool()) {
+        QByteArray host = config()->get("http/serverhost", Service::defaultHost).toByteArray();
+        int port = config()->get("http/serverport", Service::defaultPort).toInt();
+        m_http_service->start(host.constData(), port);
+    } else {
+        m_http_service->stop();
+    }
+
     updateTrayIcon();
 }
 
@@ -640,6 +651,11 @@ void MainWindow::repairDatabase()
             }
         }
     }
+}
+
+bool MainWindow::isHttpServiceStarted() const
+{
+    return m_http_service && m_http_service->isStarted();
 }
 
 bool MainWindow::isTrayIconEnabled() const

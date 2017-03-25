@@ -116,6 +116,13 @@ set(keepassx_SOURCES
     gui/group/EditGroupWidget.cpp
     gui/group/GroupModel.cpp
     gui/group/GroupView.cpp
+    http/HttpServer.cpp
+    http/Protocol.cpp
+    http/Request.cpp
+    http/Response.cpp
+    http/ResponseEntry.cpp
+    http/Server.cpp
+    http/Service.cpp
     keys/CompositeKey.cpp
     keys/CompositeKey_p.h
     keys/FileKey.cpp
@@ -145,6 +152,7 @@ set(keepassx_FORMS
     gui/SearchWidget.ui
     gui/SettingsWidgetGeneral.ui
     gui/SettingsWidgetSecurity.ui
+    gui/SettingsWidgetHttp.ui
     gui/WelcomeWidget.ui
     gui/entry/EditEntryWidgetAdvanced.ui
     gui/entry/EditEntryWidgetAutoType.ui
@@ -163,7 +171,7 @@ qt5_wrap_ui(keepassx_SOURCES ${keepassx_FORMS})
 
 add_library(keepassx_core STATIC ${keepassx_SOURCES})
 set_target_properties(keepassx_core PROPERTIES COMPILE_DEFINITIONS KEEPASSX_BUILDING_CORE)
-target_link_libraries(keepassx_core Qt5::Core Qt5::Concurrent Qt5::Widgets)
+target_link_libraries(keepassx_core ${EVENT_LIBRARY} Qt5::Core Qt5::Concurrent Qt5::Widgets)
 
 add_executable(${PROGNAME} WIN32 MACOSX_BUNDLE ${keepassx_SOURCES_MAINEXE})
 target_link_libraries(${PROGNAME}
