@@ -15,7 +15,7 @@
     </message>
     <message>
         <source>Using:</source>
-        <translation>使用:</translation>
+        <translation>使用：</translation>
     </message>
 </context>
 <context>
@@ -26,7 +26,7 @@
     </message>
     <message>
         <source>Couldn&apos;t find an entry that matches the window title:</source>
-        <translation>无法找到符合窗口标题的项目</translation>
+        <translation>无法找到符合窗口标题的项目：</translation>
     </message>
 </context>
 <context>
@@ -115,7 +115,7 @@
     </message>
     <message>
         <source>Different passwords supplied.</source>
-        <translation>你输入了不同的密码</translation>
+        <translation>你输入了不同的密码。</translation>
     </message>
     <message>
         <source>Failed to set key file</source>
@@ -152,7 +152,7 @@
     </message>
     <message>
         <source>Unable to open the database.</source>
-        <translation>无法打开数据库</translation>
+        <translation>无法打开数据库。</translation>
     </message>
     <message>
         <source>Can&apos;t open key file</source>
@@ -191,7 +191,7 @@
     </message>
     <message>
         <source>Unable to open the database.</source>
-        <translation>无法打开数据库</translation>
+        <translation>无法打开数据库。</translation>
     </message>
     <message>
         <source>Success</source>
@@ -201,11 +201,11 @@
         <source>The database has been successfully repaired
 You can now save it.</source>
         <translation>数据库已经修复成功
-现在可以保存数据库</translation>
+现在可以保存数据库。</translation>
     </message>
     <message>
         <source>Unable to repair the database.</source>
-        <translation>无法修复数据库</translation>
+        <translation>无法修复数据库。</translation>
     </message>
 </context>
 <context>
@@ -305,7 +305,7 @@ Save changes?</source>
     </message>
     <message>
         <source>Writing the database failed.</source>
-        <translation>数据库写入失败</translation>
+        <translation>数据库写入失败。</translation>
     </message>
     <message>
         <source>Save database as</source>
@@ -365,7 +365,7 @@ Discard changes and close anyway?</source>
     </message>
     <message>
         <source>Writing the CSV file failed.</source>
-        <translation>写入CSV格式文件失败</translation>
+        <translation>写入CSV格式文件失败。</translation>
     </message>
     <message>
         <source>The database you are trying to save as is locked by another instance of KeePassX.
@@ -469,7 +469,7 @@ Do you want to save it anyway?</source>
     </message>
     <message>
         <source>Different passwords supplied.</source>
-        <translation>你输入了不同的密码</translation>
+        <translation>你输入了不同的密码。</translation>
     </message>
     <message>
         <source>New attribute</source>
@@ -553,7 +553,7 @@ Do you want to save it anyway?</source>
     </message>
     <message>
         <source>Use custom Auto-Type sequence:</source>
-        <translation>使用自定义自动输入顺序</translation>
+        <translation>使用自定义自动输入顺序：</translation>
     </message>
     <message>
         <source>+</source>
@@ -736,7 +736,7 @@ Do you want to save it anyway?</source>
     </message>
     <message numerus="yes">
         <source>Can&apos;t delete icon. Still used by %n item(s).</source>
-        <translation><numerusform>不能删除图标。仍在被 %n 个项目使用</numerusform></translation>
+        <translation><numerusform>不能删除图标。仍在被 %n 个项目使用。</numerusform></translation>
     </message>
 </context>
 <context>
@@ -755,7 +755,7 @@ Do you want to save it anyway?</source>
     </message>
     <message>
         <source>Uuid:</source>
-        <translation>Uuid(通用唯一识别码):</translation>
+        <translation>Uuid(通用唯一识别码)：</translation>
     </message>
 </context>
 <context>
@@ -1079,7 +1079,7 @@ This is a one-way migration. You won&apos;t be able to open the imported databas
     </message>
     <message>
         <source>Writing the database failed.</source>
-        <translation>数据库写入失败</translation>
+        <translation>数据库写入失败。</translation>
     </message>
 </context>
 <context>
@@ -1129,11 +1129,11 @@ This is a one-way migration. You won&apos;t be able to open the imported databas
     <name>QCommandLineParser</name>
     <message>
         <source>Displays version information.</source>
-        <translation>显示版本信息</translation>
+        <translation>显示版本信息。</translation>
     </message>
     <message>
         <source>Displays this help.</source>
-        <translation>显示帮助信息</translation>
+        <translation>显示帮助信息。</translation>
     </message>
     <message>
         <source>Unknown option &apos;%1&apos;.</source>
