@@ -1,5 +1,10 @@
 # KeePassX
 
+## Note: This project is no longer maintained.
+
+You can download the last release ([v2.0.3](https://github.com/keepassx/keepassx/releases/tag/2.0.3)) or use the actively developed fork **[KeepassXC](https://github.com/keepassxreboot/keepassxc)**.
+
+
 ## About
 
 KeePassX is an application for people with extremely high demands on secure personal data management.
