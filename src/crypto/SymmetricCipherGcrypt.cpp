@@ -148,6 +148,7 @@ QByteArray SymmetricCipherGcrypt::process(const QByteArray& data, bool* ok)
     if (error != 0) {
         setErrorString(error);
         *ok = false;
+        return QByteArray();
     }
 
     *ok = true;
