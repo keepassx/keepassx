@@ -157,7 +157,7 @@ set(CMAKE_AUTOMOC ON)
 
 # Debian sets the the build type to None for package builds.
 # Make sure we don't enable asserts there.
-set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_NONE QT_NO_DEBUG)
+set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:None>:QT_NO_DEBUG>)
 
 find_package(Gcrypt 1.6.0 REQUIRED)
 
