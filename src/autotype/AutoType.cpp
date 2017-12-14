@@ -532,6 +532,12 @@ QString AutoType::autoTypeSequence(const Entry* entry, const QString& windowTitl
             match = true;
         }
 
+        if (!match && config()->get("AutoTypeEntryUrlMatch").toBool() && !entry->url().isEmpty()
+                && windowTitle.contains(entry->url(), Qt::CaseInsensitive)) {
+            sequence = entry->defaultAutoTypeSequence();
+            match = true;
+        }
+
         if (!match) {
             return QString();
         }

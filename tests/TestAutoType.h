@@ -42,6 +42,7 @@ private Q_SLOTS:
     void testGlobalAutoTypeWithNoMatch();
     void testGlobalAutoTypeWithOneMatch();
     void testGlobalAutoTypeTitleMatch();
+    void testGlobalAutoTypeUrlMatch();
     void testGlobalAutoTypeTitleMatchDisabled();
     void testGlobalAutoTypeRegExp();
 

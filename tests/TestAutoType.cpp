@@ -55,6 +55,7 @@ void TestAutoType::initTestCase()
 void TestAutoType::init()
 {
     config()->set("AutoTypeEntryTitleMatch", false);
+    config()->set("AutoTypeEntryUrlMatch", false);
     m_test->clearActions();
 
     m_db = new Database();
@@ -77,6 +78,7 @@ void TestAutoType::init()
     m_entry2->setGroup(m_group);
     m_entry2->setPassword("myuser");
     m_entry2->setTitle("entry title");
+    m_entry2->setUrl("https://test.url");
 
     m_entry3 = new Entry();
     m_entry3->setGroup(m_group);
@@ -158,9 +160,20 @@ void TestAutoType::testGlobalAutoTypeTitleMatch()
              QString("%1%2").arg(m_entry2->password(), m_test->keyToString(Qt::Key_Enter)));
 }
 
+void TestAutoType::testGlobalAutoTypeUrlMatch()
+{
+    config()->set("AutoTypeEntryUrlMatch", true);
+
+    m_test->setActiveWindowTitle("An Entry Title! (https://test.url)");
+    m_autoType->performGlobalAutoType(m_dbList);
+
+    QCOMPARE(m_test->actionChars(),
+             QString("%1%2").arg(m_entry2->password(), m_test->keyToString(Qt::Key_Enter)));
+}
+
 void TestAutoType::testGlobalAutoTypeTitleMatchDisabled()
 {
-    m_test->setActiveWindowTitle("An Entry Title!");
+    m_test->setActiveWindowTitle("An Entry Title! (https://test.url)");
     MessageBox::setNextAnswer(QMessageBox::Ok);
     m_autoType->performGlobalAutoType(m_dbList);
 
