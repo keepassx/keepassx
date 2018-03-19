@@ -26,7 +26,7 @@ If you wish to build KeePassX from source, rather than rely on the pre-compiled 
 To install KeePassX from the Debian repository:
 
 ```bash
-sudo apt-get install keepassx
+sudo apt-get install keepassx xdotool
 ```
 
 ### Red Hat
