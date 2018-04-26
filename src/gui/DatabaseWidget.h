@@ -152,6 +152,8 @@ private Q_SLOTS:
 
 private:
     void setClipboardTextAndMinimize(const QString& text);
+    void setClipboardPasswordAndMinimize(const QString& text);
+
     void setIconFromParent();
     void replaceDatabase(Database* db);
 

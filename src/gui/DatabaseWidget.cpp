@@ -409,7 +409,7 @@ void DatabaseWidget::copyPassword()
         return;
     }
 
-    setClipboardTextAndMinimize(currentEntry->password());
+    setClipboardPasswordAndMinimize(currentEntry->password());
 }
 
 void DatabaseWidget::copyURL()
@@ -448,6 +448,14 @@ void DatabaseWidget::copyAttribute(QAction* action)
 void DatabaseWidget::setClipboardTextAndMinimize(const QString& text)
 {
     clipboard()->setText(text);
+    if (config()->get("MinimizeOnCopy").toBool()) {
+        window()->showMinimized();
+    }
+}
+
+void DatabaseWidget::setClipboardPasswordAndMinimize(const QString& text)
+{
+    clipboard()->setPassword(text);
     if (config()->get("MinimizeOnCopy").toBool()) {
         window()->showMinimized();
     }
@@ -1020,7 +1028,7 @@ bool DatabaseWidget::eventFilter(QObject* object, QEvent* event)
                 // entry.
                 Entry* currentEntry = m_entryView->currentEntry();
                 if (currentEntry && !m_searchUi->searchEdit->hasSelectedText()) {
-                    setClipboardTextAndMinimize(currentEntry->password());
+                    setClipboardPasswordAndMinimize(currentEntry->password());
                     return true;
                 }
             }

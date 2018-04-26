@@ -29,6 +29,8 @@ class Clipboard : public QObject
 public:
     void setText(const QString& text);
 
+    void setPassword(const QString& text);
+
     static Clipboard* instance();
 
 public Q_SLOTS:

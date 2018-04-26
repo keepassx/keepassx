@@ -19,6 +19,7 @@
 
 #include <QApplication>
 #include <QClipboard>
+#include <QMimeData>
 #include <QTimer>
 
 #include "core/Config.h"
@@ -41,6 +42,33 @@ void Clipboard::setText(const QString& text)
     clipboard->setText(text, QClipboard::Clipboard);
     if (clipboard->supportsSelection()) {
         clipboard->setText(text, QClipboard::Selection);
+    }
+
+    if (config()->get("security/clearclipboard").toBool()) {
+        int timeout = config()->get("security/clearclipboardtimeout").toInt();
+        if (timeout > 0) {
+            m_lastCopied = text;
+            m_timer->start(timeout * 1000);
+        }
+    }
+}
+
+void Clipboard::setPassword(const QString& text)
+{
+    QClipboard* clipboard = QApplication::clipboard();
+
+    QMimeData* mimeDataClipboard = new QMimeData();
+    const QString secretStr = "secret";
+    QByteArray secretBa = secretStr.toUtf8();
+    mimeDataClipboard->setText(text);
+    mimeDataClipboard->setData("x-kde-passwordManagerHint", secretBa);
+    clipboard->setMimeData(mimeDataClipboard, QClipboard::Clipboard);
+
+    if (clipboard->supportsSelection()) {
+        QMimeData* mimeDataSelection = new QMimeData();
+        mimeDataSelection->setText(text);
+        mimeDataSelection->setData("x-kde-passwordManagerHint", secretBa);
+        clipboard->setMimeData(mimeDataSelection, QClipboard::Selection);
     }
 
     if (config()->get("security/clearclipboard").toBool()) {
