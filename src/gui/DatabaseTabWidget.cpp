@@ -657,6 +657,8 @@ void DatabaseTabWidget::lockDatabases()
         // show the correct tab widget before we are asking questions about it
         setCurrentWidget(dbWidget);
 
+        if (!config()->get("security/lockdatabasesecure").toBool()) {
+
         if (mode == DatabaseWidget::EditMode && dbWidget->isEditWidgetModified()) {
             QMessageBox::StandardButton result =
                 MessageBox::question(
@@ -701,6 +703,8 @@ void DatabaseTabWidget::lockDatabases()
             else if (result == QMessageBox::Cancel) {
                 continue;
             }
+        }
+
         }
 
         dbWidget->lock();
