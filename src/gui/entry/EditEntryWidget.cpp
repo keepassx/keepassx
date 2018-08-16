@@ -476,8 +476,22 @@ void EditEntryWidget::cancel()
         m_entry->setIcon(Entry::DefaultIconNumber);
     }
 
-    clear();
+    if(hasBeenModified())
+    {
+        QMessageBox::StandardButton result =
+            MessageBox::question(
+            this, tr("Save changes?"),
+            tr("Entry was modified.\nSave changes?"),
+            QMessageBox::Yes | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Cancel);
+        if (result == QMessageBox::Yes) {
+            saveEntry();
+        }
+        else if (result == QMessageBox::Cancel) {
+            return;
+        }
+    }
 
+    clear();
     Q_EMIT editFinished(false);
 }
 
