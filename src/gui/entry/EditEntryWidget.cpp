@@ -465,17 +465,6 @@ void EditEntryWidget::updateEntryData(Entry* entry) const
 
 void EditEntryWidget::cancel()
 {
-    if (m_history) {
-        clear();
-        Q_EMIT editFinished(false);
-        return;
-    }
-
-    if (!m_entry->iconUuid().isNull() &&
-            !m_database->metadata()->containsCustomIcon(m_entry->iconUuid())) {
-        m_entry->setIcon(Entry::DefaultIconNumber);
-    }
-
     if(hasBeenModified())
     {
         QMessageBox::StandardButton result =
@@ -489,6 +478,17 @@ void EditEntryWidget::cancel()
         else if (result == QMessageBox::Cancel) {
             return;
         }
+    }
+    
+    if (m_history) {
+        clear();
+        Q_EMIT editFinished(false);
+        return;
+    }
+
+    if (!m_entry->iconUuid().isNull() &&
+            !m_database->metadata()->containsCustomIcon(m_entry->iconUuid())) {
+        m_entry->setIcon(Entry::DefaultIconNumber);
     }
 
     clear();
