@@ -82,7 +82,11 @@ int main(int argc, char** argv)
 #endif
 
     MainWindow mainWindow;
-    mainWindow.show();
+    if (config()->get("MinimizeOnStart").toBool()) {
+        mainWindow.showMinimized();
+    } else {
+        mainWindow.show();
+    }
     app.setMainWindow(&mainWindow);
 
     QObject::connect(&app, SIGNAL(openFile(QString)), &mainWindow, SLOT(openDatabase(QString)));
