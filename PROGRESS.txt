@@ -1,0 +1,12 @@
+[Week 2 Progress]
+
+WHAT I'VE DONE:
+* I'm virtually new to GitHub/Git, so I've been gradually learning how things work and getting the 
+ the hang of things. 
+* Began going through the test suite.
+* Familiarize myself with C++. 
+
+WHAT'S LEFT:
+* Further familiarze myself with the codebase. 
+* Generate unit testing
+* Generate integration testing 
