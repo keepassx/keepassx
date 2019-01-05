@@ -89,6 +89,7 @@ void SettingsWidget::loadSettings()
 
     m_generalUi->systrayShowCheckBox->setChecked(config()->get("GUI/ShowTrayIcon").toBool());
     m_generalUi->systrayMinimizeToTrayCheckBox->setChecked(config()->get("GUI/MinimizeToTray").toBool());
+    m_generalUi->startMinimizedCheckBox->setChecked(config()->get("GUI/StartMinimized").toBool());
 
     if (autoType()->isAvailable()) {
         m_globalAutoTypeKey = static_cast<Qt::Key>(config()->get("GlobalAutoTypeKey").toInt());
@@ -130,6 +131,7 @@ void SettingsWidget::saveSettings()
 
     config()->set("GUI/ShowTrayIcon", m_generalUi->systrayShowCheckBox->isChecked());
     config()->set("GUI/MinimizeToTray", m_generalUi->systrayMinimizeToTrayCheckBox->isChecked());
+    config()->set("GUI/StartMinimized", m_generalUi->startMinimizedCheckBox->isChecked());
 
     if (autoType()->isAvailable()) {
         config()->set("GlobalAutoTypeKey", m_generalUi->autoTypeShortcutWidget->key());

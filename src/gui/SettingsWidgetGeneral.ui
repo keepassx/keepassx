@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>456</width>
-    <height>313</height>
+    <width>465</width>
+    <height>368</height>
    </rect>
   </property>
   <layout class="QFormLayout" name="formLayout">
@@ -110,6 +110,13 @@
      </property>
      <property name="text">
       <string>Hide window to system tray when minimized</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0">
+    <widget class="QCheckBox" name="startMinimizedCheckBox">
+     <property name="text">
+      <string>Start minimized</string>
      </property>
     </widget>
    </item>
