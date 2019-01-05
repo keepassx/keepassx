@@ -106,6 +106,7 @@ void Config::init(const QString& fileName)
     m_defaults.insert("GUI/Language", "system");
     m_defaults.insert("GUI/ShowTrayIcon", false);
     m_defaults.insert("GUI/MinimizeToTray", false);
+    m_defaults.insert("GUI/StartMinimized", false);
 }
 
 Config* Config::instance()
