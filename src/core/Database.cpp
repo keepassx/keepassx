@@ -72,6 +72,9 @@ void Database::setRootGroup(Group* group)
 
     m_rootGroup = group;
     m_rootGroup->setParent(this);
+    if (m_rootGroup->mergeMode() == Group::ModeInherit) {
+        m_rootGroup->setMergeMode(Group::KeepNewer);
+    }
 }
 
 Metadata* Database::metadata()
@@ -280,6 +283,12 @@ void Database::recycleGroup(Group* group)
     else {
         delete group;
      }
+}
+
+void Database::merge(const Database* other)
+{
+    m_rootGroup->merge(other->rootGroup());
+    Q_EMIT modified();
 }
 
 void Database::setEmitModified(bool value)
