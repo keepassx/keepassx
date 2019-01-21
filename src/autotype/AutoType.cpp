@@ -338,7 +338,7 @@ QList<AutoTypeAction*> AutoType::createActionFromTemplate(const QString& tmpl, c
     QString tmplName = tmpl.toLower();
     int num = -1;
     QList<AutoTypeAction*> list;
-
+	
     QRegExp repeatRegEx("(.+) (\\d+)", Qt::CaseSensitive, QRegExp::RegExp2);
     if (repeatRegEx.exactMatch(tmplName)) {
         tmplName = repeatRegEx.cap(1);
@@ -357,7 +357,7 @@ QList<AutoTypeAction*> AutoType::createActionFromTemplate(const QString& tmpl, c
             return list;
         }
     }
-
+	
     if (tmplName == "tab") {
         list.append(new AutoTypeKey(Qt::Key_Tab));
     }
@@ -495,6 +495,10 @@ QList<AutoTypeAction*> AutoType::createActionFromTemplate(const QString& tmpl, c
             }
             else {
                 list.append(new AutoTypeChar(ch));
+				if (config()->get("AutoTypeInterKeyDelay").toInt() > 0)
+				{
+					list.append(new AutoTypeDelay(config()->get("AutoTypeInterKeyDelay").toInt()));
+				}
             }
         }
     }
