@@ -77,6 +77,7 @@ private:
     bool saveLastDatabases();
     void updateTrayIcon();
     bool isTrayIconEnabled() const;
+    bool isStartMinimizedEnabled() const;
 
     const QScopedPointer<Ui::MainWindow> m_ui;
     SignalMultiplexer m_actionMultiplexer;

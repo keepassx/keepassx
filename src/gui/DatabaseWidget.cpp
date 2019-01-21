@@ -28,6 +28,7 @@
 #include <QSplitter>
 #include <QTimer>
 #include <QProcess>
+#include <QHeaderView>
 
 #include "autotype/AutoType.h"
 #include "core/Config.h"

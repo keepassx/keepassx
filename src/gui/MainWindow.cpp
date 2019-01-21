@@ -214,6 +214,10 @@ MainWindow::MainWindow()
                                 SLOT(openSearch()));
 
     updateTrayIcon();
+
+    if (isStartMinimizedEnabled()) {
+        showMinimized();
+    }
 }
 
 MainWindow::~MainWindow()
@@ -651,4 +655,8 @@ bool MainWindow::isTrayIconEnabled() const
     return config()->get("GUI/ShowTrayIcon").toBool()
             && QSystemTrayIcon::isSystemTrayAvailable();
 #endif
+}
+
+bool MainWindow::isStartMinimizedEnabled() const {
+    return config()->get("GUI/StartMinimized").toBool();
 }

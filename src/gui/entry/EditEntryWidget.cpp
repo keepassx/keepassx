@@ -28,6 +28,7 @@
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QTemporaryFile>
+#include <QButtonGroup>
 
 #include "core/Config.h"
 #include "core/Database.h"
