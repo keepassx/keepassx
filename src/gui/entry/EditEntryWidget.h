@@ -18,6 +18,7 @@
 #ifndef KEEPASSX_EDITENTRYWIDGET_H
 #define KEEPASSX_EDITENTRYWIDGET_H
 
+#include <QButtonGroup>
 #include <QModelIndex>
 #include <QScopedPointer>
 

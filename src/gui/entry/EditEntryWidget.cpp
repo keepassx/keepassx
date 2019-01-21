@@ -466,6 +466,21 @@ void EditEntryWidget::updateEntryData(Entry* entry) const
 
 void EditEntryWidget::cancel()
 {
+    if(hasBeenModified())
+    {
+        QMessageBox::StandardButton result =
+            MessageBox::question(
+            this, tr("Save changes?"),
+            tr("Entry was modified.\nSave changes?"),
+            QMessageBox::Yes | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Cancel);
+        if (result == QMessageBox::Yes) {
+            saveEntry();
+        }
+        else if (result == QMessageBox::Cancel) {
+            return;
+        }
+    }
+    
     if (m_history) {
         clear();
         Q_EMIT editFinished(false);
@@ -478,7 +493,6 @@ void EditEntryWidget::cancel()
     }
 
     clear();
-
     Q_EMIT editFinished(false);
 }
 

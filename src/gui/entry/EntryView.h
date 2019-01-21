@@ -18,6 +18,7 @@
 #ifndef KEEPASSX_ENTRYVIEW_H
 #define KEEPASSX_ENTRYVIEW_H
 
+#include <QHeaderView>
 #include <QTreeView>
 
 #include "gui/entry/EntryModel.h"
