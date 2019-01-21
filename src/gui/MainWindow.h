@@ -65,6 +65,7 @@ private Q_SLOTS:
     void applySettingsChanges();
     void trayIconTriggered(QSystemTrayIcon::ActivationReason reason);
     void toggleWindow();
+    void quit();
     void lockDatabasesAfterInactivity();
     void repairDatabase();
 

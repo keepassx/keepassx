@@ -97,13 +97,20 @@
     <widget class="QComboBox" name="languageComboBox"/>
    </item>
    <item row="10" column="0">
+    <widget class="QCheckBox" name="minimizeOnCloseCheckBox">
+     <property name="text">
+      <string>Minimize instead of closing window</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0">
     <widget class="QCheckBox" name="systrayShowCheckBox">
      <property name="text">
       <string>Show a system tray icon</string>
      </property>
     </widget>
    </item>
-   <item row="11" column="0">
+   <item row="12" column="0">
     <widget class="QCheckBox" name="systrayMinimizeToTrayCheckBox">
      <property name="enabled">
       <bool>false</bool>
