@@ -466,6 +466,16 @@ void EditEntryWidget::updateEntryData(Entry* entry) const
 
 void EditEntryWidget::cancel()
 {
+    if (this->hasBeenModified()) {
+        QMessageBox looseChanges(QMessageBox::Question,
+                "Loose changes?", "This entry has been modified, are you sure "
+                "you wish to cancel and loose all changes?",
+                QMessageBox::Yes | QMessageBox::No);
+        if (looseChanges.exec() == QMessageBox::No) {
+            return;
+        }
+    }
+
     if (m_history) {
         clear();
         Q_EMIT editFinished(false);
