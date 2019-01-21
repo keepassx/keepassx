@@ -19,6 +19,7 @@
 
 #include <QApplication>
 #include <QPluginLoader>
+#include <unistd.h>
 
 #include "autotype/AutoTypePlatformPlugin.h"
 #include "autotype/AutoTypeSelectDialog.h"
@@ -164,6 +165,7 @@ void AutoType::performAutoType(const Entry* entry, QWidget* hideWindow, const QS
         }
 
         action->accept(m_executor);
+        Tools::wait(100);
         QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
     }
 
