@@ -220,6 +220,15 @@ QString Entry::notes() const
     return m_attributes->value(EntryAttributes::NotesKey);
 }
 
+QString Entry::lastModified() const
+{
+	// Surely there's a way to ask for sort-by-object and convert to string
+	// later, by giving this item a non-string model. But I'm going to do
+	// a simpler thing for now, to avoid having to learn Qt.
+	QString timeFormat("yyyy-MM-dd HH:mm:ss");
+	return m_data.timeInfo.lastModificationTime().toLocalTime().toString(timeFormat);
+}
+
 bool Entry::isExpired() const
 {
     return m_data.timeInfo.expires() && m_data.timeInfo.expiryTime() < QDateTime::currentDateTimeUtc();
