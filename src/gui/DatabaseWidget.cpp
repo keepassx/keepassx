@@ -21,6 +21,7 @@
 #include <QAction>
 #include <QDesktopServices>
 #include <QHBoxLayout>
+#include <QHeaderView>
 #include <QLabel>
 #include <QLineEdit>
 #include <QKeyEvent>

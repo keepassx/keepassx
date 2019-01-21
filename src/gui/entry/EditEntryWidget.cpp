@@ -21,6 +21,7 @@
 #include "ui_EditEntryWidgetHistory.h"
 #include "ui_EditEntryWidgetMain.h"
 
+#include <QButtonGroup>
 #include <QDesktopServices>
 #include <QStackedLayout>
 #include <QStandardPaths>
