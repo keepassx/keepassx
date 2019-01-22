@@ -40,6 +40,8 @@ QString FilePath::pluginPath(const QString& name)
 {
     QStringList pluginPaths;
 
+    pluginPaths << QCoreApplication::applicationDirPath() + "/../PlugIns";
+
     QDir buildDir(QCoreApplication::applicationDirPath() + "/autotype");
     const QStringList buildDirEntryList = buildDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
     for (const QString& dir : buildDirEntryList) {
