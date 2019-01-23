@@ -4,6 +4,7 @@ GenericName=Password Manager
 GenericName[de]=Passwortverwaltung
 GenericName[es]=Gestor de contraseñas
 GenericName[fr]=Gestionnaire de mot de passe
+GenericName[hu]=Jelszókezelő
 GenericName[ru]=менеджер паролей
 Exec=keepassx %f
 Icon=keepassx
