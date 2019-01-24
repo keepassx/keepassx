@@ -32,6 +32,7 @@ include(CheckCXXSourceCompiles)
 option(WITH_TESTS "Enable building of unit tests" ON)
 option(WITH_GUI_TESTS "Enable building of GUI tests" OFF)
 option(WITH_DEV_BUILD "Use only for development. Disables/warns about deprecated methods." OFF)
+option(WITH_LIBSECRET "Enable using libsecret to store a key in the keyring" ON)
 
 set(KEEPASSX_VERSION "2.0.3")
 set(KEEPASSX_VERSION_NUM "2.0.3")
@@ -163,6 +164,11 @@ find_package(Gcrypt 1.6.0 REQUIRED)
 
 find_package(ZLIB REQUIRED)
 
+if(WITH_LIBSECRET)
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(LIBSECRET REQUIRED libsecret-1)
+endif()
+
 check_cxx_source_compiles("
   #include <zlib.h>
 
@@ -198,7 +204,7 @@ if(UNIX)
   endif()
 endif()
 
-include_directories(SYSTEM ${GCRYPT_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR})
+include_directories(SYSTEM ${GCRYPT_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS} ${LIBSECRET_INCLUDE_DIRS})
 
 include(FeatureSummary)
 

@@ -27,6 +27,11 @@
 #include "keys/FileKey.h"
 #include "keys/PasswordKey.h"
 
+#include "config-keepassx.h"
+#ifdef WITH_LIBSECRET
+#include "keys/LibsecretKey.h"
+#endif // WITH_LIBSECRET
+
 DatabaseOpenWidget::DatabaseOpenWidget(QWidget* parent)
     : DialogyWidget(parent)
     , m_ui(new Ui::DatabaseOpenWidget())
@@ -51,6 +56,10 @@ DatabaseOpenWidget::DatabaseOpenWidget(QWidget* parent)
 
     connect(m_ui->buttonBox, SIGNAL(accepted()), SLOT(openDatabase()));
     connect(m_ui->buttonBox, SIGNAL(rejected()), SLOT(reject()));
+
+#ifndef WITH_LIBSECRET
+    m_ui->checkKeyRing->hide();
+#endif
 }
 
 DatabaseOpenWidget::~DatabaseOpenWidget()
@@ -144,7 +153,17 @@ CompositeKey DatabaseOpenWidget::databaseKey()
     else {
         lastKeyFiles.remove(m_filename);
     }
-
+#ifdef WITH_LIBSECRET
+    if (m_ui->checkKeyRing->isChecked()) {
+        LibsecretKey key;
+        QString errorMsg;
+        if (!key.load(&errorMsg)) {
+            MessageBox::warning(this, tr("Error"), tr("Can't load key from keyring").append(":\n").append(errorMsg));
+            return CompositeKey();
+        }
+        masterKey.addKey(key);
+    }
+#endif // WITH_LIBSECRET
     if (config()->get("RememberLastKeyFiles").toBool()) {
         config()->set("LastKeyFiles", lastKeyFiles);
     }
