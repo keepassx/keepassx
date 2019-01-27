@@ -91,6 +91,8 @@ set(TEST_LIBRARIES
     Qt5::Test
     ${GCRYPT_LIBRARIES}
     ${ZLIB_LIBRARIES}
+    ${QJSON_LIBRARIES}
+    ${MHD_LIBRARIES}
 )
 
 set(testsupport_SOURCES modeltest.cpp FailDevice.cpp)

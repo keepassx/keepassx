@@ -22,4 +22,6 @@ target_link_libraries(kdbx-extract
                       Qt5::Concurrent
                       Qt5::Widgets
                       ${GCRYPT_LIBRARIES}
-                      ${ZLIB_LIBRARIES})
+                      ${ZLIB_LIBRARIES}
+                      ${QJSON_LIBRARIES}
+                      ${MHD_LIBRARIES})
