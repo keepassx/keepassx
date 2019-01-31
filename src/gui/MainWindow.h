@@ -67,7 +67,7 @@ private Q_SLOTS:
     void toggleWindow();
     void lockDatabasesAfterInactivity();
     void repairDatabase();
-
+    
 private:
     static void setShortcut(QAction* action, QKeySequence::StandardKey standard, int fallback = 0);
 
