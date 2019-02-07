@@ -21,6 +21,8 @@
 #include <QFile>
 #include <QIODevice>
 
+#include <QDebug>
+
 #include "core/Database.h"
 #include "core/Endian.h"
 #include "crypto/CryptoHash.h"

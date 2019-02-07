@@ -38,6 +38,7 @@
 #include "core/Tools.h"
 #include "gui/ChangeMasterKeyWidget.h"
 #include "gui/Clipboard.h"
+#include "gui/csvImport/CsvImportWizard.h"
 #include "gui/DatabaseOpenWidget.h"
 #include "gui/DatabaseSettingsWidget.h"
 #include "gui/KeePass1OpenWidget.h"
@@ -119,10 +120,8 @@ DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     m_editGroupWidget->setObjectName("editGroupWidget");
     m_changeMasterKeyWidget = new ChangeMasterKeyWidget();
     m_changeMasterKeyWidget->headlineLabel()->setText(tr("Change master key"));
-    QFont headlineLabelFont = m_changeMasterKeyWidget->headlineLabel()->font();
-    headlineLabelFont.setBold(true);
-    headlineLabelFont.setPointSize(headlineLabelFont.pointSize() + 2);
-    m_changeMasterKeyWidget->headlineLabel()->setFont(headlineLabelFont);
+    m_csvImportWizard = new CsvImportWizard();
+    m_csvImportWizard->setObjectName("csvImportWizard");
     m_databaseSettingsWidget = new DatabaseSettingsWidget();
     m_databaseSettingsWidget->setObjectName("databaseSettingsWidget");
     m_databaseOpenWidget = new DatabaseOpenWidget();
@@ -138,6 +137,7 @@ DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     addWidget(m_databaseSettingsWidget);
     addWidget(m_historyEditEntryWidget);
     addWidget(m_databaseOpenWidget);
+    addWidget(m_csvImportWizard);
     addWidget(m_keepass1OpenWidget);
     addWidget(m_unlockDatabaseWidget);
 
@@ -157,6 +157,7 @@ DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     connect(m_databaseSettingsWidget, SIGNAL(editFinished(bool)), SLOT(switchToView(bool)));
     connect(m_databaseOpenWidget, SIGNAL(editFinished(bool)), SLOT(openDatabase(bool)));
     connect(m_keepass1OpenWidget, SIGNAL(editFinished(bool)), SLOT(openDatabase(bool)));
+    connect(m_csvImportWizard, SIGNAL(importFinished(bool)), SLOT(csvImportFinished(bool)));
     connect(m_unlockDatabaseWidget, SIGNAL(editFinished(bool)), SLOT(unlockDatabase(bool)));
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(emitCurrentModeChanged()));
     connect(m_searchUi->searchEdit, SIGNAL(textChanged(QString)), this, SLOT(startSearchTimer()));
@@ -567,6 +568,16 @@ void DatabaseWidget::setCurrentWidget(QWidget* widget)
     adjustSize();
 }
 
+void DatabaseWidget::csvImportFinished(bool accepted)
+{
+    if (!accepted) {
+        Q_EMIT closeRequest();
+    }
+    else {
+        setCurrentWidget(m_mainWidget);
+    }
+}
+
 void DatabaseWidget::switchToView(bool accepted)
 {
     if (m_newGroup) {
@@ -755,6 +766,15 @@ void DatabaseWidget::switchToOpenDatabase(const QString& fileName, const QString
     updateFilename(fileName);
     switchToOpenDatabase(fileName);
     m_databaseOpenWidget->enterKey(password, keyFile);
+}
+
+
+void DatabaseWidget::switchToImportCsv(const QString& fileName)
+{
+    updateFilename(fileName);
+    switchToMasterKeyChange();
+    m_csvImportWizard->load(fileName, m_db);
+    setCurrentWidget(m_csvImportWizard);
 }
 
 void DatabaseWidget::switchToImportKeepass1(const QString& fileName)

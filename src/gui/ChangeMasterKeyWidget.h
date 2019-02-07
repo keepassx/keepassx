@@ -49,8 +49,9 @@ private Q_SLOTS:
     void browseKeyFile();
 
 private:
-    const QScopedPointer<Ui::ChangeMasterKeyWidget> m_ui;
     CompositeKey m_key;
+protected:
+    const QScopedPointer<Ui::ChangeMasterKeyWidget> m_ui;
 
     Q_DISABLE_COPY(ChangeMasterKeyWidget)
 };
