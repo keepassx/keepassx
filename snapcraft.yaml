@@ -1,0 +1,27 @@
+name: keepassx
+version: master
+summary: KeePassX is a cross platform password safe
+description: |
+  KeePassX is an application for people with extremly high demands on secure
+  personal data management. It has a light interface, is cross platform and
+  published under the terms of the GNU General Public License.
+confinement: strict
+
+apps:
+  keepassx:
+    command: desktop-launch keepassx
+    plugs: [unity7, opengl, gsettings, home]
+
+parts:
+  keepassx:
+    source: .
+    plugin: cmake
+    build-packages:
+      - g++
+      - libqt4-dev # upstream cmake needs libqt4-dev to find qt5-core
+      - libqt5x11extras5-dev
+      - qttools5-dev
+      - qttools5-dev-tools
+      - libgcrypt20-dev
+      - zlib1g-dev
+    after: [desktop-qt5]
