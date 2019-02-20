@@ -84,6 +84,37 @@ To install this binary execute the following:
 sudo make install
 ```
 
+##### Building KeePassX 2.0 on Mac OSX
+
+Install dependencies and cmake via homebrew (or macports)
+
+Qt can also be installed using the official binary installer
+(tested with Qt 5.2.1 and 5.5.1_2, should work with other versions)
+
+If you want to build universal with -DCMAKE_OSX_ARCHITECTURES="i386;x86_64" 
+install the required Qt and dependencies, not tested yet
+
+Example for homebrew:
+```brew install cmake libgcrypt qt5```
+
+Homebrew install Qt to /usr/local/Cellar, but also symlinks to /usr/local/opt/qt5
+
+```bash
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5 ..
+make -j3
+/usr/local/opt/qt5/bin/macdeployqt src/KeePassX.app/
+make test
+```
+
+Then as final step one of
+
+```bash
+make install # to install to /Applications
+make package # to create a .dmg in the src dir
+```
+
 More detailed instructions available in the INSTALL file.
 
 ## Contribute
