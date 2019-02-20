@@ -76,6 +76,7 @@ void SettingsWidget::loadSettings()
     m_generalUi->minimizeOnCopyCheckBox->setChecked(config()->get("MinimizeOnCopy").toBool());
     m_generalUi->useGroupIconOnEntryCreationCheckBox->setChecked(config()->get("UseGroupIconOnEntryCreation").toBool());
     m_generalUi->autoTypeEntryTitleMatchCheckBox->setChecked(config()->get("AutoTypeEntryTitleMatch").toBool());
+    m_generalUi->autoCloseOnScreenLock->setChecked(config()->get("AutoCloseOnScreenLock").toBool());
 
     m_generalUi->languageComboBox->clear();
     QList<QPair<QString, QString> > languages = Translator::availableLanguages();
@@ -120,6 +121,8 @@ void SettingsWidget::saveSettings()
     config()->set("AutoSaveAfterEveryChange",
                   m_generalUi->autoSaveAfterEveryChangeCheckBox->isChecked());
     config()->set("AutoSaveOnExit", m_generalUi->autoSaveOnExitCheckBox->isChecked());
+    config()->set("AutoCloseOnScreenLock", m_generalUi->autoCloseOnScreenLock->isChecked());
+
     config()->set("MinimizeOnCopy", m_generalUi->minimizeOnCopyCheckBox->isChecked());
     config()->set("UseGroupIconOnEntryCreation",
                   m_generalUi->useGroupIconOnEntryCreationCheckBox->isChecked());

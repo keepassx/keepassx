@@ -155,6 +155,9 @@ find_package(Qt5Test          5.2 REQUIRED)
 find_package(Qt5LinguistTools 5.2 REQUIRED)
 set(CMAKE_AUTOMOC ON)
 
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    find_package(Qt5DBus       5.2 REQUIRED)
+endif()
 # Debian sets the the build type to None for package builds.
 # Make sure we don't enable asserts there.
 set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:None>:QT_NO_DEBUG>)

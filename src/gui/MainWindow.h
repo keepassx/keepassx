@@ -24,6 +24,7 @@
 
 #include "core/SignalMultiplexer.h"
 #include "gui/DatabaseWidget.h"
+#include "core/ScreenLockListener.h"
 
 namespace Ui {
     class MainWindow;
@@ -67,6 +68,7 @@ private Q_SLOTS:
     void toggleWindow();
     void lockDatabasesAfterInactivity();
     void repairDatabase();
+    void handleScreenLock();
 
 private:
     static void setShortcut(QAction* action, QKeySequence::StandardKey standard, int fallback = 0);
@@ -87,6 +89,7 @@ private:
     InactivityTimer* m_inactivityTimer;
     int m_countDefaultAttributes;
     QSystemTrayIcon* m_trayIcon;
+    ScreenLockListener* m_screenLockListener;
 
     Q_DISABLE_COPY(MainWindow)
 };

@@ -213,7 +213,16 @@ MainWindow::MainWindow()
     m_actionMultiplexer.connect(m_ui->actionSearch, SIGNAL(triggered()),
                                 SLOT(openSearch()));
 
+    m_screenLockListener = new ScreenLockListener(this);
+    connect(m_screenLockListener, SIGNAL(screenLocked()), SLOT(handleScreenLock()));
     updateTrayIcon();
+}
+
+void MainWindow::handleScreenLock()
+{
+    if (config()->get("AutoCloseOnScreenLock").toBool()){
+        lockDatabasesAfterInactivity();
+    }
 }
 
 MainWindow::~MainWindow()
