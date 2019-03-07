@@ -31,8 +31,12 @@ public:
     {
         LowerLetters      = 0x1,
         UpperLetters      = 0x2,
-        Numbers           = 0x4,
-        SpecialCharacters = 0x8
+        Digits            = 0x4,
+        Minus             = 0x8,
+        Underlines        = 0x10,
+        Spaces            = 0x20,
+        Specials          = 0x40,
+        Brackets          = 0x80
     };
     Q_DECLARE_FLAGS(CharClasses, CharClass)
 
