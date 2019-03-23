@@ -8,6 +8,8 @@ if(UNIX AND NOT APPLE)
   if(X11_FOUND AND X11_Xi_FOUND AND X11_XTest_FOUND AND Qt5X11Extras_FOUND)
     add_subdirectory(xcb)
   endif()
+elseif(APPLE)
+  add_subdirectory(mac)
 endif()
 
 if(WITH_TESTS)
