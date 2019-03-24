@@ -90,6 +90,8 @@ void SettingsWidget::loadSettings()
     m_generalUi->systrayShowCheckBox->setChecked(config()->get("GUI/ShowTrayIcon").toBool());
     m_generalUi->systrayMinimizeToTrayCheckBox->setChecked(config()->get("GUI/MinimizeToTray").toBool());
 
+    m_generalUi->mirrorPasswordFieldsCheckBox->setChecked(config()->get("MirrorPasswordFields").toBool());
+
     if (autoType()->isAvailable()) {
         m_globalAutoTypeKey = static_cast<Qt::Key>(config()->get("GlobalAutoTypeKey").toInt());
         m_globalAutoTypeModifiers = static_cast<Qt::KeyboardModifiers>(config()->get("GlobalAutoTypeModifiers").toInt());
@@ -130,6 +132,8 @@ void SettingsWidget::saveSettings()
 
     config()->set("GUI/ShowTrayIcon", m_generalUi->systrayShowCheckBox->isChecked());
     config()->set("GUI/MinimizeToTray", m_generalUi->systrayMinimizeToTrayCheckBox->isChecked());
+
+    config()->set("MirrorPasswordFields", m_generalUi->mirrorPasswordFieldsCheckBox->isChecked());
 
     if (autoType()->isAvailable()) {
         config()->set("GlobalAutoTypeKey", m_generalUi->autoTypeShortcutWidget->key());
