@@ -113,6 +113,16 @@
      </property>
     </widget>
    </item>
+   <item row="12" column="0">
+    <widget class="QCheckBox" name="modifiedExpandedChangedCheckBox">
+     <property name="text">
+      <string>Mark database as modified if tree nodes are expanded or collapsed</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -130,6 +140,7 @@
   <tabstop>autoSaveAfterEveryChangeCheckBox</tabstop>
   <tabstop>minimizeOnCopyCheckBox</tabstop>
   <tabstop>autoTypeShortcutWidget</tabstop>
+  <tabstop>modifiedExpandedChangedCheckBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>
