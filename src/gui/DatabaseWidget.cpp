@@ -150,6 +150,7 @@ DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
             SLOT(entryActivationSignalReceived(Entry*, EntryModel::ModelColumn)));
     connect(m_entryView, SIGNAL(entrySelectionChanged()), SIGNAL(entrySelectionChanged()));
     connect(m_editEntryWidget, SIGNAL(editFinished(bool)), SLOT(switchToView(bool)));
+    connect(m_editEntryWidget, SIGNAL(editFinished(bool)), SLOT(startSearch()));
     connect(m_editEntryWidget, SIGNAL(historyEntryActivated(Entry*)), SLOT(switchToHistoryView(Entry*)));
     connect(m_historyEditEntryWidget, SIGNAL(editFinished(bool)), SLOT(switchBackToEntryEdit()));
     connect(m_editGroupWidget, SIGNAL(editFinished(bool)), SLOT(switchToView(bool)));
@@ -259,7 +260,7 @@ Database* DatabaseWidget::database()
 
 void DatabaseWidget::createEntry()
 {
-    if (!m_groupView->currentGroup()) {
+    if (!m_groupView->currentGroup() && !isInSearchMode()) {
         Q_ASSERT(false);
         return;
     }
@@ -267,7 +268,11 @@ void DatabaseWidget::createEntry()
     m_newEntry = new Entry();
     m_newEntry->setUuid(Uuid::random());
     m_newEntry->setUsername(m_db->metadata()->defaultUserName());
-    m_newParent = m_groupView->currentGroup();
+    if (isInSearchMode()) {
+        m_newParent = m_db->rootGroup();
+    } else {
+        m_newParent = m_groupView->currentGroup();
+    }
     setIconFromParent();
     switchToEntryEdit(m_newEntry, true);
 }
