@@ -167,6 +167,9 @@ void AutoType::performAutoType(const Entry* entry, QWidget* hideWindow, const QS
         QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
     }
 
+    if (hideWindow) {
+        hideWindow->showNormal();
+    }
     m_inAutoType = false;
 }
 
