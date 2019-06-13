@@ -2,36 +2,36 @@
 
 ## About
 
-KeePassX is an application for people with extremely high demands on secure personal data management.
-It has a light interface, is cross platform and published under the terms of the GNU General Public License.
+KeePassX is a password manager for people with extremely high demands on security.
+It is light weight, cross platform and published under the terms of the GNU General Public License.
 
-KeePassX saves many different information e.g. user names, passwords, urls, attachments and comments in one single database.
-For a better management user-defined titles and icons can be specified for each single entry.
-Furthermore the entries are sorted in groups, which are customizable as well. The integrated search function allows to search in a single group or the complete database.
-KeePassX offers a little utility for secure password generation. The password generator is very customizable, fast and easy to use.
-Especially someone who generates passwords frequently will appreciate this feature.
+Along with passwords, each entry in KeePassX can include associated usernames, urls, an attachement and comments.
+Entries can be grouped and labeled with user-defined titles and icons to simplify organization.
+The search function helps find passwords, and it can be limited to single groups.
+And generating new passwords is, easy with the customizable password generator.
 
-The complete database is always encrypted with the AES (aka Rijndael) encryption algorithm using a 256 bit key.
-Therefore the saved information can be considered as quite safe. KeePassX uses a database format that is compatible with [KeePass Password Safe](http://keepass.info/).
-This makes the use of that application even more favorable.
+KeePassX uses a database format that is compatible with [KeePass Password Safe](http://keepass.info/).
+The database is encrypted with the AES block cipher using a 256 bit key.
 
-## Install
+## Installation
 
-KeePassX can be downloaded and installed using an assortment of installers available on the main [KeePassX website](http://www.keepassx.org).
-KeePassX can also be installed from the official repositories of many Linux repositories.
-If you wish to build KeePassX from source, rather than rely on the pre-compiled binaries, you may wish to read up on the _From Source_ section.
+KeePassX can be downloaded and installed using an assortment of installers available on the [KeePassX website](http://www.keepassx.org).
+If you wish to build KeePassX from source, you may wish to read up on the _From Source_ section.
+KeePassX can also be installed from the software repositories of many Linux distributions.
+Instructions for installing KeePassX on various operating systems are below.
 
-### Debian
 
-To install KeePassX from the Debian repository:
+### Debian based distributions (including Ubuntu, Linux Mint, etc.)
+
+At the terminal enter:
 
 ```bash
 sudo apt-get install keepassx
 ```
 
-### Red Hat
+### Red Hat based distributions (including Fedora, CentOS, etc.)
 
-Install KeePassX from the Red Hat (or CentOS) repository:
+At the terminal enter:
 
 ```bash
 sudo yum install keepassx
@@ -119,11 +119,8 @@ Our software isn't always perfect, but we strive to always improve our work. You
 
 ### Pull Requests
 
-Along with our desire to hear your feedback and suggestions, we're also interested in accepting direct assistance in the form of code.
-
-Issue merge requests against our [GitHub repository](https://github.com/keepassx/keepassx).
+In addition to feedback and suggestions, we welcome pull requests against our [GitHub repository](https://github.com/keepassx/keepassx).
 
 ### Translations
 
-Translations are managed on [Transifex](https://www.transifex.com/projects/p/keepassx/) which offers a web interface.
-Please join an existing language team or request a new one if there is none.
+To help make KeePassX accessible to everyone, you contribute translations on our [Transifex](https://www.transifex.com/projects/p/keepassx/) page.
