@@ -115,7 +115,8 @@ or would like to suggest a completely new feature for KeePassX, please file a ti
 
 ### Bug Reports
 
-Our software isn't always perfect, but we strive to always improve our work. You may file bug reports on the [KeePassX development](https://www.keepassx.org/dev/) site.
+Our software isn't always perfect, but we strive to always improve our work.
+You can view existing bugs [here](https://www.keepassx.org/dev/projects/keepassx/issue) and file new bugs [here](https://www.keepassx.org/dev/projects/keepassx/issues/new).
 
 ### Pull Requests
 
