@@ -20,6 +20,8 @@
 #define KEEPASSX_APPLICATION_H
 
 #include <QApplication>
+#include <QtNetwork/QLocalServer>
+class QLockFile;
 
 class Application : public QApplication
 {
@@ -27,15 +29,21 @@ class Application : public QApplication
 
 public:
     Application(int& argc, char** argv);
+    ~Application();
     void setMainWindow(QWidget* mainWindow);
 
     bool event(QEvent* event) override;
+    bool isAlreadyRunning() const;
 
 Q_SIGNALS:
     void openFile(const QString& filename);
+    void anotherInstanceStarted();
 
 private:
     QWidget* m_mainWindow;
+    bool alreadyRunning;
+    QLockFile* lock;
+    QLocalServer server;
 };
 
 #endif // KEEPASSX_APPLICATION_H
