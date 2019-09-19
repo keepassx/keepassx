@@ -173,7 +173,7 @@ MainWindow::MainWindow()
             SLOT(exportToCsv()));
     connect(m_ui->actionLockDatabases, SIGNAL(triggered()), m_ui->tabWidget,
             SLOT(lockDatabases()));
-    connect(m_ui->actionQuit, SIGNAL(triggered()), SLOT(close()));
+    connect(m_ui->actionQuit, SIGNAL(triggered()), SLOT(tryToQuit()));
 
     m_actionMultiplexer.connect(m_ui->actionEntryNew, SIGNAL(triggered()),
             SLOT(createEntry()));
@@ -218,6 +218,11 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
+}
+
+bool MainWindow::isTrayIconActive() const
+{
+    return isTrayIconEnabled() && m_trayIcon && m_trayIcon->isVisible();
 }
 
 void MainWindow::updateLastDatabasesMenu()
@@ -444,24 +449,34 @@ void MainWindow::databaseTabChanged(int tabIndex)
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
-    bool accept = saveLastDatabases();
+    bool accept = true;
+    if (!isTrayIconActive() || !config()->get("GUI/CloseToTray").toBool())
+    {
+        accept = tryToQuit();
+    }
 
     if (accept) {
-        saveWindowInformation();
-
         event->accept();
-        QApplication::quit();
     }
     else {
         event->ignore();
     }
 }
 
+bool MainWindow::tryToQuit()
+{
+    bool accept = saveLastDatabases();
+    if (accept) {
+        saveWindowInformation();
+        QApplication::quit();
+    }
+    return accept;
+}
+
 void MainWindow::changeEvent(QEvent* event)
 {
     if ((event->type() == QEvent::WindowStateChange) && isMinimized()
-            && isTrayIconEnabled() && m_trayIcon && m_trayIcon->isVisible()
-            && config()->get("GUI/MinimizeToTray").toBool())
+            && isTrayIconActive() && config()->get("GUI/MinimizeToTray").toBool())
     {
         event->ignore();
         QTimer::singleShot(0, this, SLOT(hide()));

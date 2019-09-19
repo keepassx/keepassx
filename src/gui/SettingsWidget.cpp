@@ -45,6 +45,8 @@ SettingsWidget::SettingsWidget(QWidget* parent)
     // systray not useful on OS X
     m_generalUi->systrayShowCheckBox->setVisible(false);
     m_generalUi->systrayMinimizeToTrayCheckBox->setVisible(false);
+    m_generalUi->systrayCloseToTrayCheckBox->setVisible(false);
+    m_generalUi->systrayHideWindowOnStartupCheckBox->setVisible(false);
 #endif
 
     connect(this, SIGNAL(accepted()), SLOT(saveSettings()));
@@ -54,6 +56,12 @@ SettingsWidget::SettingsWidget(QWidget* parent)
             this, SLOT(enableAutoSaveOnExit(bool)));
     connect(m_generalUi->systrayShowCheckBox, SIGNAL(toggled(bool)),
             m_generalUi->systrayMinimizeToTrayCheckBox, SLOT(setEnabled(bool)));
+    connect(m_generalUi->systrayShowCheckBox, SIGNAL(toggled(bool)),
+            m_generalUi->systrayCloseToTrayCheckBox, SLOT(setEnabled(bool)));
+    connect(m_generalUi->systrayShowCheckBox, SIGNAL(toggled(bool)),
+            m_generalUi->systrayHideWindowOnStartupCheckBox, SLOT(setEnabled(bool)));
+    connect(m_generalUi->systrayHideWindowOnStartupCheckBox, &QCheckBox::toggled,
+            [&] (bool checked) { m_generalUi->startMinimizedCheckBox->setEnabled(!checked); });
 
     connect(m_secUi->clearClipboardCheckBox, SIGNAL(toggled(bool)),
             m_secUi->clearClipboardSpinBox, SLOT(setEnabled(bool)));
@@ -87,8 +95,12 @@ void SettingsWidget::loadSettings()
         m_generalUi->languageComboBox->setCurrentIndex(defaultIndex);
     }
 
+    m_generalUi->startMinimizedCheckBox->setChecked(config()->get("GUI/StartMinimized").toBool());
+
     m_generalUi->systrayShowCheckBox->setChecked(config()->get("GUI/ShowTrayIcon").toBool());
     m_generalUi->systrayMinimizeToTrayCheckBox->setChecked(config()->get("GUI/MinimizeToTray").toBool());
+    m_generalUi->systrayCloseToTrayCheckBox->setChecked(config()->get("GUI/CloseToTray").toBool());
+    m_generalUi->systrayHideWindowOnStartupCheckBox->setChecked(config()->get("GUI/HideWindowOnStartup").toBool());
 
     if (autoType()->isAvailable()) {
         m_globalAutoTypeKey = static_cast<Qt::Key>(config()->get("GlobalAutoTypeKey").toInt());
@@ -128,8 +140,12 @@ void SettingsWidget::saveSettings()
     int currentLangIndex = m_generalUi->languageComboBox->currentIndex();
     config()->set("GUI/Language", m_generalUi->languageComboBox->itemData(currentLangIndex).toString());
 
+    config()->set("GUI/StartMinimized", m_generalUi->startMinimizedCheckBox->isChecked());
+
     config()->set("GUI/ShowTrayIcon", m_generalUi->systrayShowCheckBox->isChecked());
     config()->set("GUI/MinimizeToTray", m_generalUi->systrayMinimizeToTrayCheckBox->isChecked());
+    config()->set("GUI/CloseToTray", m_generalUi->systrayCloseToTrayCheckBox->isChecked());
+    config()->set("GUI/HideWindowOnStartup", m_generalUi->systrayHideWindowOnStartupCheckBox->isChecked());
 
     if (autoType()->isAvailable()) {
         config()->set("GlobalAutoTypeKey", m_generalUi->autoTypeShortcutWidget->key());
