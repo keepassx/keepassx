@@ -55,6 +55,9 @@ public:
     ~DatabaseTabWidget();
     void openDatabase(const QString& fileName, const QString& pw = QString(),
                       const QString& keyFile = QString());
+    void openDatabase(const QString& fileName, const bool& openReadOnly,
+                      const QString& pw = QString(),
+                      const QString& keyFile = QString());
     DatabaseWidget* currentDatabaseWidget();
     bool hasLockableDatabases() const;
 
@@ -62,7 +65,8 @@ public:
 
 public Q_SLOTS:
     void newDatabase();
-    void openDatabase();
+    void openDatabaseReadOnly();
+    void openDatabase(const bool& openReadOnly = false);
     void importKeePass1Database();
     bool saveDatabase(int index = -1);
     bool saveDatabaseAs(int index = -1);

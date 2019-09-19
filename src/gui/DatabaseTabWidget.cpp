@@ -98,18 +98,29 @@ void DatabaseTabWidget::newDatabase()
     dbStruct.dbWidget->switchToMasterKeyChange();
 }
 
-void DatabaseTabWidget::openDatabase()
+void DatabaseTabWidget::openDatabaseReadOnly(){
+    openDatabase(true);
+}
+
+void DatabaseTabWidget::openDatabase(const bool& openReadOnly )
 {
     QString filter = QString("%1 (*.kdbx);;%2 (*)").arg(tr("KeePass 2 Database"), tr("All files"));
     QString fileName = fileDialog()->getOpenFileName(this, tr("Open database"), QString(),
                                                      filter);
     if (!fileName.isEmpty()) {
-        openDatabase(fileName);
+        openDatabase(fileName,openReadOnly);
     }
 }
 
 void DatabaseTabWidget::openDatabase(const QString& fileName, const QString& pw,
                                      const QString& keyFile)
+{
+    bool openReadOnly=config()->get("OpenReadOnly").toBool();
+    openDatabase(fileName, openReadOnly, pw, keyFile);
+}
+
+void DatabaseTabWidget::openDatabase(const QString& fileName, const bool& openReadOnly,
+                                     const QString& pw, const QString& keyFile)
 {
     QFileInfo fileInfo(fileName);
     QString canonicalFilePath = fileInfo.canonicalFilePath();
@@ -123,8 +134,12 @@ void DatabaseTabWidget::openDatabase(const QString& fileName, const QString& pw,
     while (i.hasNext()) {
         i.next();
         if (i.value().canonicalFilePath == canonicalFilePath) {
-            setCurrentIndex(databaseIndex(i.key()));
-            return;
+            if(i.value().readOnly==openReadOnly) {
+                setCurrentIndex(databaseIndex(i.key()));
+                return;
+            } else {
+                closeDatabase(i.key());
+            }
         }
     }
 
@@ -148,7 +163,7 @@ void DatabaseTabWidget::openDatabase(const QString& fileName, const QString& pw,
     QLockFile* lockFile = new QLockFile(QString("%1/.%2.lock").arg(fileInfo.canonicalPath(), fileInfo.fileName()));
     lockFile->setStaleLockTime(0);
 
-    if (!dbStruct.readOnly && !lockFile->tryLock()) {
+    if (!dbStruct.readOnly && !lockFile->tryLock() && !openReadOnly) {
         // for now silently ignore if we can't create a lock file
         // due to lack of permissions
         if (lockFile->error() != QLockFile::PermissionError) {
@@ -169,6 +184,10 @@ void DatabaseTabWidget::openDatabase(const QString& fileName, const QString& pw,
                 }
             }
         }
+    } else if (openReadOnly) {
+        dbStruct.readOnly = true;
+        delete lockFile;
+        lockFile = nullptr;
     }
 
     Database* db = new Database();

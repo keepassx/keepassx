@@ -111,6 +111,7 @@
     </widget>
     <addaction name="actionDatabaseNew"/>
     <addaction name="actionDatabaseOpen"/>
+    <addaction name="actionDatabaseOpenReadOnly"/>
     <addaction name="menuRecentDatabases"/>
     <addaction name="actionDatabaseSave"/>
     <addaction name="actionDatabaseSaveAs"/>
@@ -221,6 +222,11 @@
   <action name="actionDatabaseOpen">
    <property name="text">
     <string>Open database</string>
+   </property>
+  </action>
+  <action name="actionDatabaseOpenReadOnly">
+   <property name="text">
+    <string>Open database readonly</string>
    </property>
   </action>
   <action name="actionDatabaseSave">
