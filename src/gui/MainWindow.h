@@ -65,6 +65,7 @@ private Q_SLOTS:
     void applySettingsChanges();
     void trayIconTriggered(QSystemTrayIcon::ActivationReason reason);
     void toggleWindow();
+    void deleteGroup();
     void lockDatabasesAfterInactivity();
     void repairDatabase();
 
@@ -73,6 +74,7 @@ private:
 
     static const QString BaseWindowTitle;
 
+    void updateDeleteGroupMenu();
     void saveWindowInformation();
     bool saveLastDatabases();
     void updateTrayIcon();

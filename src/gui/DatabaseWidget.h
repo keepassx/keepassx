@@ -73,6 +73,8 @@ public:
     int numberOfSelectedEntries() const;
     QStringList customEntryAttributes() const;
     bool isGroupSelected() const;
+    bool isRecycleBinSelected() const;
+    bool isRecycleBinEmpty() const;
     bool isInEditMode() const;
     bool isEditWidgetModified() const;
     QList<int> splitterSizes() const;
