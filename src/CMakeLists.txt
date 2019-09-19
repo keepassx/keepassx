@@ -104,6 +104,7 @@ set(keepassx_SOURCES
     gui/SettingsWidget.cpp
     gui/SortFilterHideProxyModel.cpp
     gui/UnlockDatabaseWidget.cpp
+    gui/UnlockDatabaseDialog.cpp
     gui/WelcomeWidget.cpp
     gui/entry/AutoTypeAssociationsModel.cpp
     gui/entry/EditEntryWidget.cpp
