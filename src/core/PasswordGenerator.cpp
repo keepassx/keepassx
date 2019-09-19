@@ -19,6 +19,8 @@
 
 #include "crypto/Random.h"
 
+#include <QHash>
+
 PasswordGenerator::PasswordGenerator()
     : m_length(0)
     , m_classes(0)
@@ -107,74 +109,53 @@ bool PasswordGenerator::isValid() const
 
 QVector<PasswordGroup> PasswordGenerator::passwordGroups() const
 {
-    QVector<PasswordGroup> passwordGroups;
+    QHash<CharClass, PasswordGroup> passwordGroups;
 
-    if (m_classes & LowerLetters) {
-        PasswordGroup group;
+    typedef struct {
+        char first;
+        char last;
+        CharClass cls;
+    } ClassRange;
 
-        for (int i = 97; i < (97 + 26); i++) {
-            if ((m_flags & ExcludeLookAlike) && (i == 108)) { // "l"
-                continue;
+    static const ClassRange asciiClasses[] = {
+        { 'a',  'z', LowerLetters },
+        { 'A',  'Z', UpperLetters },
+        { '0',  '9', Numbers },
+        { '!',  '/', SpecialCharacters },
+        { ':',  '@', SpecialCharacters },
+        { '[',  '`', SpecialCharacters },
+        { '{',  '~', SpecialCharacters },
+
+        { 0, 0, LowerLetters }}; // Sentinel
+    static const char* lookalikes = "lI1|" "O0" "6G";
+
+    const ClassRange* range = &asciiClasses[0];
+
+    while (range->last) {
+        if (m_classes & range->cls) {
+            PasswordGroup group;
+
+            for (int i = range->first; i <= range->last; i++) {
+                if ((m_flags & ExcludeLookAlike) && strchr(lookalikes, i)) {
+                    continue;
+                }
+
+                group.append(i);
             }
 
-            group.append(i);
-        }
+            if (!group.isEmpty()) {
+                if (!passwordGroups.contains(range->cls)) {
+                    passwordGroups[range->cls] = PasswordGroup();
+                }
 
-        passwordGroups.append(group);
-    }
-    if (m_classes & UpperLetters) {
-        PasswordGroup group;
-
-        for (int i = 65; i < (65 + 26); i++) {
-            if ((m_flags & ExcludeLookAlike) && (i == 73 || i == 79)) { // "I" and "O"
-                continue;
+                passwordGroups[range->cls] += group;
             }
-
-            group.append(i);
         }
 
-        passwordGroups.append(group);
-    }
-    if (m_classes & Numbers) {
-        PasswordGroup group;
-
-        for (int i = 48; i < (48 + 10); i++) {
-            if ((m_flags & ExcludeLookAlike) && (i == 48 || i == 49)) { // "0" and "1"
-                continue;
-            }
-
-            group.append(i);
-        }
-
-        passwordGroups.append(group);
-    }
-    if (m_classes & SpecialCharacters) {
-        PasswordGroup group;
-
-        for (int i = 33; i <= 47; i++) {
-            group.append(i);
-        }
-
-        for (int i = 58; i <= 64; i++) {
-            group.append(i);
-        }
-
-        for (int i = 91; i <= 96; i++) {
-            group.append(i);
-        }
-
-        for (int i = 123; i <= 126; i++) {
-            if ((m_flags & ExcludeLookAlike) && (i == 124)) { // "|"
-                continue;
-            }
-
-            group.append(i);
-        }
-
-        passwordGroups.append(group);
+        ++range;
     }
 
-    return passwordGroups;
+    return passwordGroups.values().toVector();
 }
 
 int PasswordGenerator::numCharClasses() const
