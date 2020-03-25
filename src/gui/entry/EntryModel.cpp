@@ -117,7 +117,7 @@ int EntryModel::columnCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
 
-    return 4;
+    return 5;
 }
 
 QVariant EntryModel::data(const QModelIndex& index, int role) const
@@ -139,6 +139,8 @@ QVariant EntryModel::data(const QModelIndex& index, int role) const
             return entry->title();
         case Username:
             return entry->username();
+        case Password:
+            return entry->password();
         case Url:
             return entry->url();
         }
@@ -179,6 +181,8 @@ QVariant EntryModel::headerData(int section, Qt::Orientation orientation, int ro
             return tr("Title");
         case Username:
             return tr("Username");
+        case Password:
+            return tr("Password");
         case Url:
             return tr("URL");
         }

@@ -70,6 +70,8 @@ QVariant EntryHistoryModel::data(const QModelIndex& index, int role) const
         case 2:
             return entry->username();
         case 3:
+            return entry->password();
+        case 4:
             return entry->url();
         }
     }
@@ -88,6 +90,8 @@ QVariant EntryHistoryModel::headerData(int section, Qt::Orientation orientation,
         case 2:
             return tr("Username");
         case 3:
+            return tr("Password");
+        case 4:
             return tr("URL");
         }
     }
