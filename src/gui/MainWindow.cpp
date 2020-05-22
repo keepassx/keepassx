@@ -96,6 +96,8 @@ MainWindow::MainWindow()
     setShortcut(m_ui->actionEntryAutoType, QKeySequence::Paste, Qt::CTRL + Qt::Key_V);
     m_ui->actionEntryOpenUrl->setShortcut(Qt::CTRL + Qt::Key_U);
     m_ui->actionEntryCopyURL->setShortcut(Qt::CTRL + Qt::ALT + Qt::Key_U);
+    m_ui->actionEntryCopyTitle->setShortcut(Qt::CTRL + Qt::ALT + Qt::Key_T);
+    m_ui->actionEntryCopyNotes->setShortcut(Qt::CTRL + Qt::ALT + Qt::Key_N);
 
     new QShortcut(Qt::CTRL + Qt::Key_M, this, SLOT(showMinimized()));
 
