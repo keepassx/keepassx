@@ -909,7 +909,7 @@ Dieser Vorgang ist nur in eine Richtung möglich. Die importierte Datenbank kann
     </message>
     <message>
         <source>Copy attribute to clipboard</source>
-        <translation>Eingenschaft in die Zwischenablage kopieren</translation>
+        <translation>Eigenschaft in die Zwischenablage kopieren</translation>
     </message>
     <message>
         <source>Groups</source>
