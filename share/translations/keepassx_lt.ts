@@ -1279,7 +1279,7 @@ Tai yra vienakryptis perkėlimas. Jūs negalėsite atverti importuotos duomenų 
         <translation>Kuriant įrašus, naudoti grupės piktogramą</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Visuotinis automatinio rinkimo spartusis klavišas</translation>
     </message>
     <message>

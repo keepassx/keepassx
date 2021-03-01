@@ -1279,7 +1279,7 @@ Nie będzie można skonwertować nowej bazy do starego programu KeePassX 0.4.</t
         <translation>Użyj ikony grupy podczas tworzenia wpisu</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Globalny skrót auto-uzupełnianie</translation>
     </message>
     <message>

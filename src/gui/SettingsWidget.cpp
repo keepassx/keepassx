@@ -41,6 +41,8 @@ SettingsWidget::SettingsWidget(QWidget* parent)
 
     m_generalUi->autoTypeShortcutWidget->setVisible(autoType()->isAvailable());
     m_generalUi->autoTypeShortcutLabel->setVisible(autoType()->isAvailable());
+    m_generalUi->autoTypeDelaySpinBox->setVisible(autoType()->isAvailable());
+    m_generalUi->autoTypeDelayLabel->setVisible(autoType()->isAvailable());
 #ifdef Q_OS_MAC
     // systray not useful on OS X
     m_generalUi->systrayShowCheckBox->setVisible(false);
@@ -96,6 +98,7 @@ void SettingsWidget::loadSettings()
         if (m_globalAutoTypeKey > 0 && m_globalAutoTypeModifiers > 0) {
             m_generalUi->autoTypeShortcutWidget->setShortcut(m_globalAutoTypeKey, m_globalAutoTypeModifiers);
         }
+        m_generalUi->autoTypeDelaySpinBox->setValue(config()->get("GlobalAutoTypeDelay").toInt());
     }
 
     m_secUi->clearClipboardCheckBox->setChecked(config()->get("security/clearclipboard").toBool());
@@ -135,6 +138,7 @@ void SettingsWidget::saveSettings()
         config()->set("GlobalAutoTypeKey", m_generalUi->autoTypeShortcutWidget->key());
         config()->set("GlobalAutoTypeModifiers",
                       static_cast<int>(m_generalUi->autoTypeShortcutWidget->modifiers()));
+        config()->set("GlobalAutoTypeDelay", m_generalUi->autoTypeDelaySpinBox->value());
     }
     config()->set("security/clearclipboard", m_secUi->clearClipboardCheckBox->isChecked());
     config()->set("security/clearclipboardtimeout", m_secUi->clearClipboardSpinBox->value());

@@ -1279,7 +1279,7 @@ Ini adalah migrasi satu arah. Anda tidak akan bisa lagi membuka basis data yang 
         <translation>Gunakan ikon grup pada pembuatan entri</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Pintasan global Ketik-Otomatis</translation>
     </message>
     <message>

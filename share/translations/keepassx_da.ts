@@ -1278,7 +1278,7 @@ Dette er en envejs konvertering. Du vil ikke være i stand til at åbne den impo
         <translation>Brug gruppeikon ved oprettelse af post</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Global Auto-Indsæt genvej</translation>
     </message>
     <message>

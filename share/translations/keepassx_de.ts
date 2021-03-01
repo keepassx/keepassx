@@ -1276,7 +1276,7 @@ Dieser Vorgang ist nur in eine Richtung möglich. Die importierte Datenbank kann
         <translation>Gruppensymbol für das Erstellen neuer Einträge verwenden</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Globale Tastenkombination für Auto-Type</translation>
     </message>
     <message>

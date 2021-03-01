@@ -164,6 +164,7 @@ void AutoType::performAutoType(const Entry* entry, QWidget* hideWindow, const QS
         }
 
         action->accept(m_executor);
+        Tools::sleep(config()->get("GlobalAutoTypeDelay").toInt());
         QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
     }
 

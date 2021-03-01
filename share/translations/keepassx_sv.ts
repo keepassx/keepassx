@@ -1279,7 +1279,7 @@ Detta är en envägsmigration. Du kan inte spara en databas som KeePass1 databas
         <translation>Använd gruppens ikon för nya poster</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Globalt auto-skriv kortkommando</translation>
     </message>
     <message>

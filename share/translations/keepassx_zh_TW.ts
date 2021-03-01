@@ -1279,7 +1279,7 @@ This is a one-way migration. You won&apos;t be able to open the imported databas
         <translation>新增項目時使用群組圖示</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>全域自動輸入快捷鍵</translation>
     </message>
     <message>

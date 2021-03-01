@@ -1283,7 +1283,7 @@ Jedná se o jednosměrný převod. Databázi, vzniklou z importu, nepůjde otev�
         <translation>Pro vytvářenou položku použít ikonu skupiny, do které spadá</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Klávesová zkratka pro všeobecné automatické vyplňování</translation>
     </message>
     <message>

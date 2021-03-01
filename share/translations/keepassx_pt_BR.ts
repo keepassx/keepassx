@@ -1279,7 +1279,7 @@ Esta é uma migração de uma via. Você não poderá abrir o banco de dados imp
         <translation>Usar ícone de grupo na criação da entrada</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Atalho para Auto-Digitação Global</translation>
     </message>
     <message>

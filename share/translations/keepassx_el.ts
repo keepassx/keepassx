@@ -1203,7 +1203,7 @@ Do you want to save it anyway?</source>
         <translation>Χρησιμοποίηση εικονιδίου ομάδας κατα την δημιουργία καταχώρησης</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation type="unfinished"/>
     </message>
     <message>

@@ -1276,7 +1276,7 @@ This is a one-way migration. You won&apos;t be able to open the imported databas
         <translation>항목을 만들 때 그룹 아이콘 사용</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>전역 자동 입력 단축키</translation>
     </message>
     <message>

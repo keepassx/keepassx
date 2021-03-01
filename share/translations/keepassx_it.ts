@@ -1279,8 +1279,12 @@ Questa è una migrazione in una sola direzione. Non potrai aprire il database im
         <translation>Usa l&apos;icona del gruppo alla creazione di una voce</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Scorciatoia Auto-Type globale</translation>
+    </message>
+    <message>
+        <source>Global auto-type delay (ms)</source>
+        <translation>Ritardo di auto-type globale (ms)</translation>
     </message>
     <message>
         <source>Use entry title to match windows for global auto-type</source>
