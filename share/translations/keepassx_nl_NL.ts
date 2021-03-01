@@ -1279,7 +1279,7 @@ Deze actie is niet omkeerbaar. U kunt de geimporteerde database niet meer openen
         <translation>Gebruik icoon van de groep voor nieuwe elementen</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Globale sneltoets voor auto-typen</translation>
     </message>
     <message>

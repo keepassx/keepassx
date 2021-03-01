@@ -1278,7 +1278,7 @@ This is a one-way migration. You won&apos;t be able to open the imported databas
         <translation>新增项目时使用群组图标</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>自动输入全局快捷键</translation>
     </message>
     <message>

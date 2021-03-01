@@ -1303,7 +1303,7 @@ This is a one-way migration. You won&apos;t be able to open the imported databas
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

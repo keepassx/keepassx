@@ -1279,7 +1279,7 @@ Ceci est une migration à sens unique. Vous ne serez plus en mesure d&apos;ouvri
         <translation>Utiliser l&apos;icône de groupe à la création d&apos;une entrée</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Raccourci de remplissage automatique global</translation>
     </message>
     <message>

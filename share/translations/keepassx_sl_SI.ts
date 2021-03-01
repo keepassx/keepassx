@@ -1273,7 +1273,7 @@ This is a one-way migration. You won&apos;t be able to open the imported databas
         <translation>Za nove vnose uporabi ikono skupine</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Globalna bližnjica za samodejno tipkanje</translation>
     </message>
     <message>

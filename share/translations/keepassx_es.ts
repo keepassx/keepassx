@@ -1279,7 +1279,7 @@ Esta migración es en un único sentido. No podrá abrir la base importada con l
         <translation>Usar icono del grupo en la creación de entrada</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Atajo global de Auto-Escritura</translation>
     </message>
     <message>

@@ -1278,7 +1278,7 @@ This is a one-way migration. You won&apos;t be able to open the imported databas
         <translation>Использовать значок группы для новых записей</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Глобальное сочетание клавиш для автоввода</translation>
     </message>
     <message>

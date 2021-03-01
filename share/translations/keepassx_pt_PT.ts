@@ -1273,7 +1273,7 @@ This is a one-way migration. You won&apos;t be able to open the imported databas
         <translation>Utilizar icon de grupo na criação de entrada</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>Atalho global de auto escrita</translation>
     </message>
     <message>

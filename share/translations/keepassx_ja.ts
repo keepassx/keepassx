@@ -1279,7 +1279,7 @@ This is a one-way migration. You won&apos;t be able to open the imported databas
         <translation>エントリーを作成したらグループのアイコンを使う</translation>
     </message>
     <message>
-        <source>Global Auto-Type shortcut</source>
+        <source>Global auto-type shortcut</source>
         <translation>全体の自動入力ショートカット</translation>
     </message>
     <message>
